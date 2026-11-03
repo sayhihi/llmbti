@@ -2,7 +2,7 @@
  * `llmbti render --analysis F --copy F [--no-open] [--base URL]` (SPEC 12장).
  *
  * 검증 → redact → payload → URL → 터미널 출력 → 브라우저. run(라이트 모드)도 같은 renderResult를 쓴다.
- * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, 4축 바, evidence 3줄, 커밋 메시지. 그 아래 URL 한 줄.
+ * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지. 그 아래 URL 한 줄.
  */
 
 import { readFileSync } from "node:fs";
@@ -67,9 +67,12 @@ export function placeholderCharacter(type: string): string[] {
   );
 }
 
+/** 오른쪽 열 (줄바꿈 전). roast는 한 줄로 두고 layoutLines가 열 폭에 맞춰 접는다. */
 export function rightColumn(analysis: AnalysisOutput, copy: CopyJson): string[] {
   return [
     `${analysis.type}  ${copy.nickname}`,
+    "",
+    copy.roast,
     "",
     ...axisBars(analysis.scores),
     "",

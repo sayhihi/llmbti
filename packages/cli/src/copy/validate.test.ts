@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { countSentences, formatProblems, mapCopyStrings, validateCopy } from "./validate";
+import {
+  countSentences,
+  findEmoji,
+  formatProblems,
+  hasEmoji,
+  mapCopyStrings,
+  validateCopy,
+} from "./validate";
 
 const good = {
   lang: "ko",
@@ -99,6 +106,26 @@ describe("validateCopy", () => {
     ]);
   });
 
+  it("이모지는 어느 필드든 거부", () => {
+    expect(problemsOf({ nickname: "리베이스 장인 🔥" })).toEqual([
+      expect.stringContaining("nickname: 이모지 금지 (🔥)"),
+    ]);
+    expect(problemsOf({ roast: "다시 38번 😂😂. 틀린 게 아니다 🫠." })).toEqual([
+      expect.stringContaining("roast: 이모지 금지 (😂 🫠)"),
+    ]);
+    expect(problemsOf({ evidence: ["1번 ✅", "2번", "3번"] })).toEqual([
+      expect.stringContaining("evidence[1]: 이모지"),
+    ]);
+    expect(problemsOf({ commitMessage: "✨ feat: sparkle" })).toEqual([
+      expect.stringContaining("commitMessage: 이모지"),
+    ]);
+    expect(problemsOf({ pairWith: { type: "INTJ", reason: "👍 같이 하면 됨" } })).toEqual([
+      expect.stringContaining("pairWith.reason: 이모지"),
+    ]);
+    // 바 문자, 한글, 숫자, 문장부호는 이모지가 아니다
+    expect(problemsOf({ nickname: "█░ 50% 장인?!" })).toEqual([]);
+  });
+
   it("빈 문자열과 타입 오류", () => {
     expect(problemsOf({ nickname: "  " })).toEqual([expect.stringContaining("비어")]);
     expect(problemsOf({ roast: 3 })).toEqual([expect.stringContaining("문자열")]);
@@ -124,6 +151,16 @@ describe("countSentences", () => {
     expect(countSentences("물음표? 느낌표! 마침표.")).toBe(3);
     expect(countSentences("")).toBe(0);
     expect(countSentences("문장부호 없음")).toBe(1);
+  });
+});
+
+describe("hasEmoji / findEmoji", () => {
+  it("Extended_Pictographic 만 잡는다", () => {
+    expect(hasEmoji("fix: prod again")).toBe(false);
+    expect(hasEmoji("E ████░░ I")).toBe(false);
+    expect(hasEmoji("배포 🚀")).toBe(true);
+    expect(findEmoji("🚀 가고 🚀 또 🔥")).toEqual(["🚀", "🔥"]);
+    expect(findEmoji("없음")).toEqual([]);
   });
 });
 

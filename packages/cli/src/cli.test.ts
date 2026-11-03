@@ -6,7 +6,7 @@ import { afterAll, describe, expect, it } from "vitest";
 
 import { main, parseArgs } from "./cli";
 import type { CliIo } from "./cli";
-import { stripAnsi } from "./terminal";
+import { displayWidth, stripAnsi } from "./terminal";
 import { fixtureHome } from "./testUtils";
 
 interface RunResult {
@@ -131,6 +131,10 @@ describe("llmbti run (라이트 모드)", () => {
     expect(r.out).toContain("ENFP  ");
     expect(r.out).toMatch(/E [█░]{6} I/);
     expect(r.out).toContain('$ git commit -m "');
+    // roast 는 별명 아래, 축 바 위에 온다
+    const header = r.out.indexOf("ENFP  ");
+    const bars = r.out.search(/E [█░]{6} I/);
+    expect(r.out.slice(header, bars)).toContain(payload!.copy.roast.slice(0, 10));
   });
 
   it("같은 입력이면 같은 URL (결정적)", async () => {
@@ -203,13 +207,22 @@ describe("llmbti run (라이트 모드)", () => {
       "--width",
       "100",
     ]);
-    const lines = wide.out.split("\n");
+    const lines = wide.out.trimEnd().split("\n");
     expect(lines[0]).toContain("\x1b[");
     expect(stripAnsi(lines[0]!)).toMatch(/^.{32} {2}ENFP {2}/);
-    // 캐릭터 16줄 (투명한 행은 ANSI 없이 비어 있을 수 있다) → 빈 줄 → URL
+    // 캐릭터 16줄 (투명한 행은 ANSI 없이 비어 있을 수 있다) → (오른쪽 열이 더 길면 그 나머지) → 빈 줄 → URL
     expect(lines.slice(0, 16).filter((l) => l.includes("\x1b[")).length).toBeGreaterThanOrEqual(14);
-    expect(lines[16]).toBe("");
-    expect(lines[17]).toMatch(/^https:\/\/llmbti\.vercel\.app\/t\/ENFP#r=/);
+    const urlIdx = lines.length - 1;
+    expect(urlIdx).toBeGreaterThanOrEqual(17);
+    expect(lines[urlIdx - 1]).toBe("");
+    expect(lines[urlIdx]).toMatch(/^https:\/\/llmbti\.vercel\.app\/t\/ENFP#r=/);
+    // 별명 다음 줄은 빈 칸, 그 다음부터 roast 가 캐릭터 옆 66칸 안에서 접힌다
+    expect(stripAnsi(lines[1]!).slice(34).trim()).toBe("");
+    expect(stripAnsi(lines[2]!)).toMatch(/^.{32} {2}\S/);
+    for (const l of lines.slice(0, urlIdx - 1)) {
+      const right = stripAnsi(l).slice(34);
+      expect(displayWidth(right)).toBeLessThanOrEqual(66);
+    }
 
     const narrow = await run([
       "run",
@@ -267,6 +280,11 @@ describe("llmbti render", () => {
     expect(payload!.type).toBe("ENFP");
     expect(payload!.copy.nickname).toBe(goodCopy.nickname);
     expect(r.out).toContain("- --force push 11번");
+    // roast 는 별명 아래, 축 바 위
+    const header = r.out.indexOf("ENFP  새벽 force push 직배포러");
+    const bars = r.out.search(/E [█░]{6} I/);
+    expect(header).toBeGreaterThanOrEqual(0);
+    expect(r.out.slice(header, bars)).toContain("그중 7번이 새벽 3시다");
   });
 
   it("문구 속 시크릿은 redact 되어 URL 에 실린다", async () => {
