@@ -11,7 +11,7 @@ import { planAnims } from "../pixel/player";
 
 export const CARD_WIDTH = 1200;
 export const CARD_HEIGHT = 630;
-export const SITE_HOST = "llmbit.vercel.app";
+export const SITE_HOST = "llmbti.vercel.app";
 
 /** 한글은 모노스페이스 스택, 영문 포인트는 픽셀 폰트 (index.html 의 웹폰트) */
 export const MONO_FONT = 'ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace';
@@ -187,7 +187,7 @@ export function drawShareCard(ctx: CardContext, input: CardInput): void {
 
   ctx.fillStyle = DIM;
   ctx.font = `22px ${MONO_FONT}`;
-  ctx.fillText("$ npx llmbit", left, 96);
+  ctx.fillText("$ npx llmbti", left, 96);
 
   ctx.fillStyle = accent.base;
   ctx.font = `72px ${PIXEL_FONT}`;
@@ -273,7 +273,7 @@ export async function renderShareCard(input: CardInput): Promise<Blob> {
 }
 
 export function cardFileName(type: MbtiType): string {
-  return `llmbit-${type}.png`;
+  return `llmbti-${type}.png`;
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

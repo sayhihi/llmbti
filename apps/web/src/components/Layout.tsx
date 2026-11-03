@@ -8,8 +8,8 @@ export function Layout({ children }: PropsWithChildren) {
   return (
     <div className="shell">
       <header className="topbar">
-        <Link to="/" className="brand" aria-label="llmbit 홈">
-          <span className="px">llmbit</span>
+        <Link to="/" className="brand" aria-label="llmbti 홈">
+          <span className="px">llmbti</span>
         </Link>
         <nav className="nav">
           <Link to="/start" className={nav("/start")}>
@@ -23,7 +23,7 @@ export function Layout({ children }: PropsWithChildren) {
       <main className="page">{children}</main>
       <footer className="footer">
         <p>
-          <span className="dim">$ </span>npx llmbit
+          <span className="dim">$ </span>npx llmbti
         </p>
         <p className="dim">
           서버 없음. 결과는 URL 안에만 있고 어디에도 저장되지 않는다.

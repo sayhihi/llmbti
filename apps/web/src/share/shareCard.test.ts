@@ -75,7 +75,7 @@ describe("drawShareCard", () => {
     const written = texts(calls);
     expect(written).toContain("ENFP");
     expect(written).toContain(base.nickname);
-    expect(written).toContain("llmbit.vercel.app");
+    expect(written).toContain("llmbti.vercel.app");
     for (const l of ["E", "I", "S", "N", "T", "F", "J", "P"]) expect(written).toContain(l);
     // 글자 박스는 안 그린다
     expect(calls.some((c) => c.name === "strokeRect")).toBe(false);
@@ -125,7 +125,7 @@ describe("wrapText", () => {
 
 describe("helpers", () => {
   it("파일 이름과 기질 색", () => {
-    expect(cardFileName("ENFP")).toBe("llmbit-ENFP.png");
+    expect(cardFileName("ENFP")).toBe("llmbti-ENFP.png");
     expect(accentOf("ENFP").base).toBe("#4ED9A5");
     expect(accentOf("INTJ").base).toBe("#9A6EE0");
   });

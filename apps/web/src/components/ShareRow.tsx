@@ -33,7 +33,7 @@ export function ShareRow({ type, nickname, roast, scores }: Props) {
 
   const onShare = async () => {
     try {
-      await navigator.share({ title: `${type} ${nickname} | llmbit`, url: window.location.href });
+      await navigator.share({ title: `${type} ${nickname} | llmbti`, url: window.location.href });
     } catch {
       // 사용자가 취소했거나 지원 안 함. 조용히 넘어간다.
     }

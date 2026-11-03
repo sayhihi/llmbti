@@ -11,7 +11,7 @@ import type { Plugin } from "vite";
  */
 function staticDirIndex(outDir: string): Plugin {
   return {
-    name: "llmbit-static-dir-index",
+    name: "llmbti-static-dir-index",
     configurePreviewServer(server) {
       server.middlewares.use((req, _res, next) => {
         const url = req.url ?? "/";

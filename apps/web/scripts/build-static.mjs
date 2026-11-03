@@ -2,7 +2,7 @@
 // 유형별 정적 HTML 과 OG 이미지를 빌드 타임에 만든다 (SPEC 13장 빌드, M5). 의존성 0.
 //
 //   vite build && node scripts/build-static.mjs            # apps/web 에서. package.json build 가 부른다
-//   node scripts/build-static.mjs --dist dist --site https://llmbit.vercel.app
+//   node scripts/build-static.mjs --dist dist --site https://llmbti.vercel.app
 //
 // 산출물 (dist 기준):
 //   og/{TYPE}.png        16장, 1200×630. 픽셀 데이터가 있으면 캐릭터, 없으면 기질 색 박스에 글자
@@ -22,7 +22,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 /** 모노레포 루트 (apps/web/scripts → ../../..) */
 const REPO_ROOT = resolve(here, "../../..");
 
-export const SITE_URL = "https://llmbit.vercel.app";
+export const SITE_URL = "https://llmbti.vercel.app";
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 
@@ -224,7 +224,7 @@ function drawPlaceholder(cv, type, base, shadow, ox, oy, size) {
   drawText(cv, type, ox + Math.floor((size - w) / 2), oy + Math.floor((size - 7 * s) / 2), s, BG);
 }
 
-/** 유형 하나의 OG. 왼쪽 캐릭터(또는 박스), 오른쪽 기질 라벨, TYPE, 별명 자리 대신 기질 색 줄, 하단 LLMBIT. */
+/** 유형 하나의 OG. 왼쪽 캐릭터(또는 박스), 오른쪽 기질 라벨, TYPE, 별명 자리 대신 기질 색 줄, 하단 LLMBTI. */
 export function renderTypeOg(type, data) {
   const { colors, characters } = data;
   const [bi, si] = TEMPERAMENT_PALETTE[temperamentOf(type)];
@@ -251,7 +251,7 @@ export function renderTypeOg(type, data) {
 
   // 오른쪽
   const left = 560;
-  drawText(cv, "> NPX LLMBIT", left, 118, 4, grey);
+  drawText(cv, "> NPX LLMBTI", left, 118, 4, grey);
   drawText(cv, type, left, 190, 14, base); // 글자 70×98, 4글자 ≈ 322px
   const label = `${temperamentOf(type)} / ${TEMPERAMENT_LABEL[temperamentOf(type)]}`;
   drawText(cv, label, left, 326, 4, white);
@@ -262,7 +262,7 @@ export function renderTypeOg(type, data) {
   drawText(cv, "PROMPTS AND SHELL", left, 460, 4, grey);
 
   // 푸터
-  const host = "LLMBIT.VERCEL.APP";
+  const host = "LLMBTI.VERCEL.APP";
   drawText(cv, host, OG_WIDTH - 72 - textWidth(host, 4), OG_HEIGHT - 72, 4, grey);
   return cv;
 }
@@ -290,11 +290,11 @@ export function renderDefaultOg(data) {
     cv.frame(c.frames[idle] ?? c.frames[0], colors, startX + i * (size + gap), 70, scale);
   });
 
-  const title = "LLMBIT";
+  const title = "LLMBTI";
   drawText(cv, title, Math.floor((OG_WIDTH - textWidth(title, 14)) / 2), 372, 14, white);
-  const sub = "WHAT IS MY LLMBIT?";
+  const sub = "WHAT IS MY LLMBTI?";
   drawText(cv, sub, Math.floor((OG_WIDTH - textWidth(sub, 5)) / 2), 500, 5, grey);
-  const host = "LLMBIT.VERCEL.APP";
+  const host = "LLMBTI.VERCEL.APP";
   drawText(cv, host, OG_WIDTH - 72 - textWidth(host, 4), OG_HEIGHT - 72, 4, grey);
   return cv;
 }
@@ -325,7 +325,7 @@ export function injectMeta(html, { title, description, image, url }) {
   const tags = [
     "<!-- og:start -->",
     `<meta property="og:type" content="website" />`,
-    `<meta property="og:site_name" content="llmbit" />`,
+    `<meta property="og:site_name" content="llmbti" />`,
     `<meta property="og:title" content="${escapeHtml(title)}" />`,
     `<meta property="og:description" content="${escapeHtml(description)}" />`,
     `<meta property="og:image" content="${escapeHtml(image)}" />`,
@@ -344,26 +344,26 @@ export function injectMeta(html, { title, description, image, url }) {
   return out.replace("</head>", `${tags}\n  </head>`);
 }
 
-/** 페이지별 메타. 웹 useDocumentTitle 과 같은 제목 규칙 ("{x} | llmbit"). */
+/** 페이지별 메타. 웹 useDocumentTitle 과 같은 제목 규칙 ("{x} | llmbti"). */
 export function pageMeta(data, siteUrl = SITE_URL) {
   const pages = [
     {
       path: "",
-      title: "llmbit",
+      title: "llmbti",
       description: DEFAULT_DESCRIPTION,
       image: `${siteUrl}/og/default.png`,
       url: `${siteUrl}/`,
     },
     {
       path: "start",
-      title: "테스트 방법 | llmbit",
-      description: "npx llmbit install 한 줄, Claude Code 에서 /llmbit 한 줄. 로그는 기기 밖으로 안 나간다.",
+      title: "테스트 방법 | llmbti",
+      description: "npx llmbti install 한 줄, Claude Code 에서 /llmbti 한 줄. 로그는 기기 밖으로 안 나간다.",
       image: `${siteUrl}/og/default.png`,
       url: `${siteUrl}/start`,
     },
     {
       path: "types",
-      title: "16종 도감 | llmbit",
+      title: "16종 도감 | llmbti",
       description: "개발자 MBTI 16종. 몸 색은 기질, 눈은 E/I 와 T/F, 머리 위 소품은 별명.",
       image: `${siteUrl}/og/default.png`,
       url: `${siteUrl}/types`,
@@ -373,7 +373,7 @@ export function pageMeta(data, siteUrl = SITE_URL) {
     const m = data.typeMeta[t];
     pages.push({
       path: `t/${t}`,
-      title: `${t} ${m.nickname} | llmbit`,
+      title: `${t} ${m.nickname} | llmbti`,
       description: m.tagline,
       image: `${siteUrl}/og/${t}.png`,
       url: `${siteUrl}/t/${t}`,

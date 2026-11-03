@@ -9,7 +9,7 @@ const INDEX = `<!doctype html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <title>llmbit</title>
+    <title>llmbti</title>
     <meta name="description" content="기본 설명" />
   </head>
   <body><div id="root"></div></body>
@@ -24,7 +24,7 @@ function pngSize(buf: Buffer): { w: number; h: number } {
 describe("build-static", () => {
   let dist: string;
   beforeAll(() => {
-    dist = mkdtempSync(join(tmpdir(), "llmbit-static-"));
+    dist = mkdtempSync(join(tmpdir(), "llmbti-static-"));
     writeFileSync(join(dist, "index.html"), INDEX);
     buildStatic({ distDir: dist });
   });
@@ -37,7 +37,7 @@ describe("build-static", () => {
       expect(html).toContain(`<meta property="og:image" content="${SITE_URL}/og/${t}.png" />`);
       expect(html).toContain(`<meta property="og:url" content="${SITE_URL}/t/${t}" />`);
       expect(html).toContain(`<meta name="twitter:card" content="summary_large_image" />`);
-      expect(html).toMatch(new RegExp(`<title>${t} [^<|]+ \\| llmbit</title>`));
+      expect(html).toMatch(new RegExp(`<title>${t} [^<|]+ \\| llmbti</title>`));
       expect(html).toContain(`<meta property="og:title" content="${t} `);
       expect(html).not.toContain('content="기본 설명"');
       // 원본 골격은 그대로
@@ -56,12 +56,12 @@ describe("build-static", () => {
 
   it("start, types, 루트는 자기 제목과 default.png", () => {
     const start = readFileSync(join(dist, "start", "index.html"), "utf8");
-    expect(start).toContain("<title>테스트 방법 | llmbit</title>");
+    expect(start).toContain("<title>테스트 방법 | llmbti</title>");
     expect(start).toContain(`content="${SITE_URL}/og/default.png"`);
     const types = readFileSync(join(dist, "types", "index.html"), "utf8");
-    expect(types).toContain("<title>16종 도감 | llmbit</title>");
+    expect(types).toContain("<title>16종 도감 | llmbti</title>");
     const root = readFileSync(join(dist, "index.html"), "utf8");
-    expect(root).toContain("<title>llmbit</title>");
+    expect(root).toContain("<title>llmbti</title>");
     expect(root).toContain(`content="${SITE_URL}/og/default.png"`);
   });
 
