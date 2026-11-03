@@ -10,8 +10,8 @@ describe("badgeLabels", () => {
     expect(chip.value).toBe("12번");
   });
 
-  it("formats ratio stats as percent", () => {
-    const chip = badgeChip("nightOwl", { lateNightRatio: 0.4 });
+  it("shows nightRatio as a percent integer", () => {
+    const chip = badgeChip("nightOwl", { nightRatio: 40 });
     expect(chip.value).toBe("40%");
   });
 
