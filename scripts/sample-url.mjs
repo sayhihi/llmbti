@@ -35,7 +35,7 @@ const samples = [
     type: "INTJ",
     scores: { EI: -62, SN: -48, TF: 55, JP: 71 },
     badges: ["planner", "testRunner", "nightOwl"],
-    stats: { lateNightRatio: 0.18, longestSessionTurns: 41 },
+    stats: { nightRatio: 18, longestSession: 41 },
     copy: {
       lang: "ko",
       nickname: "리베이스 장인",
@@ -58,7 +58,7 @@ const samples = [
     type: "ENFP",
     scores: { EI: 58, SN: -44, TF: -37, JP: -80 },
     badges: ["againAgain", "politeOne", "forcePusher", "someFutureBadge"],
-    stats: { againCount: 38, thanksCount: 27, forceCount: 12 },
+    stats: { redoCount: 38, thanksCount: 27, forceCount: 12 },
     copy: {
       lang: "ko",
       nickname: "브랜치 방랑자",
