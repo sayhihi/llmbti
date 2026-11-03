@@ -105,31 +105,90 @@ export const MAX_BADGES = 6;
 /**
  * analyze가 집계하는 재미용 통계 (SPEC 6장 "재미용 통계").
  * 축 점수 계산에는 쓰지 않고 문구와 배지에만 쓴다.
- * 분석 엔진 에이전트가 시그널을 추가하면서 확장한다. 모든 필드는 집계값이며 원문은 담지 않는다.
+ *
+ * 키 이름은 `cli/src/templates/evidence.ko.json`의 슬롯 키와 1:1이다
+ * (forceCount, rmrfCount, nightRatio, redoCount, thanksCount, topCommand, shortestPrompt,
+ * avgTurns, longestSession, promptCount, shellCount). 바꾸려면 템플릿도 같이 바꾼다.
+ * 모든 필드는 집계값이며, 문자열 필드(shortestPrompt, topCommand, mostRepeatedPrompt)는 redact를 통과한 값이다.
  */
 export interface Stats {
-  /** 가장 활발한 시간대 (0..23) */
+  /** 분석 기간 안의 사람 프롬프트 수 */
+  promptCount: number;
+  /** 분석 기간 안의 셸 명령 수 (zsh + bash) */
+  shellCount: number;
+  /** Claude 세션 수 (사람 프롬프트가 1개 이상인 세션만) */
+  sessionCount: number;
+  /** 세션당 평균 사람 턴 수 (소수 1자리) */
+  avgTurns: number;
+  /** 최장 세션 길이 (사람 턴 수) */
+  longestSession: number;
+  /** 가장 활발한 시간대 (0..23). 활동이 없으면 생략 */
   peakHour?: number;
-  /** 새벽 2~5시 활동 비율 (0..1) */
-  lateNightRatio?: number;
-  forceCount?: number;
-  rmRfCount?: number;
-  sudoBangCount?: number;
+  /** 새벽 2~5시 활동 비율, 퍼센트 정수 0..100 */
+  nightRatio: number;
+  /** `--force`/`-f` push, `reset --hard` 류 강제 명령 횟수 (셸 + Claude Bash 툴) */
+  forceCount: number;
+  /** `rm -rf` 횟수 */
+  rmrfCount: number;
+  /** `sudo !!` 횟수 */
+  sudoBangCount: number;
+  /** 많이 친 셸 명령 1위 (인자 제외). 셸 히스토리가 없으면 생략 */
+  topCommand?: string;
   /** 많이 친 셸 명령 top 5 (인자 제외) */
-  topCommands?: Array<{ command: string; count: number }>;
+  topCommands: Array<{ command: string; count: number }>;
   /** 가장 짧은 프롬프트 (redact 통과, ≤ 120자) */
   shortestPrompt?: string;
-  /** 가장 많이 반복한 프롬프트 (redact 통과, ≤ 120자) */
+  /** 가장 많이 반복한 프롬프트 (redact 통과, ≤ 120자). 2회 이상 반복된 게 없으면 생략 */
   mostRepeatedPrompt?: { text: string; count: number };
-  againCount?: number;
-  thanksCount?: number;
-  /** 최장 세션 길이 (사람 턴 수) */
-  longestSessionTurns?: number;
-  /** 가장 많이 쓴 Claude 툴 */
+  /** "다시"류 방향 전환 프롬프트 횟수 */
+  redoCount: number;
+  /** "고마워"류 감사 표현 프롬프트 횟수 */
+  thanksCount: number;
+  /** 인터럽트 횟수 (중단 이벤트 + "잠깐/아니/stop"으로 시작하는 프롬프트) */
+  interruptCount: number;
+  /** 가장 많이 쓴 Claude 툴. 세션 로그가 없으면 생략 */
   topTool?: { name: string; count: number };
-  /** 파싱 중 건너뛴 깨진 줄 수 */
-  skippedLines?: number;
+  /** 파싱 중 건너뛴 깨진 줄 수 (모든 소스 합) */
+  skippedLines: number;
 }
+
+/**
+ * 4축 점수의 재료가 되는 정규화 전 시그널 (SPEC 6장 표). 비율은 0..1.
+ * 셸 히스토리나 세션 로그가 없어서 계산할 수 없는 시그널은 undefined로 두고, scoring이 가중치를 재정규화한다.
+ */
+export interface Signals {
+  avgTurns?: number;
+  questionRatio?: number;
+  avgPromptLength?: number;
+  interruptRatio?: number;
+  concreteRatio?: number;
+  abstractRatio?: number;
+  errorPasteRatio?: number;
+  emotionRatio?: number;
+  shortImperativeRatio?: number;
+  planRatio?: number;
+  testRatio?: number;
+  forceRatio?: number;
+  redirectRatio?: number;
+  lowQualityCommitRatio?: number;
+}
+
+export type SignalKey = keyof Signals;
+
+/** 통계 배지 키 (SPEC 9장 `badges`). 선정 기준은 cli/src/scoring.constants.ts BADGE_RULES. */
+export const BADGE_KEYS = [
+  "nightOwl",
+  "forcePusher",
+  "rmrfSurvivor",
+  "sudoBanger",
+  "thankYouBot",
+  "redoLoop",
+  "marathonSession",
+  "oneWordWonder",
+  "lowSample",
+] as const;
+
+export type BadgeKey = (typeof BADGE_KEYS)[number];
 
 /** 어떤 데이터 소스를 읽었는지. 셸 히스토리가 없으면 해당 시그널 가중치를 재정규화한다. */
 export interface SourceAvailability {
@@ -141,7 +200,7 @@ export interface SourceAvailability {
 
 /**
  * `llmbit analyze --json`의 출력. 스킬과 render가 읽는다.
- * M0 초안: `insufficient`만 확정. 나머지는 분석 엔진 에이전트가 채운다.
+ * `insufficient: true`여도 scores/type은 채워져 있지만 신뢰하지 않는다 (SPEC 5장 최소 표본).
  */
 export interface AnalysisOutput {
   v: 1;
@@ -154,8 +213,10 @@ export interface AnalysisOutput {
   type: MbtiType;
   /** |점수| < 5 인 경계형 축 */
   borderline: Axis[];
-  badges: string[];
+  badges: BadgeKey[];
   stats: Stats;
+  /** 점수 계산에 들어간 시그널 (디버그·문구용). 계산 불가한 건 생략 */
+  signals: Signals;
   /** redact 통과한 샘플 프롬프트, 최대 20개, 각 ≤ 120자 */
   samples: string[];
 }

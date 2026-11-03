@@ -1,0 +1,63 @@
+{"display":"","pastedContents":{},"timestamp":1792912800000,"project":"/Users/tester/work/app"}
+{"display":"/Users/tester/work/app/.env 읽어서 DB_PASSWORD=hunter2 바꿔","pastedContents":{},"timestamp":1793081400000,"project":"/Users/tester/work/app"}
+{"display":"010-1234-5678 로 문자 보내는 거 어떻게 해?","pastedContents":{},"timestamp":1792912200000,"project":"/Users/tester/work/app"}
+{"display":"ghp_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef123456 이거 유효해?","pastedContents":{},"timestamp":1793299200000,"project":"/Users/tester/work/app"}
+{"display":"https://admin:secret123@db.example.com:5432/app?sslmode=require 연결 왜 안 돼?","pastedContents":{},"timestamp":1792998600000,"project":"/Users/tester/work/app"}
+{"display":"please make it better 🙏","pastedContents":{},"timestamp":1792310400098,"project":"/Users/tester/work/app"}
+{"display":"please make it better 🙏","pastedContents":{},"timestamp":1792991880227,"project":"/Users/tester/work/app"}
+{"display":"stop","pastedContents":{"1":{"id":1,"type":"text","content":"TypeError: Cannot read properties of undefined (reading 'map')\n    at render (/Users/tester/work/app/src/list.tsx:42:17)"}},"timestamp":1792861740201,"project":"/Users/tester/work/app"}
+{"display":"stop","pastedContents":{},"timestamp":1792177200290,"project":"/Users/tester/work/app"}
+{"display":"tester@example.com 으로 메일 보내는 코드 짜줘","pastedContents":{},"timestamp":1793167800000,"project":"/Users/tester/work/app"}
+{"display":"ㅋㅋㅋ 이게 되네 감사합니다","pastedContents":{},"timestamp":1791962820006,"project":"/Users/tester/work/app"}
+{"display":"ㅋㅋㅋ 이게 되네 감사합니다","pastedContents":{},"timestamp":1792520280234,"project":"/Users/tester/work/app"}
+{"display":"ㅋㅋㅋ 이게 되네 감사합니다","pastedContents":{},"timestamp":1793174400007,"project":"/Users/tester/work/app"}
+{"display":"고마워!! 최고다 ㅋㅋ","pastedContents":{},"timestamp":1792000800123,"project":"/Users/tester/work/app"}
+{"display":"고마워!! 최고다 ㅋㅋ","pastedContents":{},"timestamp":1792696680239,"project":"/Users/tester/work/app"}
+{"display":"고마워!! 최고다 ㅋㅋ","pastedContents":{},"timestamp":1793340540096,"project":"/Users/tester/work/app"}
+{"display":"그게 아니라 구조 자체를 바꾸고 싶은데","pastedContents":{},"timestamp":1792311480273,"project":"/Users/tester/work/app"}
+{"display":"그게 아니라 구조 자체를 바꾸고 싶은데","pastedContents":{},"timestamp":1792861200140,"project":"/Users/tester/work/app"}
+{"display":"그냥 다 지우고 다시 만들자","pastedContents":{"1":{"id":1,"type":"text","content":"TypeError: Cannot read properties of undefined (reading 'map')\n    at render (/Users/tester/work/app/src/list.tsx:42:17)"}},"timestamp":1792343340070,"project":"/Users/tester/work/app"}
+{"display":"그냥 다 지우고 다시 만들자","pastedContents":{},"timestamp":1792991340146,"project":"/Users/tester/work/app"}
+{"display":"나중에 하자 일단 되게만 해줘 ㅎㅎ","pastedContents":{},"timestamp":1792177740247,"project":"/Users/tester/work/app"}
+{"display":"나중에 하자 일단 되게만 해줘 ㅎㅎ","pastedContents":{},"timestamp":1792825200300,"project":"/Users/tester/work/app"}
+{"display":"내 토큰 sk-abcdefghijklmnopqrstuvwxyz123456 으로 호출해봐","pastedContents":{},"timestamp":1793298600000,"project":"/Users/tester/work/app"}
+{"display":"다시","pastedContents":{},"timestamp":1791961200209,"project":"/Users/tester/work/app"}
+{"display":"다시","pastedContents":{},"timestamp":1792660140116,"project":"/Users/tester/work/app"}
+{"display":"다시","pastedContents":{},"timestamp":1793214540158,"project":"/Users/tester/work/app"}
+{"display":"디자인을 좀 더 추상화하면 어떨까?","pastedContents":{},"timestamp":1792477620248,"project":"/Users/tester/work/app"}
+{"display":"디자인을 좀 더 추상화하면 어떨까?","pastedContents":{},"timestamp":1793038680300,"project":"/Users/tester/work/app"}
+{"display":"리팩토링 하면 더 나아질까?","pastedContents":{},"timestamp":1791962280237,"project":"/Users/tester/work/app"}
+{"display":"리팩토링 하면 더 나아질까?","pastedContents":{},"timestamp":1792519740288,"project":"/Users/tester/work/app"}
+{"display":"리팩토링 하면 더 나아질까?","pastedContents":{},"timestamp":1793215620252,"project":"/Users/tester/work/app"}
+{"display":"미안 내가 잘못 말했어. 다시 설명할게","pastedContents":{},"timestamp":1792477080198,"project":"/Users/tester/work/app"}
+{"display":"미안 내가 잘못 말했어. 다시 설명할게","pastedContents":{},"timestamp":1793038140030,"project":"/Users/tester/work/app"}
+{"display":"아니 그게 아니라 다시 해줘 ㅠㅠ","pastedContents":{},"timestamp":1792127340066,"project":"/Users/tester/work/app"}
+{"display":"아니 그게 아니라 다시 해줘 ㅠㅠ","pastedContents":{},"timestamp":1792696140062,"project":"/Users/tester/work/app"}
+{"display":"아니 그게 아니라 다시 해줘 ㅠㅠ","pastedContents":{},"timestamp":1793340000194,"project":"/Users/tester/work/app"}
+{"display":"아니 왜 테스트가 깨지지?","pastedContents":{},"timestamp":1792476540278,"project":"/Users/tester/work/app"}
+{"display":"아니 왜 테스트가 깨지지?","pastedContents":{},"timestamp":1793037600067,"project":"/Users/tester/work/app"}
+{"display":"아키텍처 설계부터 다시 생각해보자. 어떤 패턴이 better 할까?","pastedContents":{},"timestamp":1792001340245,"project":"/Users/tester/work/app"}
+{"display":"아키텍처 설계부터 다시 생각해보자. 어떤 패턴이 better 할까?","pastedContents":{},"timestamp":1792697220052,"project":"/Users/tester/work/app"}
+{"display":"아키텍처 설계부터 다시 생각해보자. 어떤 패턴이 better 할까?","pastedContents":{},"timestamp":1793341080102,"project":"/Users/tester/work/app"}
+{"display":"오 대박 고마워","pastedContents":{},"timestamp":1792310940160,"project":"/Users/tester/work/app"}
+{"display":"오 대박 고마워","pastedContents":{},"timestamp":1792992420021,"project":"/Users/tester/work/app"}
+{"display":"음 이거 배포해도 될까?","pastedContents":{},"timestamp":1792476000273,"project":"/Users/tester/work/app"}
+{"display":"음 이거 배포해도 될까?","pastedContents":{},"timestamp":1793174940217,"project":"/Users/tester/work/app"}
+{"display":"이 접근이 맞나?","pastedContents":{},"timestamp":1792342800217,"project":"/Users/tester/work/app"}
+{"display":"이 접근이 맞나?","pastedContents":{},"timestamp":1792990800256,"project":"/Users/tester/work/app"}
+{"display":"이거 설계 괜찮아?","pastedContents":{},"timestamp":1792178280198,"project":"/Users/tester/work/app"}
+{"display":"이거 설계 괜찮아?","pastedContents":{},"timestamp":1792825740068,"project":"/Users/tester/work/app"}
+{"display":"이거 왜 안 돼?","pastedContents":{},"timestamp":1792178820100,"project":"/Users/tester/work/app"}
+{"display":"이거 왜 안 돼?","pastedContents":{},"timestamp":1792826280258,"project":"/Users/tester/work/app"}
+{"display":"이거 왜 안 돼?","pastedContents":{},"timestamp":1793379600032,"project":"/Users/tester/work/app"}
+{"display":"잠깐 멈춰봐","pastedContents":{},"timestamp":1792001880053,"project":"/Users/tester/work/app"}
+{"display":"잠깐 멈춰봐","pastedContents":{},"timestamp":1792659600219,"project":"/Users/tester/work/app"}
+{"display":"잠깐 멈춰봐","pastedContents":{},"timestamp":1793214000069,"project":"/Users/tester/work/app"}
+{"display":"전체 구조를 좀 더 깔끔하게 개선할 수 없을까?","pastedContents":{"1":{"id":1,"type":"text","content":"TypeError: Cannot read properties of undefined (reading 'map')\n    at render (/Users/tester/work/app/src/list.tsx:42:17)"}},"timestamp":1793380140025,"project":"/Users/tester/work/app"}
+{"display":"전체 구조를 좀 더 깔끔하게 개선할 수 없을까?","pastedContents":{},"timestamp":1792126800277,"project":"/Users/tester/work/app"}
+{"display":"전체 구조를 좀 더 깔끔하게 개선할 수 없을까?","pastedContents":{},"timestamp":1792695600074,"project":"/Users/tester/work/app"}
+{"display":"취소하고 원래대로 되돌려","pastedContents":{},"timestamp":1791961740273,"project":"/Users/tester/work/app"}
+{"display":"취소하고 원래대로 되돌려","pastedContents":{},"timestamp":1792519200157,"project":"/Users/tester/work/app"}
+{"display":"취소하고 원래대로 되돌려","pastedContents":{},"timestamp":1793215080291,"project":"/Users/tester/work/app"}
+{"display":123,"timestamp":1792915200000}
+{broken
