@@ -40,6 +40,7 @@ function colorAt(row: string | undefined, x: number, palette: Palette): string |
  */
 export function renderFrameAnsi(frame: PixelFrame, palette: Palette, mode: ColorMode): string[] {
   if (mode === "none") return [];
+  if (mode === "mono") return renderFrameMono(frame, palette);
 
   const width = frame.reduce((m, r) => Math.max(m, r.length), 0);
   const lines: string[] = [];
@@ -99,4 +100,22 @@ export function renderCharacterAnsi(character: PixelCharacter, options: RenderOp
   const frame = character.frames[idx] ?? character.frames[0];
   if (!frame) return [];
   return renderFrameAnsi(frame, options.palette ?? PALETTE, options.mode);
+}
+
+/** 색 없이 모양만. 위만 있으면 ▀, 아래만 있으면 ▄, 둘 다 있으면 █, 둘 다 없으면 공백. ANSI 코드 없음. */
+export function renderFrameMono(frame: PixelFrame, palette: Palette): string[] {
+  const width = frame.reduce((m, r) => Math.max(m, r.length), 0);
+  const lines: string[] = [];
+  for (let y = 0; y < frame.length; y += 2) {
+    const top = frame[y];
+    const bottom = frame[y + 1];
+    let out = "";
+    for (let x = 0; x < width; x++) {
+      const t = colorAt(top, x, palette) !== null;
+      const b = colorAt(bottom, x, palette) !== null;
+      out += t && b ? "█" : t ? "▀" : b ? "▄" : " ";
+    }
+    lines.push(out.replace(/ +$/, ""));
+  }
+  return lines;
 }

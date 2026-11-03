@@ -13,8 +13,9 @@ export function Home() {
       <section className="hero">
         <h1 className="hero-title">나의 LLM MBTI는 무엇일까?</h1>
         <p className="hero-sub">
-          Claude Code에 일을 시키는 말투와 셸 히스토리로 보는 개발자 MBTI. 점수는 스크립트가
-          계산하고 디스는 Claude가 쓴다.
+          Claude Code에 일을 시키는 말투와 셸 히스토리로 보는 개발자 MBTI.
+          <br />
+          점수는 스크립트가 계산하고 디스는 Claude가 쓴다.
         </p>
         <TypingLine />
         <div className="hero-actions">

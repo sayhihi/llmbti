@@ -6,9 +6,9 @@
 
 import { hexToRgb } from "@llmbti/core";
 
-export type ColorMode = "truecolor" | "256" | "none";
+export type ColorMode = "truecolor" | "256" | "mono" | "none";
 
-export const COLOR_MODES: readonly ColorMode[] = ["truecolor", "256", "none"];
+export const COLOR_MODES: readonly ColorMode[] = ["truecolor", "256", "mono", "none"];
 
 export function isColorMode(value: unknown): value is ColorMode {
   return typeof value === "string" && (COLOR_MODES as readonly string[]).includes(value);
@@ -36,8 +36,9 @@ export function detectColorMode(opts: DetectColorModeOptions = {}): ColorMode {
   const argv = opts.argv ?? process.argv;
 
   if (argv.includes("--no-color")) return "none";
-  if (env.NO_COLOR !== undefined && env.NO_COLOR !== "") return "none";
-  if (!isTTY) return "none";
+  // 색이 없어도 모양은 보이게. 파이프(Claude Code 툴 출력 포함)와 NO_COLOR 는 흑백 블록으로 찍는다.
+  if (env.NO_COLOR !== undefined && env.NO_COLOR !== "") return "mono";
+  if (!isTTY) return "mono";
 
   const colorterm = (env.COLORTERM ?? "").toLowerCase();
   if (colorterm === "truecolor" || colorterm === "24bit") return "truecolor";
@@ -46,7 +47,7 @@ export function detectColorMode(opts: DetectColorModeOptions = {}): ColorMode {
   if (term.includes("256color")) return "256";
   if (TERM_256_RE.test(term)) return "256";
 
-  return "none";
+  return "mono";
 }
 
 /** 256색을 기대해도 되는 TERM 계열. `dumb`이나 빈 TERM은 여기 안 걸린다. */
@@ -113,7 +114,7 @@ export function bgCode(mode: ColorMode, hex: string): string {
 }
 
 function sgr(mode: ColorMode, hex: string, layer: 38 | 48): string {
-  if (mode === "none") return "";
+  if (mode === "none" || mode === "mono") return "";
   const rgb = hexToRgb(hex);
   if (!rgb) return "";
   const [r, g, b] = rgb;

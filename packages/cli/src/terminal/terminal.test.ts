@@ -26,26 +26,26 @@ describe("detectColorMode", () => {
     ["TERM=rxvt-unicode", { ...tty, env: { TERM: "rxvt-unicode" } }, "256"],
     ["TERM=vt100", { ...tty, env: { TERM: "vt100" } }, "256"],
     ["TERM=linux", { ...tty, env: { TERM: "linux" } }, "256"],
-    ["TERM=dumb", { ...tty, env: { TERM: "dumb" } }, "none"],
-    ["TERM empty string", { ...tty, env: { TERM: "" } }, "none"],
-    ["no TERM, no COLORTERM", { ...tty, env: {} }, "none"],
-    ["TERM=unknown-thing", { ...tty, env: { TERM: "cygwin" } }, "none"],
+    ["TERM=dumb", { ...tty, env: { TERM: "dumb" } }, "mono"],
+    ["TERM empty string", { ...tty, env: { TERM: "" } }, "mono"],
+    ["no TERM, no COLORTERM", { ...tty, env: {} }, "mono"],
+    ["TERM=unknown-thing", { ...tty, env: { TERM: "cygwin" } }, "mono"],
     [
       "TERM=dumb but NO_COLOR rules still first",
       { ...tty, env: { TERM: "xterm", NO_COLOR: "1" } },
-      "none",
+      "mono",
     ],
     [
       "NO_COLOR=1 wins over truecolor",
       { ...tty, env: { NO_COLOR: "1", COLORTERM: "truecolor" } },
-      "none",
+      "mono",
     ],
     [
       "NO_COLOR empty string is ignored",
       { ...tty, env: { NO_COLOR: "", COLORTERM: "truecolor" } },
       "truecolor",
     ],
-    ["not a TTY (pipe)", { isTTY: false, argv: [], env: { COLORTERM: "truecolor" } }, "none"],
+    ["not a TTY (pipe)", { isTTY: false, argv: [], env: { COLORTERM: "truecolor" } }, "mono"],
     [
       "--no-color flag",
       { isTTY: true, argv: ["node", "llmbti", "--no-color"], env: { COLORTERM: "truecolor" } },
@@ -100,6 +100,13 @@ describe("renderFrameAnsi", () => {
 
   it("none mode returns no lines", () => {
     expect(renderFrameAnsi(mini, palette, "none")).toEqual([]);
+  });
+
+  it("mono 는 ANSI 없이 ▀▄█ 로 모양만 찍는다", () => {
+    const lines = renderFrameAnsi(mini, palette, "mono");
+    expect(lines.join("")).not.toContain("\x1b[");
+    expect(lines.every((l) => /^[▀▄█ ]*$/.test(l))).toBe(true);
+    expect(lines.some((l) => l.length > 0)).toBe(true);
   });
 
   it("resets before a transparent gap and only emits codes on change", () => {
