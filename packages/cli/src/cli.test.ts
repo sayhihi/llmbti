@@ -240,7 +240,7 @@ describe("llmbti run (라이트 모드)", () => {
     expect(nlines[16]).toBe("");
     expect(nlines[17]).toMatch(/^ENFP {2}/);
     for (const l of nlines.slice(17))
-      if (!l.startsWith("http")) expect(l.length).toBeLessThanOrEqual(60);
+      if (!/^(🔗 )?http/.test(l)) expect(l.length).toBeLessThanOrEqual(60);
   });
 });
 
