@@ -1,5 +1,7 @@
 import { AXES } from "@llmbti/core";
-import type { Axis, Scores } from "@llmbti/core";
+import type { Axis, ResultPayload, Scores } from "@llmbti/core";
+
+import { signalLine } from "../data/signalLabels";
 
 /** |점수| < 5 이면 경계형 (SPEC 6장 동점 처리) */
 export const BORDERLINE_THRESHOLD = 5;
@@ -19,23 +21,41 @@ interface Props {
   scores: Scores;
   /** 랜딩 카드처럼 작게 */
   compact?: boolean;
+  /** 축별 판정 근거 (payload.why). compact 가 아닐 때만 보여 준다 */
+  why?: ResultPayload["why"];
 }
 
 /**
  * 4축 게이지. 가운데가 0, 왼쪽 끝이 +100(E, S, T, J), 오른쪽 끝이 -100.
  * 양수면 앞 글자 쪽으로 채운다. 경계형이면 마커에 점선과 "경계" 표시.
  */
-export function AxisGauges({ scores, compact = false }: Props) {
+export function AxisGauges({ scores, compact = false, why }: Props) {
   return (
     <div className={compact ? "gauges gauges-compact" : "gauges"}>
       {AXES.map((axis) => (
-        <Gauge key={axis} axis={axis} score={clamp(scores[axis])} compact={compact} />
+        <Gauge
+          key={axis}
+          axis={axis}
+          score={clamp(scores[axis])}
+          compact={compact}
+          reasons={compact ? [] : (why?.[axis] ?? [])}
+        />
       ))}
     </div>
   );
 }
 
-function Gauge({ axis, score, compact }: { axis: Axis; score: number; compact: boolean }) {
+function Gauge({
+  axis,
+  score,
+  compact,
+  reasons,
+}: {
+  axis: Axis;
+  score: number;
+  compact: boolean;
+  reasons: [string, number][];
+}) {
   const label = AXIS_LABEL[axis];
   const border = isBorderline(score);
   const leftWins = score >= 0;
@@ -77,6 +97,11 @@ function Gauge({ axis, score, compact }: { axis: Axis; score: number; compact: b
         <span className="px gauge-letter">{label.right}</span>
         {!compact && <span className="gauge-ko">{label.rightKo}</span>}
       </div>
+      {reasons.length > 0 && (
+        <p className="gauge-why dim small">
+          {reasons.map(([k, v]) => signalLine(k, v)).join(", ")}
+        </p>
+      )}
     </div>
   );
 }

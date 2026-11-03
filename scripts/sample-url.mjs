@@ -34,8 +34,9 @@ const samples = [
     v: 1,
     type: "INTJ",
     scores: { EI: -62, SN: -48, TF: 55, JP: 71 },
-    badges: ["planner", "testRunner", "nightOwl"],
+    badges: ["nightOwl", "marathonSession"],
     stats: { nightRatio: 18, longestSession: 41 },
+    why: { EI: [["avgPromptLength", 212], ["questionRatio", 0.08]], SN: [["abstractRatio", 0.31]], TF: [["shortImperativeRatio", 0.44]], JP: [["planRatio", 0.27], ["testRatio", 0.12]] },
     copy: {
       lang: "ko",
       nickname: "리베이스 장인",
@@ -57,7 +58,7 @@ const samples = [
     v: 1,
     type: "ENFP",
     scores: { EI: 58, SN: -44, TF: -37, JP: -80 },
-    badges: ["againAgain", "politeOne", "forcePusher", "someFutureBadge"],
+    badges: ["redoLoop", "thankYouBot", "forcePusher", "someFutureBadge"],
     stats: { redoCount: 38, thanksCount: 27, forceCount: 12 },
     copy: {
       lang: "ko",
@@ -76,7 +77,7 @@ const samples = [
     v: 1,
     type: "ISTP",
     scores: { EI: -40, SN: 35, TF: 66, JP: -3 },
-    badges: ["shortPrompter", "errorPaster"],
+    badges: ["oneWordWonder"],
     stats: {},
     copy: {
       lang: "ko",

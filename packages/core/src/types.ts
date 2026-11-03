@@ -97,6 +97,8 @@ export type ResultPayload = {
   mode: ResultMode;
   periodDays: number;
   sampleSize: { prompts: number; shell: number };
+  /** 축마다 판정에 가장 크게 기여한 시그널 최대 2개: [키, 원래 값]. 비율은 0..1. 웹이 "근거"로 보여 준다. */
+  why?: Partial<Record<Axis, [SignalKey, number][]>>;
 };
 
 export const PAYLOAD_VERSION = 1 as const;

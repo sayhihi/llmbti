@@ -54,7 +54,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
           <span className="px section-eyebrow">// axes</span>
           4축 점수
         </h2>
-        <AxisGauges scores={scores} />
+        <AxisGauges scores={scores} why={payload.why} />
         {borderline.length > 0 && (
           <p className="dim small">
             {borderline.join(", ")} 축은 5점 안쪽이라 경계형이다. 오늘 기분 따라 반대쪽으로 넘어갈

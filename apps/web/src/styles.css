@@ -959,3 +959,10 @@ h3 {
 .result {
   display: contents;
 }
+
+/* 축 판정 근거 한 줄 (payload.why) */
+.gauge-why {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  text-align: center;
+}

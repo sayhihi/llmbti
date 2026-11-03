@@ -9,7 +9,6 @@ export function TryItCta({ title = "나도 해보기" }: { title?: string }) {
   return (
     <section className="cta card">
       <h2 className="section-title">{title}</h2>
-      <p className="dim">터미널에서 한 줄, Claude Code에서 한 줄. 로그는 기기 밖으로 안 나간다.</p>
       <CommandLine command={INSTALL_COMMAND} />
       <Link to="/start" className="btn btn-primary btn-wide">
         테스트 방법 보기

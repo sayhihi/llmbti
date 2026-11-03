@@ -5,6 +5,10 @@
  * 배지 → 통계 키 대응은 apps/web/src/data/badgeLabels.ts와 같다.
  */
 
+import { AXES } from "@llmbti/core";
+import type { SignalKey, Signals } from "@llmbti/core";
+import { normalizeSignal } from "./scoring";
+import { SIGNALS } from "./scoring.constants";
 import {
   MAX_BADGES,
   PAYLOAD_VERSION,
@@ -52,6 +56,24 @@ export function selectPayloadStats(
   return out;
 }
 
+/** 축마다 |weight * sign * norm| 이 큰 시그널 2개. 값은 소수 셋째 자리까지. */
+export function selectWhy(signals: Signals): NonNullable<ResultPayload["why"]> {
+  const out: NonNullable<ResultPayload["why"]> = {};
+  for (const axis of AXES) {
+    const rows: { key: SignalKey; value: number; weight: number }[] = [];
+    for (const key of Object.keys(SIGNALS) as SignalKey[]) {
+      const spec = SIGNALS[key];
+      const value = signals[key];
+      if (spec.axis !== axis || typeof value !== "number" || !Number.isFinite(value)) continue;
+      rows.push({ key, value, weight: Math.abs(spec.weight * normalizeSignal(key, value)) });
+    }
+    rows.sort((a, b) => b.weight - a.weight);
+    const top = rows.slice(0, 2).map((r): [SignalKey, number] => [r.key, Math.round(r.value * 1000) / 1000]);
+    if (top.length > 0) out[axis] = top;
+  }
+  return out;
+}
+
 export function buildPayload(
   analysis: AnalysisOutput,
   copy: CopyJson,
@@ -68,6 +90,7 @@ export function buildPayload(
     mode,
     periodDays: analysis.periodDays,
     sampleSize: analysis.sampleSize,
+    why: selectWhy(analysis.signals),
   };
 }
 

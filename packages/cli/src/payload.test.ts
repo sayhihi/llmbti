@@ -96,3 +96,21 @@ describe("resolveBaseUrl", () => {
     expect(resolveBaseUrl(true, {})).toBe(DEFAULT_BASE_URL);
   });
 });
+
+describe("selectWhy", () => {
+  it("축마다 기여가 큰 시그널 최대 2개를 [키, 값] 으로 싣는다", async () => {
+    const { selectWhy } = await import("./payload");
+    const why = selectWhy({
+      avgTurns: 30,
+      questionRatio: 0.26,
+      avgPromptLength: 121,
+      interruptRatio: 0.4,
+      concreteRatio: 0.9,
+      planRatio: 0.1,
+    });
+    expect(why.EI?.map(([k]) => k)).toEqual(["avgTurns", "interruptRatio"]);
+    expect(why.SN).toEqual([["concreteRatio", 0.9]]);
+    expect(why.TF).toBeUndefined();
+    expect(why.JP).toEqual([["planRatio", 0.1]]);
+  });
+});
