@@ -1,0 +1,16 @@
+{
+  "type": "ENTP",
+  "nickname": "레거시만 보면 불 지르는 사람",
+  "roast": [
+    "구조, 설계, 리팩터가 프롬프트 절반을 차지한다. 고치면 되는 버그를 보고 \"이거 다 갈아엎으면 되는데\"로 시작한 게 몇 번인지는 본인이 더 잘 안다. rm -rf {rmrfCount}번도 그 연장선이다.",
+    "다시를 {redoCount}번 쳤다. 아이디어가 바뀐 게 아니라 아이디어 위에 아이디어를 쌓은 거다. Claude는 그걸 리팩터라고 부르기로 했다.",
+    "세션당 평균 {avgTurns}턴 동안 질문이 멈추지 않는다. 답을 들으려는 게 아니라 다음 반박을 준비하는 턴이다. 불은 잘 지르는데 끄는 건 다른 사람이 한다."
+  ],
+  "commitMessage": [
+    "refactor: rewrite everything, trust me",
+    "feat: delete legacy, add new legacy",
+    "chore: it was broken anyway",
+    "fix: well actually",
+    "refactor: v3 of the v2 rewrite"
+  ]
+}

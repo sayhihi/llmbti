@@ -1,0 +1,16 @@
+{
+  "type": "ENTJ",
+  "nickname": "Claude한테도 마감 주는 사령관",
+  "roast": [
+    "세션당 평균 {avgTurns}턴. 짧게 끊어서 시키고 바로 다음 작업을 던진다. Claude 입장에선 스탠드업이 하루 종일 이어지는 느낌이다.",
+    "프롬프트에 계획, 단계, plan이 유독 많다. 좋은데, 계획을 세우라고 시키고 그 계획을 다시 고쳐 쓴 게 {redoCount}번이다. 사령관이 둘이면 전쟁이 안 끝난다.",
+    "테스트는 돌리고 머지는 오늘 안에 한다. 대신 제일 짧은 프롬프트가 \"{shortestPrompt}\"다. 사람한테도 그렇게 말하는지 궁금하다."
+  ],
+  "commitMessage": [
+    "feat: ship it before standup",
+    "chore: move all tickets to done",
+    "fix: deadline was yesterday",
+    "refactor: delegate to Claude",
+    "feat: close sprint 14, open sprint 15"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "ENFJ",
+  "nickname": "LGTM 전에 코멘트 열 줄 멘토",
+  "roast": [
+    "고마워 {thanksCount}번. Claude한테도 리뷰 코멘트 달듯이 말한다. 고쳐 한 마디면 될 걸 왜 고쳐야 하는지까지 설명해서 세션이 길어진다.",
+    "세션당 평균 {avgTurns}턴. 그중 절반은 Claude가 한 일에 피드백을 주는 턴이다. Claude는 성장했는데 PR은 아직 열려 있다.",
+    "제일 짧은 프롬프트가 \"{shortestPrompt}\"다. 이 사람 기준으로 짧은 거다. 남들은 이걸 리뷰 코멘트 하나라고 부른다."
+  ],
+  "commitMessage": [
+    "review: LGTM with 14 comments",
+    "chore: approve, but let's talk",
+    "fix: addressed review, round 3",
+    "docs: how to write a good PR, v2",
+    "feat: mentoring Claude"
+  ]
+}

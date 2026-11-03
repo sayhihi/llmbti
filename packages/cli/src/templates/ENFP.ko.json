@@ -1,0 +1,16 @@
+{
+  "type": "ENFP",
+  "nickname": "브랜치 23개 머지 0개 방랑자",
+  "roast": [
+    "다시 {redoCount}번. 틀린 게 아니라 더 재밌는 길이 보여서 바꾼 거다. 브랜치는 늘었는데 main은 지난달 그대로다.",
+    "세션당 평균 {avgTurns}턴인데 처음 하려던 작업은 3턴 만에 사라진다. 아니 그게 아니라, 가 입버릇이다. Claude는 이미 적응했다.",
+    "새벽 2시에서 5시 활동 {nightRatio}%. 그 시간에 딴 브랜치 이름이 제일 창의적이다. 다음 날 보면 뭐 하려던 건지 본인도 모른다."
+  ],
+  "commitMessage": [
+    "feat: new idea, new branch",
+    "wip: will merge later",
+    "chore: rename branch to something better",
+    "feat: started 3 things, finished 0",
+    "fix: wait, actually"
+  ]
+}

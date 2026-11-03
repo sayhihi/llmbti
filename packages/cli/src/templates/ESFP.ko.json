@@ -1,0 +1,16 @@
+{
+  "type": "ESFP",
+  "nickname": "동작은 데모 때만 하는 장인",
+  "roast": [
+    "세션당 평균 {avgTurns}턴에 중간에 끼어드는 비율이 높다. Claude가 설명하는 중에 \"그건 됐고 일단 보여 줘\"가 나온다. 데모가 먼저고 이유는 나중이다.",
+    "새벽 2시에서 5시 활동 {nightRatio}%. 데모 전날 밤 커밋이 몰려 있다. 테스트는 데모 이후에 생각하는데 데모 이후엔 다음 데모가 있다.",
+    "다시 {redoCount}번. 틀려서가 아니라 보여 줄 때 더 멋있어야 해서다. 동작하는 건 데모 때뿐이지만 그 순간만큼은 진짜 동작한다."
+  ],
+  "commitMessage": [
+    "feat: demo ready, do not touch",
+    "fix: works on stage, literally",
+    "chore: hide the error until after demo",
+    "feat: hardcode demo data",
+    "fix: remove console.log before demo"
+  ]
+}

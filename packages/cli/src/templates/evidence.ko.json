@@ -1,0 +1,39 @@
+{
+  "priority": [
+    "forceCount",
+    "rmrfCount",
+    "nightRatio",
+    "redoCount",
+    "thanksCount",
+    "shortestPrompt",
+    "topCommand",
+    "longestSession",
+    "avgTurns",
+    "promptCount",
+    "shellCount"
+  ],
+  "min": {
+    "forceCount": 1,
+    "rmrfCount": 1,
+    "nightRatio": 5,
+    "redoCount": 1,
+    "thanksCount": 1,
+    "longestSession": 5,
+    "avgTurns": 1,
+    "promptCount": 1,
+    "shellCount": 1
+  },
+  "sentences": {
+    "forceCount": "--force push {n}번",
+    "rmrfCount": "rm -rf {n}번",
+    "nightRatio": "새벽 2시에서 5시 사이 활동 {n}%",
+    "redoCount": "\"다시\" {n}번",
+    "thanksCount": "\"고마워\" {n}번",
+    "shortestPrompt": "가장 짧은 프롬프트 \"{s}\"",
+    "topCommand": "제일 많이 친 명령 {s}",
+    "longestSession": "최장 세션 {n}턴",
+    "avgTurns": "세션당 평균 {n}턴",
+    "promptCount": "프롬프트 {n}개",
+    "shellCount": "셸 명령 {n}개"
+  }
+}
