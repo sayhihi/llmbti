@@ -37,6 +37,6 @@
 
 ## 배포
 
-- Vercel 프로젝트 `llmbit` (sayhihis-projects), prd URL `https://llmbit.vercel.app`.
+- Vercel 프로젝트 `llmbti` (sayhihis-projects), prd URL `https://llmbti.vercel.app`.
 - 모노레포라 Vercel 쪽 빌드 대신 로컬 prebuilt 배포를 쓴다: 루트에서 `pnpm deploy:web`. `apps/web/.vercel/`은 링크 정보라 커밋하지 않는다.
 - git 연동 자동 배포는 아직 안 걸었다. 필요하면 Vercel 대시보드에서 Root Directory를 `apps/web`로 잡고 연결.

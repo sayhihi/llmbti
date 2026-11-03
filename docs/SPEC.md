@@ -1,4 +1,4 @@
-# llmbit, 기획서 (Claude Code 구현용)
+# llmbti, 기획서 (Claude Code 구현용)
 
 > **이 문서를 받은 Claude Code에게**
 > - 이 문서가 구현의 기준이야. 여기 없는 결정은 임의로 확장하지 말고 `TODO(decision):` 주석으로 남긴 뒤 마일스톤 끝에 모아서 물어봐.
@@ -7,7 +7,7 @@
 > - 에이전트 분담은 `docs/AGENTS.md`를 본다.
 
 변경 이력
-- 2026-11-03: 이름을 `llmbti`에서 `llmbit`로 확정. 웹 페이지 구조를 3페이지로 재편. 캐릭터 컨셉을 "버그 16종"에서 "Claude 마스코트 베이스"로 변경. 셸 히스토리 기본값은 동의 후 ON으로 확정.
+- 2026-11-03: 이름을 폴더명대로 llmbit로 잡았다가 2026-11-04 `llmbti`로 최종 확정(LLM + MBTI). 아래 본문은 전부 llmbti 기준. 웹 페이지 구조를 3페이지로 재편. 캐릭터 컨셉을 "버그 16종"에서 "Claude 마스코트 베이스"로 변경. 셸 히스토리 기본값은 동의 후 ON으로 확정.
 
 ---
 
@@ -16,9 +16,9 @@
 LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분석해서, 개발자의 MBTI를 **픽셀 캐릭터**와 **개발 유머 디스**로 보여주는 사이드프로젝트.
 
 - 슬로건: `> typeof me` → `"ENFP" // 브랜치 23개, 머지 0개`
-- 실행: `npx llmbit`
-- 웹: `llmbit.vercel.app`
-- 슬래시 명령: `/llmbit`
+- 실행: `npx llmbti`
+- 웹: `llmbti.vercel.app`
+- 슬래시 명령: `/llmbti`
 
 ## 2. 핵심 원칙
 
@@ -32,8 +32,8 @@ LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분
 
 ```
 [터미널 / 로컬]
- 1. npx llmbit install        → ~/.claude/skills/llmbit/ 에 스킬 설치
- 2. Claude Code에서 /llmbit
+ 1. npx llmbti install        → ~/.claude/skills/llmbti/ 에 스킬 설치
+ 2. Claude Code에서 /llmbti
  3. analyze 스크립트            → 로그 집계 + 4축 점수 + 유형 + 샘플(마스킹)
  4. Claude가 문구 JSON 작성      → 스키마 검증
  5. render 스크립트             → 터미널에 픽셀 캐릭터 + 요약 + 결과 URL, 브라우저 열기
@@ -44,14 +44,14 @@ LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분
  8. 친구가 링크 열기 → "나도 해보기" → /start → 1번으로
 ```
 
-**라이트 모드 (스킬 없이):** `npx llmbit`만 실행하면 Claude 없이 3 → 템플릿 문구 → 5로 진행한다. Claude Code를 안 쓰는 사람도 셸 히스토리만으로 결과를 받을 수 있다. 결과 페이지에는 "Claude가 쓴 버전은 더 맵다" CTA를 노출한다.
+**라이트 모드 (스킬 없이):** `npx llmbti`만 실행하면 Claude 없이 3 → 템플릿 문구 → 5로 진행한다. Claude Code를 안 쓰는 사람도 셸 히스토리만으로 결과를 받을 수 있다. 결과 페이지에는 "Claude가 쓴 버전은 더 맵다" CTA를 노출한다.
 
 ## 4. 레포 구조
 
 pnpm workspaces 모노레포.
 
 ```
-llmbit/
+llmbti/
 ├─ docs/                  # SPEC.md, AGENTS.md
 ├─ packages/
 │  ├─ core/              # 공유 로직 (런타임 의존성 0)
@@ -60,7 +60,7 @@ llmbit/
 │  │  ├─ src/palette.ts      # 공통 16색 팔레트
 │  │  ├─ src/characters/     # 16종 픽셀 데이터 (*.json)
 │  │  └─ src/typeMeta.ts     # 유형별 이름, 캐릭터, 한 줄 소개, 궁합
-│  └─ cli/               # npm 패키지 "llmbit" (bin: llmbit)
+│  └─ cli/               # npm 패키지 "llmbti" (bin: llmbti)
 │     ├─ src/commands/{install,analyze,render,run}.ts
 │     ├─ src/parsers/{claudeHistory,claudeProjects,zsh,bash}.ts
 │     ├─ src/metrics/        # 시그널 계산
@@ -70,7 +70,7 @@ llmbit/
 │     ├─ src/templates/      # 라이트 모드용 템플릿 문구
 │     └─ src/terminal/       # ANSI 픽셀 렌더러
 ├─ skill/
-│  └─ SKILL.md            # install 시 ~/.claude/skills/llmbit/ 로 복사
+│  └─ SKILL.md            # install 시 ~/.claude/skills/llmbti/ 로 복사
 ├─ apps/web/              # Vite + React + TS, 정적 빌드
 └─ fixtures/              # 테스트용 가짜 로그 (실제 로그 커밋 금지)
 ```
@@ -189,7 +189,7 @@ type ResultPayload = {
 };
 ```
 - 인코딩: `JSON → deflate-raw → base64url`. Node는 `zlib`, 브라우저는 `DecompressionStream('deflate-raw')`를 써서 의존성 없이 처리한다.
-- **URL 형식:** `https://llmbit.vercel.app/t/{TYPE}#r={payload}`
+- **URL 형식:** `https://llmbti.vercel.app/t/{TYPE}#r={payload}`
   - path의 `/t/ENFP`는 크롤러가 읽는 유형별 정적 페이지라서, 유형별 OG 이미지가 뜬다.
   - hash에는 개인 결과가 담기고 서버로 전송되지 않는다.
 - 디코딩에 실패하거나 버전이 다르면 해당 유형의 일반 소개 페이지로 fallback한다.
@@ -319,15 +319,15 @@ type ResultPayload = {
 
 ## 11. 스킬 (`skill/SKILL.md`)
 
-설치 위치는 `~/.claude/skills/llmbit/SKILL.md`이다. SKILL.md에 들어갈 내용:
+설치 위치는 `~/.claude/skills/llmbti/SKILL.md`이다. SKILL.md에 들어갈 내용:
 
-1. frontmatter: `name: llmbit`, description은 "사용자가 /llmbit, 개발자 MBTI, llmbit 분석을 요청할 때 사용".
+1. frontmatter: `name: llmbti`, description은 "사용자가 /llmbti, 개발자 MBTI, llmbti 분석을 요청할 때 사용".
 2. 절차:
    1. 셸 히스토리 포함 여부를 사용자에게 묻는다(한 번만).
-   2. `npx -y llmbit analyze --json [--no-shell] > /tmp/llmbit-analysis.json`을 실행한다.
+   2. `npx -y llmbti analyze --json [--no-shell] > /tmp/llmbti-analysis.json`을 실행한다.
    3. 결과 JSON을 읽는다. `insufficient: true`면 "아직 덜 컴파일됨" 메시지를 주고 종료한다.
-   4. 8장의 스키마와 톤 규칙에 맞춰 CopyJson을 작성하고 `/tmp/llmbit-copy.json`에 저장한다.
-   5. `npx -y llmbit render --analysis /tmp/llmbit-analysis.json --copy /tmp/llmbit-copy.json`을 실행한다. 검증 에러가 나면 수정해서 다시 실행한다(최대 2회).
+   4. 8장의 스키마와 톤 규칙에 맞춰 CopyJson을 작성하고 `/tmp/llmbti-copy.json`에 저장한다.
+   5. `npx -y llmbti render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json`을 실행한다. 검증 에러가 나면 수정해서 다시 실행한다(최대 2회).
    6. 마지막에 결과 URL을 한 줄로 안내한다. 터미널 출력을 다시 요약하지 않는다.
 3. 금지 사항: 원본 로그 파일을 직접 열어 읽지 않는다(토큰 낭비와 프라이버시 문제). analyze 출력만 사용한다.
 
@@ -335,10 +335,10 @@ type ResultPayload = {
 
 | 명령 | 동작 |
 |---|---|
-| `llmbit` (=`run`) | 라이트 모드: analyze → 템플릿 문구 → render |
-| `llmbit install` | `skill/`을 `~/.claude/skills/llmbit/`로 복사. 이미 있으면 덮어쓸지 물어봄. `--force` 옵션 지원 |
-| `llmbit analyze [--json] [--days N] [--no-shell]` | 집계 결과 출력 |
-| `llmbit render --analysis F --copy F [--no-open]` | 검증 → 터미널 출력 → URL 출력 → 브라우저 열기 |
+| `llmbti` (=`run`) | 라이트 모드: analyze → 템플릿 문구 → render |
+| `llmbti install` | `skill/`을 `~/.claude/skills/llmbti/`로 복사. 이미 있으면 덮어쓸지 물어봄. `--force` 옵션 지원 |
+| `llmbti analyze [--json] [--days N] [--no-shell]` | 집계 결과 출력 |
+| `llmbti render --analysis F --copy F [--no-open]` | 검증 → 터미널 출력 → URL 출력 → 브라우저 열기 |
 
 - 브라우저 열기: macOS는 `open`, Linux는 `xdg-open`, Windows는 `start`. 실패하면 URL만 출력한다.
 - 터미널 출력 레이아웃: 왼쪽에 캐릭터 16줄, 오른쪽에 유형, 별명, 4축 바(`E ████░░ I`), evidence 3줄. 폭이 80칸 미만이면 세로로 쌓는다.
@@ -347,8 +347,8 @@ type ResultPayload = {
 
 | 경로 | 역할 | 내용 |
 |---|---|---|
-| `/` | 나의 llmbit는 무엇일까? | 훅 한 줄, `> typeof me` 타이핑 애니메이션, 예시 결과 3개, "테스트 시작" 버튼 → `/start` |
-| `/start` | 테스트 방법 | 순서대로 안내. 1. `npx llmbit install` 복사 2. Claude Code에서 `/llmbit` 3. 셸 히스토리 동의 4. 결과 URL 열기. 아래에 Claude 없이 `npx llmbit`만 돌리는 라이트 모드 안내와 "서버 없음" 프라이버시 설명 |
+| `/` | 나의 llmbti는 무엇일까? | 훅 한 줄, `> typeof me` 타이핑 애니메이션, 예시 결과 3개, "테스트 시작" 버튼 → `/start` |
+| `/start` | 테스트 방법 | 순서대로 안내. 1. `npx llmbti install` 복사 2. Claude Code에서 `/llmbti` 3. 셸 히스토리 동의 4. 결과 URL 열기. 아래에 Claude 없이 `npx llmbti`만 돌리는 라이트 모드 안내와 "서버 없음" 프라이버시 설명 |
 | `/t/{TYPE}` | 공유 페이지 | hash가 있으면 개인 결과와 공유 버튼, 없으면 유형 소개. "나도 해보기"는 `/start`로 연결 |
 | `/types` | 16종 도감 | 그리드. 랜딩과 공유 페이지 하단에서 링크 |
 
@@ -360,7 +360,7 @@ type ResultPayload = {
 5. 오늘의 커밋 메시지(코드 블록 스타일)
 6. 페어 궁합 카드 → 해당 유형 페이지로 링크
 7. 공유: 링크 복사, Web Share API, 카드 PNG 다운로드(canvas 1200×630, 클라이언트에서 생성)
-8. "나도 해보기": `/start` 링크 + `npx llmbit install` 복사
+8. "나도 해보기": `/start` 링크 + `npx llmbti install` 복사
 
 **디자인 톤:** 다크 터미널 베이스, 모노스페이스 + 픽셀 폰트 포인트, 팔레트는 캐릭터 팔레트와 공유.
 
@@ -374,9 +374,9 @@ type ResultPayload = {
 | M1 | 파서 + 시그널 + 점수 + redact + analyze 명령 | fixtures 기반 단위 테스트 통과, 같은 입력이면 같은 결과, redact 테스트(시크릿 패턴 10종 이상) 통과 |
 | M2 | 웹 3페이지 + 공유 페이지 결과 렌더링(캐릭터 자리는 placeholder) | CLI로 만든 URL이 웹에서 정상 렌더링, 깨진 hash면 fallback |
 | M3 | 팔레트 + 베이스 + 샘플 3종(INTJ, ENFP, ISTP) + 터미널/캔버스 렌더러 | 터미널과 웹에 같은 캐릭터가 뜨고 truecolor/256/no-color fallback 동작 |
-| M4 | SKILL.md + install + render 검증 + 라이트 모드 템플릿 | 실제 Claude Code에서 `/llmbit` 한 번에 URL까지 도달, `npx llmbit` 단독 실행 동작 |
+| M4 | SKILL.md + install + render 검증 + 라이트 모드 템플릿 | 실제 Claude Code에서 `/llmbti` 한 번에 URL까지 도달, `npx llmbti` 단독 실행 동작 |
 | M5 | 공유(카드 PNG, Web Share), 유형별 정적 페이지 + OG | 메신저에 링크를 붙이면 유형별 OG가 뜸 |
-| M6 | 나머지 13종 캐릭터, 랜딩 마감, 도감, npm publish | 16종 완성, `npx llmbit` 공개 동작 |
+| M6 | 나머지 13종 캐릭터, 랜딩 마감, 도감, npm publish | 16종 완성, `npx llmbti` 공개 동작 |
 
 ## 15. 하지 않는 것
 
@@ -392,6 +392,6 @@ type ResultPayload = {
 3. 공유 페이지에 Claude 마스코트를 쓰는 데 대한 표기(크레딧) 문구를 넣을지.
 
 확정된 것
-- 이름: `llmbit`
+- 이름: `llmbti`
 - 캐릭터: Claude 마스코트 베이스, 몸 색 4그룹
 - 셸 히스토리: 동의 후 ON

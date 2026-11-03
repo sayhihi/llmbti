@@ -1,4 +1,4 @@
-import type { Temperament } from "@llmbit/core";
+import type { Temperament } from "@llmbti/core";
 
 import { TypeCard } from "../components/TypeCard";
 import { ALL_TYPES, TEMPERAMENT_LABEL, temperamentOf } from "../data/typeMeta";

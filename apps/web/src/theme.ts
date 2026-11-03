@@ -4,7 +4,7 @@
  */
 
 import paletteJson from "../../../packages/core/src/palette.json";
-import type { Temperament } from "@llmbit/core";
+import type { Temperament } from "@llmbti/core";
 
 export function applyPaletteVars(root: HTMLElement = document.documentElement) {
   for (const color of paletteJson.colors) {

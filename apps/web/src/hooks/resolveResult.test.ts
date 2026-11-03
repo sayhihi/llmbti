@@ -1,5 +1,5 @@
-import { buildResultUrl, encodePayload } from "@llmbit/core";
-import type { ResultPayload } from "@llmbit/core";
+import { buildResultUrl, encodePayload } from "@llmbti/core";
+import type { ResultPayload } from "@llmbti/core";
 import { describe, expect, it } from "vitest";
 
 import { hasEncodedResult, resolveResult } from "./resolveResult";

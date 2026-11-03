@@ -1,4 +1,4 @@
-import type { MbtiType } from "@llmbit/core";
+import type { MbtiType } from "@llmbti/core";
 import type { ReactNode } from "react";
 
 import { getTypeMeta, temperamentOf } from "../data/typeMeta";

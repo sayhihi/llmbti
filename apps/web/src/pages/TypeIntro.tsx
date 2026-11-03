@@ -1,4 +1,4 @@
-import type { MbtiType } from "@llmbit/core";
+import type { MbtiType } from "@llmbti/core";
 
 import { PixelCharacter } from "../components/PixelCharacter";
 import { RelationCard } from "../components/TypeCard";

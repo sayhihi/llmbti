@@ -1,4 +1,4 @@
-import type { PixelCharacter } from "@llmbit/core";
+import type { PixelCharacter } from "@llmbti/core";
 import { describe, expect, it } from "vitest";
 
 import {

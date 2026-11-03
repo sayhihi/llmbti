@@ -4,8 +4,8 @@
  * 레이아웃: 왼쪽에 캐릭터(idle 첫 프레임, 정수 배율), 오른쪽에 TYPE(픽셀 폰트), 별명, roast(≤3줄), 4축 미니 바, 푸터.
  */
 
-import { AXES, PALETTE, TEMPERAMENT_OF, TEMPERAMENT_PALETTE, drawFrame } from "@llmbit/core";
-import type { Axis, MbtiType, PixelCharacter, Scores } from "@llmbit/core";
+import { AXES, PALETTE, TEMPERAMENT_OF, TEMPERAMENT_PALETTE, drawFrame } from "@llmbti/core";
+import type { Axis, MbtiType, PixelCharacter, Scores } from "@llmbti/core";
 
 import { planAnims } from "../pixel/player";
 

@@ -3,7 +3,7 @@
  * 샘플 캐릭터가 있는 INTJ, ENFP, ISTP 를 쓴다 (M3 샘플 3종).
  */
 
-import type { MbtiType, Scores } from "@llmbit/core";
+import type { MbtiType, Scores } from "@llmbti/core";
 
 export interface SampleResult {
   type: MbtiType;

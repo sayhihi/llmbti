@@ -12,7 +12,7 @@
  * prefers-reduced-motion 이면 전부 멈추고 idle[0] 고정.
  */
 
-import type { PixelCharacter } from "@llmbit/core";
+import type { PixelCharacter } from "@llmbti/core";
 
 // ---------- 상수 (여기 한 곳) ----------
 

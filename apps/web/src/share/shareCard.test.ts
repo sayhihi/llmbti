@@ -1,4 +1,4 @@
-import { getCharacter } from "@llmbit/core";
+import { getCharacter } from "@llmbti/core";
 import { describe, expect, it } from "vitest";
 
 import {

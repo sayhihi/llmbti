@@ -1,4 +1,4 @@
-import type { MbtiType } from "@llmbit/core";
+import type { MbtiType } from "@llmbti/core";
 
 import { parseType } from "../data/typeMeta";
 import { useResultFromHash } from "../hooks/useResultFromHash";

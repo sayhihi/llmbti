@@ -1,5 +1,5 @@
-import { AXES } from "@llmbit/core";
-import type { Axis, Scores } from "@llmbit/core";
+import { AXES } from "@llmbti/core";
+import type { Axis, Scores } from "@llmbti/core";
 
 /** |점수| < 5 이면 경계형 (SPEC 6장 동점 처리) */
 export const BORDERLINE_THRESHOLD = 5;

@@ -1,4 +1,4 @@
-import type { MbtiType, Scores } from "@llmbit/core";
+import type { MbtiType, Scores } from "@llmbti/core";
 import { useEffect, useRef, useState } from "react";
 
 import { getCharacter } from "../pixel/shim";

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { MbtiType } from "@llmbit/core";
+import type { MbtiType } from "@llmbti/core";
 
 import { useRouter } from "../router";
 import { hasEncodedResult, resolveResult } from "./resolveResult";

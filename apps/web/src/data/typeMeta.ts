@@ -5,8 +5,8 @@
  * 웹이 data JSON을 직접 읽는다. core가 열면 이 파일은 re-export로 바꾼다.
  */
 
-import { MBTI_TYPES, isMbtiType } from "@llmbit/core";
-import type { MbtiType, Temperament } from "@llmbit/core";
+import { MBTI_TYPES, isMbtiType } from "@llmbti/core";
+import type { MbtiType, Temperament } from "@llmbti/core";
 
 import raw from "../../../../packages/core/data/typeMeta.ko.json";
 

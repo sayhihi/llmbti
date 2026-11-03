@@ -1,5 +1,5 @@
-import { AXES } from "@llmbit/core";
-import type { ResultPayload } from "@llmbit/core";
+import { AXES } from "@llmbti/core";
+import type { ResultPayload } from "@llmbti/core";
 
 import { AxisGauges, isBorderline } from "../components/AxisGauges";
 import { Badges } from "../components/Badges";

@@ -1,4 +1,4 @@
-import { DRAWN_TYPES } from "@llmbit/core";
+import { DRAWN_TYPES } from "@llmbti/core";
 import { useEffect, useRef } from "react";
 
 import { createPlayer, seedFrom } from "../pixel/player";

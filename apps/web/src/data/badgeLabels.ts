@@ -1,12 +1,12 @@
 /**
  * 통계 배지 키 -> 한글 라벨. 배지 라벨은 이 파일 한 곳에만 둔다.
  *
- * 키 목록의 소유자는 분석 엔진이다 (@llmbit/core 의 BADGE_KEYS, 9종).
+ * 키 목록의 소유자는 분석 엔진이다 (@llmbti/core 의 BADGE_KEYS, 9종).
  * stat 은 payload.stats 의 키 이름이고 엔진의 Stats 와 1:1 이다. nightRatio 는 이미 퍼센트 정수다.
  * 모르는 키는 raw 그대로 보여 준다. 그래야 엔진 쪽에서 키를 추가해도 페이지가 깨지지 않는다.
  */
 
-import type { BadgeKey } from "@llmbit/core";
+import type { BadgeKey } from "@llmbti/core";
 
 export interface BadgeLabel {
   /** 칩에 보이는 이름 */

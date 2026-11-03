@@ -1,5 +1,5 @@
-import { decodeResultFromHash, extractEncodedResult } from "@llmbit/core";
-import type { MbtiType, ResultPayload } from "@llmbit/core";
+import { decodeResultFromHash, extractEncodedResult } from "@llmbti/core";
+import type { MbtiType, ResultPayload } from "@llmbti/core";
 
 export type ResultState =
   | { status: "loading" }
