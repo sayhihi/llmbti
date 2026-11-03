@@ -1,8 +1,8 @@
 {
-  "note": "ENFP: small blue backpack behind the body (top corners above the arms, sides below) with dark straps over the chest",
+  "note": "ENFP: small blue backpack behind the body, side panels below the arms, dark straps over the chest",
   "parts": [
-    { "x": 4, "y": 12, "rows": [".ee", ".ee", "...", "...", "...", "...", "...", "eee", "eee", "eee", "eee", ".ee"] },
-    { "x": 25, "y": 12, "rows": ["ee.", "ee.", "...", "...", "...", "...", "...", "eee", "eee", "eee", "eee", "ee."] },
+    { "x": 4, "y": 19, "rows": ["eee", "eee", "eee", "eee", ".ee"] },
+    { "x": 25, "y": 19, "rows": ["eee", "eee", "eee", "eee", "ee."] },
     { "slot": "front", "x": 8, "y": 19, "rows": ["3", "3", "3", "3", "3"] },
     { "slot": "front", "x": 23, "y": 19, "rows": ["3", "3", "3", "3", "3"] }
   ]
