@@ -1,0 +1,29 @@
+{
+  "name": "llmbit",
+  "version": "0.0.0",
+  "description": "LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI. npx llmbit",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "llmbit": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "skill"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@llmbit/core": "workspace:*",
+    "@types/node": "^24.19.2",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}
