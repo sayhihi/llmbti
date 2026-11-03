@@ -1,5 +1,8 @@
 /**
- * `llmbti install [--force]` (SPEC 3장, 11장, 12장).
+ * `llmbti install [--force] [--sync]` (SPEC 3장, 11장, 12장).
+ *
+ * `--sync`: 묻지 않고 조용히 최신으로 맞춘다. 설치된 SKILL.md 가 패키지 동봉본과 같으면 아무것도 안 하고,
+ * 다르거나 없으면 덮어쓴다. 스킬 절차 첫 줄에서 실행해서 이미 설치한 사용자도 자동으로 버전업되게 한다.
  *
  * skill/SKILL.md를 `~/.claude/skills/llmbti/`로 복사한다. `CLAUDE_CONFIG_DIR`가 있으면 그 아래 skills/llmbti.
  * 스킬 파일은 빌드 때 packages/cli/skill/ 로 복사돼 npm 패키지에 들어간다 (tsup onSuccess).
@@ -66,6 +69,8 @@ export interface InstallIo {
 
 export interface InstallOptions {
   force: boolean;
+  /** 묻지 않고 패키지 동봉본과 다를 때만 덮어쓴다 */
+  sync?: boolean;
   /** 테스트용: 스킬 원본 디렉터리 강제 */
   sourceDir?: string;
 }
@@ -79,6 +84,21 @@ export async function installCommand(opts: InstallOptions, io: InstallIo): Promi
   }
   const targetDir = resolveSkillTargetDir(env);
   const targetMain = join(targetDir, SKILL_MAIN_FILE);
+
+  if (opts.sync) {
+    const files = skillFilesToCopy(sourceDir);
+    const same =
+      existsSync(targetMain) &&
+      files.every((f) => {
+        const t = join(targetDir, f);
+        return existsSync(t) && readFileSync(t, "utf8") === readFileSync(join(sourceDir, f), "utf8");
+      });
+    if (same) return 0;
+    mkdirSync(targetDir, { recursive: true });
+    for (const f of files) copyFileSync(join(sourceDir, f), join(targetDir, f));
+    io.stdout(`🔄 스킬 갱신: ${targetDir}\n`);
+    return 0;
+  }
 
   if (existsSync(targetMain) && !opts.force) {
     const stdoutTTY = io.isTTY ?? Boolean(process.stdout.isTTY);

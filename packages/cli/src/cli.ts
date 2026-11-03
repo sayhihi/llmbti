@@ -19,6 +19,7 @@ const USAGE = `llmbti - LLM에게 일을 시키는 패턴으로 보는 개발자
   llmbti [run] [--days N] [--no-shell] [--yes] [--no-open] [--base URL]
                                라이트 모드: analyze -> 템플릿 문구 -> render
   llmbti install [--force]     skill/ 을 ~/.claude/skills/llmbti/ 로 복사 (CLAUDE_CONFIG_DIR 존중)
+                [--sync]      묻지 않고 최신 스킬로 맞춤 (같으면 아무것도 안 함)
   llmbti analyze [--json] [--days N] [--no-shell] [--home DIR]
                                로그 집계 결과 출력. --home은 테스트용 가짜 홈
   llmbti render --analysis F --copy F [--no-open] [--base URL]
@@ -111,7 +112,7 @@ export async function main(argv: string[], io: CliIo = processIo): Promise<numbe
     case "analyze":
       return runAnalyze(flags, io);
     case "install":
-      return installCommand({ force: flags.force === true }, io);
+      return installCommand({ force: flags.force === true, sync: flags.sync === true }, io);
     case "render": {
       const analysisPath = stringFlag(flags.analysis);
       const copyPath = stringFlag(flags.copy);

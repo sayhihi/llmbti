@@ -44,10 +44,11 @@ describe("skill source", () => {
     expect(skill).toContain(
       "description: 사용자가 /llmbti, 개발자 MBTI, llmbti 분석을 요청할 때 사용",
     );
-    expect(skill).toContain("npx -y llmbti analyze --json");
+    expect(skill).toContain("npx -y llmbti@latest analyze --json");
     expect(skill).toContain(
-      "npx -y llmbti render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json",
+      "npx -y llmbti@latest render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json",
     );
+    expect(skill).toContain("npx -y llmbti@latest install --sync");
     expect(skill).toContain("insufficient");
     expect(skill).toContain("원본 로그");
     // TONE.md 의 규칙 줄("- ")은 전부 SKILL.md 에 그대로 있어야 한다. TONE.md 가 원본이다.
@@ -116,5 +117,33 @@ describe("installCommand", () => {
   it("원본이 없으면 1", async () => {
     const t = io({ env: { CLAUDE_CONFIG_DIR: configDir } });
     expect(await installCommand({ force: false, sourceDir: "/nonexistent" }, t.io)).toBe(1);
+  });
+});
+
+describe("install --sync", () => {
+  it("없으면 설치하고, 같으면 아무것도 안 하고, 다르면 조용히 덮어쓴다", async () => {
+    const { mkdtempSync, writeFileSync, readFileSync, existsSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+    const { installCommand, SKILL_MAIN_FILE, resolveSkillSourceDir } = await import("./install");
+    const home = mkdtempSync(join(tmpdir(), "llmbti-sync-"));
+    const env = { CLAUDE_CONFIG_DIR: home };
+    const out: string[] = [];
+    const io = { stdout: (s: string) => out.push(s), stderr: (s: string) => out.push(s), env, isTTY: false, stdinIsTTY: false };
+    const src = resolveSkillSourceDir()!;
+    const target = join(home, "skills", "llmbti", SKILL_MAIN_FILE);
+
+    expect(await installCommand({ force: false, sync: true }, io)).toBe(0);
+    expect(existsSync(target)).toBe(true);
+    expect(out.join("")).toContain("스킬 갱신");
+
+    out.length = 0;
+    expect(await installCommand({ force: false, sync: true }, io)).toBe(0);
+    expect(out.join("")).toBe("");
+
+    writeFileSync(target, "stale\n");
+    expect(await installCommand({ force: false, sync: true }, io)).toBe(0);
+    expect(readFileSync(target, "utf8")).toBe(readFileSync(join(src, SKILL_MAIN_FILE), "utf8"));
+    expect(out.join("")).toContain("스킬 갱신");
   });
 });
