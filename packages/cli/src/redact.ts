@@ -61,11 +61,12 @@ export const SECRET_RULES: readonly Rule[] = [
     pattern: /\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]{16,}/gi,
     replace: "$1 [TOKEN]",
   },
-  // password= / token= / secret= 류. 구분자는 = : 와 공백, 값은 따옴표 유무 모두.
+  // password= / token= / secret= 류. DB_PASSWORD 처럼 접두가 붙어도 잡는다. 구분자는 = : 와 공백, 값은 따옴표 유무 모두.
+  // 이미 [TOKEN] 같은 자리표시자로 바뀐 값은 다시 건드리지 않는다.
   {
     name: "keyValue",
     pattern:
-      /\b(password|passwd|pwd|pass|token|access_token|refresh_token|secret|client_secret|api[_-]?key|apikey|auth|authorization|credential|private[_-]?key)(\s*[=:]\s*)(?:"[^"]*"|'[^']*'|\S+)/gi,
+      /\b([\w-]*?(?:password|passwd|pwd|pass|token|secret|api[_-]?key|apikey|auth|authorization|credential|private[_-]?key))(\s*[=:]\s*)(?!\[|(?:Bearer|Basic)\b)(?:"[^"]*"|'[^']*'|\S+)/gi,
     replace: "$1$2[REDACTED]",
   },
   // 32자 이상 hex 덩어리 (sha, 세션 id 등)

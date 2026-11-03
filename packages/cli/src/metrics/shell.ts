@@ -37,15 +37,21 @@ const WRAPPERS = new Set([
 export function commandName(command: string): string | undefined {
   const first = command.split(/\s*(?:\|\||&&|;|\|)\s*/)[0] ?? "";
   const tokens = first.trim().split(/\s+/).filter(Boolean);
+  let lastWrapper: string | undefined;
   for (const tok of tokens) {
     if (ENV_ASSIGN.test(tok)) continue;
-    if (WRAPPERS.has(tok)) continue;
+    if (WRAPPERS.has(tok)) {
+      lastWrapper = tok;
+      continue;
+    }
     if (tok.startsWith("-")) continue;
+    // `sudo !!` 같은 히스토리 확장은 명령어가 아니다. 래퍼 이름으로 센다.
+    if (tok.startsWith("!")) return lastWrapper;
     // 절대 경로나 상대 경로로 실행한 바이너리는 파일 이름만 남긴다 (./gradlew → gradlew).
     const base = tok.replace(/^.*\//, "");
     return base || tok;
   }
-  return undefined;
+  return lastWrapper;
 }
 
 const TEST_RUNNER =

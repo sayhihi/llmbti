@@ -155,13 +155,15 @@ function redactStats(stats: Stats, redactOpts: { home: string }): Stats {
 export function formatAnalysis(result: AnalysisOutput): string {
   const lines: string[] = [];
   const { stats, sampleSize } = result;
+  // SPEC 12장 스타일: `E ████░░ I  +33`. 앞 글자 쪽이 채워진 칸 수다.
   const bar = (axis: Axis): string => {
     const v = result.scores[axis];
     const [front, back] = axis.split("") as [string, string];
     const cells = 10;
     const filled = Math.round(((v + 100) / 200) * cells);
-    const gauge = "█".repeat(cells - filled) + "░" + "█".repeat(filled);
-    return `${back} ${gauge} ${front}  ${v > 0 ? "+" : ""}${v}${result.borderline.includes(axis) ? " (경계)" : ""}`;
+    const gauge = "█".repeat(filled) + "░".repeat(cells - filled);
+    const mark = result.borderline.includes(axis) ? " (경계)" : "";
+    return `${front} ${gauge} ${back}  ${v > 0 ? "+" : ""}${v}${mark}`;
   };
   lines.push(`llmbit analyze  (최근 ${result.periodDays}일)`);
   lines.push("");
