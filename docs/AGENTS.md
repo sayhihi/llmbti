@@ -34,3 +34,9 @@
 - 에이전트마다 `agent/<이름>` 브랜치를 따서 작업하고 커밋 후 `origin`에 푸시한다. 예: `agent/analysis`, `agent/renderer`, `agent/web`.
 - main에는 직접 커밋하지 않는다. 검수 후 main에 머지하고 main도 푸시한다.
 - 지난 작업도 같은 규칙으로 정리했다: `agent/foundation`(M0), `agent/pixel`(M3 데이터), `agent/content`.
+
+## 배포
+
+- Vercel 프로젝트 `llmbit` (sayhihis-projects), prd URL `https://llmbit.vercel.app`.
+- 모노레포라 Vercel 쪽 빌드 대신 로컬 prebuilt 배포를 쓴다: 루트에서 `pnpm deploy:web`. `apps/web/.vercel/`은 링크 정보라 커밋하지 않는다.
+- git 연동 자동 배포는 아직 안 걸었다. 필요하면 Vercel 대시보드에서 Root Directory를 `apps/web`로 잡고 연결.

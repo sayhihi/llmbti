@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "deploy:web": "vercel build --prod --yes --cwd apps/web && vercel deploy --prebuilt --prod --yes --cwd apps/web"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
