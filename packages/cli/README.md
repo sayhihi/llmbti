@@ -4,7 +4,8 @@ Claude Code에 일을 시키는 말투와 셸 히스토리로 보는 개발자 M
 점수는 스크립트가 계산하고, 디스는 Claude가 쓴다.
 
 ```
-$ npx llmbti
+$ npx llmbti install
+> /llmbti
 ENFP  // 브랜치 23개, 머지 0개
 ```
 

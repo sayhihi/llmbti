@@ -15,7 +15,7 @@
 
 LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분석해서, 개발자의 MBTI를 **픽셀 캐릭터**와 **개발 유머 디스**로 보여주는 사이드프로젝트.
 
-- 슬로건: `$ npx llmbti` → `ENFP  // 브랜치 23개, 머지 0개` (2026-11-04 변경, 원안은 `> typeof me`)
+- 슬로건: `$ npx llmbti install` → `> /llmbti` → `ENFP  // 브랜치 23개, 머지 0개` (2026-11-04 변경, 원안은 `> typeof me`)
 - 실행: `npx llmbti`
 - 웹: `llmbti.vercel.app`
 - 슬래시 명령: `/llmbti`
