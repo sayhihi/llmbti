@@ -1,0 +1,19 @@
+import { Link } from "../router";
+import { CommandLine } from "./CopyButton";
+
+export const INSTALL_COMMAND = "npx llmbit install";
+export const LITE_COMMAND = "npx llmbit";
+
+/** "나도 해보기". /start 링크와 설치 명령 복사. */
+export function TryItCta({ title = "나도 해보기" }: { title?: string }) {
+  return (
+    <section className="cta card">
+      <h2 className="section-title">{title}</h2>
+      <p className="dim">터미널에서 한 줄, Claude Code에서 한 줄. 로그는 기기 밖으로 안 나간다.</p>
+      <CommandLine command={INSTALL_COMMAND} />
+      <Link to="/start" className="btn btn-primary btn-wide">
+        테스트 방법 보기
+      </Link>
+    </section>
+  );
+}
