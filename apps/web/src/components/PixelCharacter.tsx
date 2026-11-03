@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-import { PALETTE, drawFrame, getAnim, getCharacter } from "../pixel/shim";
+import { createPlayer, seedFrom } from "../pixel/player";
+import type { Player } from "../pixel/player";
+import { PALETTE, drawFrame, getCharacter } from "../pixel/shim";
 import type { PixelCharacter as PixelCharacterData } from "../pixel/shim";
+import { subscribeTick } from "../pixel/ticker";
 
 const MIN_SCALE = 4;
+
+/** 같은 페이지에 같은 유형이 여럿이어도 시드가 다르게 */
+let instanceCounter = 0;
 
 interface Props {
   type: string;
@@ -12,14 +18,15 @@ interface Props {
   className?: string;
   /** 접근성 라벨. 기본값은 "{type} 캐릭터" */
   label?: string;
-  /** 처음 보일 때 wave 를 한 번 하고 idle 로 돌아간다. 탭하면 다시 wave. */
+  /** 처음 보일 때 wave 를 한 번 하고 스케줄러로 넘어간다. 탭하면 다시 wave. */
   intro?: boolean;
 }
 
 /**
  * 32x32 픽셀 캐릭터를 <canvas> 에 정수 배율로 그린다.
- * 컨테이너 너비에 맞추되 최소 4배. requestAnimationFrame 으로 fps 에 맞춰 프레임을 돌리고
- * prefers-reduced-motion 이면 첫 프레임에서 멈춘다. 데이터가 없는 유형은 글자 박스를 보여 준다.
+ * 컨테이너 너비에 맞추되 최소 4배. 프레임 선택은 pixel/player.ts (idle + 타이밍 깜빡임 + 행동 스케줄러 + wave) 가 하고
+ * 여기서는 페이지 공용 ticker 에 붙어 그리기만 한다. prefers-reduced-motion 이면 첫 프레임에서 멈춘다.
+ * 데이터가 없는 유형은 글자 박스를 보여 준다.
  */
 export function PixelCharacter({ type, maxScale = 12, className, label, intro = true }: Props) {
   const character = getCharacter(type);
@@ -69,8 +76,10 @@ function Canvas({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const px = character.size * scale;
-  // 탭할 때마다 올려서 wave 를 다시 재생한다
-  const [replay, setReplay] = useState(0);
+  // 탭 핸들러가 현재 플레이어에 닿도록
+  const tapRef = useRef<(() => void) | null>(null);
+  // 플레이어는 캐릭터·intro 가 같으면 스케일이 바뀌어도 이어 간다 (wave 가 다시 시작되지 않게).
+  const playerRef = useRef<{ key: string; player: Player } | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -80,51 +89,72 @@ function Canvas({
     ctx.imageSmoothingEnabled = false;
 
     const frames = character.frames;
-    const idle = getAnim(character, "idle");
-    const wave = intro ? getAnim(character, "wave") : [];
-    const first = frames[idle[0] ?? 0];
-    if (!first) return;
-
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let raf = 0;
+    let unsubscribe: (() => void) | null = null;
     let lastIndex = -1;
-    const frameMs = 1000 / Math.max(1, character.fps);
+    let lastTransform = "";
+    // reduced motion 은 여기서 처리한다 (구독 안 함). 플레이어는 항상 평소대로 만든다.
+    const key = `${character.id}|${intro}`;
+    if (playerRef.current?.key !== key) {
+      playerRef.current = {
+        key,
+        player: createPlayer(character, performance.now(), {
+          intro,
+          // 같은 페이지에 같은 유형이 여럿이어도 제각각 움직이게 인스턴스마다 다른 시드
+          seed: seedFrom(`${character.id}#${instanceCounter++}#${Math.random()}`),
+        }),
+      };
+    }
+    const player = playerRef.current.player;
 
-    const stop = () => {
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+    const paint = (index: number, dx = 0, dy = 0) => {
+      if (index !== lastIndex) {
+        const frame = frames[index];
+        if (frame) drawFrame(ctx, frame, PALETTE, scale);
+        lastIndex = index;
+      }
+      const transform = dx || dy ? `translate(${dx * scale}px, ${-dy}px)` : "";
+      if (transform !== lastTransform) {
+        canvas.style.transform = transform;
+        lastTransform = transform;
+      }
     };
-
+    const stop = () => {
+      unsubscribe?.();
+      unsubscribe = null;
+    };
     const start = () => {
       stop();
-      if ((frames.length < 2 && wave.length === 0) || media.matches) {
-        drawFrame(ctx, first, PALETTE, scale);
-        lastIndex = 0;
+      lastIndex = -1;
+      if (media.matches) {
+        playerRef.current = null;
+        paint(player.plan.idle[0] ?? 0);
         return;
       }
-      const origin = performance.now();
-      const tick = (now: number) => {
-        const n = Math.floor((now - origin) / frameMs);
-        // wave 를 한 번 다 돌고 나면 idle 을 반복한다
-        const index =
-          n < wave.length ? (wave[n] ?? 0) : (idle[(n - wave.length) % idle.length] ?? 0);
-        if (index !== lastIndex) {
-          const frame = frames[index];
-          if (frame) drawFrame(ctx, frame, PALETTE, scale);
-          lastIndex = index;
-        }
-        raf = requestAnimationFrame(tick);
-      };
-      raf = requestAnimationFrame(tick);
+      unsubscribe = subscribeTick((now) => {
+        const f = player.frame(now);
+        paint(f.index, f.dx, f.dy);
+      });
+    };
+
+    tapRef.current = () => {
+      if (media.matches) return;
+      player.tap(performance.now());
     };
 
     start();
     media.addEventListener("change", start);
     return () => {
       stop();
+      tapRef.current = null;
       media.removeEventListener("change", start);
     };
-  }, [character, scale, intro, replay]);
+  }, [character, scale, intro]);
+
+  // 언마운트하면 플레이어를 버린다
+  useEffect(() => () => {
+    playerRef.current = null;
+  }, []);
 
   return (
     <canvas
@@ -135,7 +165,7 @@ function Canvas({
       style={{ width: px, height: px, cursor: intro ? "pointer" : undefined }}
       role="img"
       aria-label={label}
-      onClick={intro ? () => setReplay((r) => r + 1) : undefined}
+      onClick={intro ? () => tapRef.current?.() : undefined}
     />
   );
 }

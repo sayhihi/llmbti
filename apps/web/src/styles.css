@@ -668,6 +668,23 @@ h3 {
   color: var(--dim);
 }
 
+/* ---------- 랜딩 하단 걷기 띠 ---------- */
+
+.walk-section {
+  gap: 4px;
+}
+
+.walk-strip {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 2px;
+}
+
+.walk-canvas {
+  display: block;
+}
+
 /* ---------- 게이지 ---------- */
 
 .gauges {

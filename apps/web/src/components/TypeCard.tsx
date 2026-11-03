@@ -25,7 +25,7 @@ export function TypeCard({ type, note, children }: Props) {
       style={{ ["--accent" as string]: temperamentVar(t) }}
     >
       <div className="type-card-body">
-        <PixelCharacter type={type} maxScale={4} className="type-card-char" />
+        <PixelCharacter type={type} maxScale={4} className="type-card-char" intro={false} />
         <div className="type-card-text">
           <span className="px type-card-type">{type}</span>
           <strong className="type-card-nick">{meta.nickname}</strong>
@@ -59,7 +59,7 @@ export function RelationCard({
         {kind === "pair" ? "같이 하면 좋은 페어" : "같이 하면 PR이 안 닫히는 페어"}
       </span>
       <div className="relation-main">
-        <PixelCharacter type={type} maxScale={4} className="relation-char" />
+        <PixelCharacter type={type} maxScale={4} className="relation-char" intro={false} />
         <div>
           <span className="px relation-type">{type}</span>
           <strong className="relation-nick">{meta.nickname}</strong>
