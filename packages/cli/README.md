@@ -3,8 +3,8 @@
 LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분석해서, 개발자의 MBTI를 픽셀 캐릭터와 개발 유머 디스로 보여주는 사이드프로젝트.
 
 ```
-> typeof me
-"ENFP" // 브랜치 23개, 머지 0개
+$ npx llmbti
+ENFP  // 브랜치 23개, 머지 0개
 ```
 
 - 실행: `npx llmbti`

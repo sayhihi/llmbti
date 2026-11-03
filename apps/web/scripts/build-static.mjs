@@ -251,7 +251,7 @@ export function renderTypeOg(type, data) {
 
   // 오른쪽
   const left = 560;
-  drawText(cv, "> NPX LLMBTI", left, 118, 4, grey);
+  drawText(cv, "$ NPX LLMBTI", left, 118, 4, grey);
   drawText(cv, type, left, 190, 14, base); // 글자 70×98, 4글자 ≈ 322px
   const label = `${temperamentOf(type)} / ${TEMPERAMENT_LABEL[temperamentOf(type)]}`;
   drawText(cv, label, left, 326, 4, white);

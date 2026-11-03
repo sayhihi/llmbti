@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-const PROMPT = "> typeof me";
-const OUTPUT = '"ENFP" // 브랜치 23개, 머지 0개';
+const PROMPT = "$ npx llmbti";
+const OUTPUT = "ENFP  // 브랜치 23개, 머지 0개";
 const CHAR_MS = 55;
 const PAUSE_MS = 500;
 
