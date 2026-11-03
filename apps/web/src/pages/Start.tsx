@@ -82,26 +82,6 @@ export function Start() {
         </p>
       </section>
 
-      <section className="section card privacy">
-        <h2 className="section-title">
-          <span className="px section-eyebrow">// privacy</span>
-          서버 없음
-        </h2>
-        <ul className="plain-list">
-          <li>이 사이트는 정적 파일만 있다. API도 DB도 서버리스 함수도 없다.</li>
-          <li>
-            결과는 URL의 <code>#r=</code> 뒤에 압축돼서 실린다. 브라우저는 hash를 서버로 보내지
-            않는다.
-          </li>
-          <li>
-            URL에 담기는 건 유형, 축 점수, 배지 숫자, 문구뿐이다. 프롬프트 원문과 셸 명령 원문은 안
-            담긴다.
-          </li>
-          <li>Claude에게 가는 샘플 프롬프트는 토큰, 이메일, 경로 같은 걸 마스킹한 뒤에 보낸다.</li>
-          <li>결과를 저장하지 않으니 링크를 잃으면 다시 돌리면 된다.</li>
-        </ul>
-      </section>
-
       <p className="center">
         <Link to="/types" className="link">
           16종 도감 먼저 구경하기

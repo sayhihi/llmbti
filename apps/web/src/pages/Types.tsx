@@ -17,8 +17,7 @@ export function Types() {
         </p>
         <h1 className="page-title">16종 도감</h1>
         <p className="hero-sub">
-          몸 색은 기질 4그룹, 눈은 E/I와 T/F, 머리 위 소품은 별명. 캐릭터가 없는 유형은 아직 그리는
-          중이다.
+          몸 색은 기질 4그룹, 눈은 E/I와 T/F, 머리 위 소품은 별명.
         </p>
       </section>
 
