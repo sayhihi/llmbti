@@ -3,6 +3,7 @@
     "Recipes for scripts/pixel-compose.mjs. One entry per type; layer names are files under the group folder.",
     "temperament picks the body colour remap for palette indices 5/6: sj 5/6 (mascot terracotta), nt 7/8, nf 9/a, sp b/c.",
     "frames: the six poses every type gets, in order. anims index into frames and never duplicate frame data.",
+    "anims: idle holds only the resting frame and blink only the eyes-shut frame; the player decides blink timing. Signature moves get their own name (e.g. flicker).",
     "blink: group overrides applied only on the blink frame (default swaps eyes for eyes/blink)."
   ],
   "size": 32,
@@ -23,7 +24,8 @@
     { "name": "walk-2", "arms": "down", "legs": "walk-2" }
   ],
   "anims": {
-    "idle": [0, 0, 0, 0, 0, 1],
+    "idle": [0],
+    "blink": [1],
     "wave": [2, 3, 2, 3, 0],
     "walk": [4, 5]
   },

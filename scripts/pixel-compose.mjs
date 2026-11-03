@@ -7,7 +7,8 @@
 //
 // Layer file: { x, y, rows } or { parts: [{ x, y, rows, slot? }] }. '.' is transparent, hex digits are
 // palette indices, and 5/6 mean "body base/shadow" and are remapped per temperament.
-// Output per type: { id, size, fps, frames: [6 frames], anims: { idle, wave, walk } }.
+// Output per type: { id, size, fps, frames: [6 frames], anims: { idle, blink, wave, walk } }.
+// idle is the resting frame only and blink the eyes-shut frame only; the player mixes them.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve, join } from "node:path";

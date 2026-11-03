@@ -7,7 +7,8 @@
 // Checks: palette has 16 entries in index order (0 = transparent); each character has
 // size 32, a positive fps, at least one frame, every frame is 32 rows x 32 chars, and
 // every char is "." or a hex digit pointing at a non-transparent palette entry.
-// anims: an object with non-empty integer arrays, idle/wave/walk present, every index < frames.length.
+// anims: an object with non-empty integer arrays, idle/blink/wave/walk present, every index < frames.length,
+// and idle never contains a frame that blink uses (blink timing belongs to the player).
 // Exits 1 on any failure.
 
 import { readFileSync, readdirSync } from "node:fs";
@@ -18,7 +19,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
 const SIZE = 32;
 const PALETTE_SIZE = 16;
-const REQUIRED_ANIMS = ["idle", "wave", "walk"];
+const REQUIRED_ANIMS = ["idle", "blink", "wave", "walk"];
 
 const errors = [];
 const fail = (msg) => errors.push(msg);
@@ -107,6 +108,10 @@ for (const file of files) {
       if (!Number.isInteger(i) || i < 0 || i >= data.frames.length)
         fail(`${name}: anims.${key}[${pos}] = ${i} is not a frame index (0..${data.frames.length - 1})`);
     });
+  }
+  if (Array.isArray(anims.idle) && Array.isArray(anims.blink)) {
+    const blinkFrames = new Set(anims.blink);
+    for (const i of anims.idle) if (blinkFrames.has(i)) fail(`${name}: anims.idle must not contain blink frame ${i}`);
   }
 }
 

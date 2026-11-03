@@ -34,4 +34,6 @@ back(뒤) → body → back(front 조각) → legs → arms → hand → eyes �
 ## 프레임
 
 `characters.json` 의 `frames` 가 6프레임의 팔·다리 포즈를 정하고, `anims` 가 프레임 인덱스를 묶는다.
+`anims.idle` 은 기본 프레임만(`[0]`), `anims.blink` 는 눈 감은 프레임만(`[1]`). 깜빡임 타이밍은 플레이어가 잡는다.
+유형별 시그니처 동작은 나중에 별도 이름(예: `flicker`)으로 붙인다.
 `blink` 프레임은 눈만 `eyes/blink` 로 바꾼다 (유형별로 `blink` 에 다른 그룹 덮어쓰기 가능).
