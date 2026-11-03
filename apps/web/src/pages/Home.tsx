@@ -11,9 +11,6 @@ export function Home() {
   return (
     <>
       <section className="hero">
-        <p className="eyebrow dim">
-          <span>$ </span>npx llmbti
-        </p>
         <h1 className="hero-title">나의 llmbti는 무엇일까?</h1>
         <p className="hero-sub">
           Claude Code에 일을 시키는 말투와 셸 히스토리로 보는 개발자 MBTI. 점수는 스크립트가
@@ -72,7 +69,6 @@ export function Home() {
 
       <section className="section walk-section">
         <WalkStrip />
-        <p className="dim small center">지금까지 그려진 캐릭터. 나머지는 그리는 중이다.</p>
       </section>
     </>
   );

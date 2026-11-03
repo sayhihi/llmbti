@@ -21,15 +21,6 @@ export function Layout({ children }: PropsWithChildren) {
         </nav>
       </header>
       <main className="page">{children}</main>
-      <footer className="footer">
-        <p>
-          <span className="dim">$ </span>npx llmbti
-        </p>
-        <p className="dim">
-          서버 없음. 결과는 URL 안에만 있고 어디에도 저장되지 않는다.
-          {/* TODO(decision): SPEC 16장 3번, Claude 마스코트 크레딧 문구를 넣을지 */}
-        </p>
-      </footer>
     </div>
   );
 }
