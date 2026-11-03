@@ -1,4 +1,4 @@
-import { decodeResultFromHash, URL_WARN_LENGTH, type CopyJson } from "@llmbit/core";
+import { decodeResultFromHash, URL_WARN_LENGTH, type CopyJson } from "@llmbti/core";
 import { describe, expect, it } from "vitest";
 
 import { analyze } from "./commands/analyze";
@@ -87,12 +87,12 @@ describe("buildPayload + buildUrl", () => {
 });
 
 describe("resolveBaseUrl", () => {
-  it("--base > LLMBIT_BASE_URL > 기본값", () => {
+  it("--base > LLMBTI_BASE_URL > 기본값", () => {
     expect(resolveBaseUrl(undefined, {})).toBe(DEFAULT_BASE_URL);
-    expect(resolveBaseUrl(undefined, { LLMBIT_BASE_URL: "http://localhost:4173" })).toBe(
+    expect(resolveBaseUrl(undefined, { LLMBTI_BASE_URL: "http://localhost:4173" })).toBe(
       "http://localhost:4173",
     );
-    expect(resolveBaseUrl("http://x", { LLMBIT_BASE_URL: "http://y" })).toBe("http://x");
+    expect(resolveBaseUrl("http://x", { LLMBTI_BASE_URL: "http://y" })).toBe("http://x");
     expect(resolveBaseUrl(true, {})).toBe(DEFAULT_BASE_URL);
   });
 });

@@ -4,7 +4,7 @@
  * truecolor (COLORTERM=truecolor|24bit) → 256 (TERM에 256color) → none (NO_COLOR, 파이프, --no-color)
  */
 
-import { hexToRgb } from "@llmbit/core";
+import { hexToRgb } from "@llmbti/core";
 
 export type ColorMode = "truecolor" | "256" | "none";
 

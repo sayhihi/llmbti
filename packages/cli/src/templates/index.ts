@@ -8,7 +8,7 @@
  * - pairWith: typeMeta.
  */
 
-import { TYPE_META, type CopyJson, type MbtiType, type Stats } from "@llmbit/core";
+import { TYPE_META, type CopyJson, type MbtiType, type Stats } from "@llmbti/core";
 
 import { charLength, hasDigit } from "../copy/validate";
 import ENFJ from "./ENFJ.ko.json";

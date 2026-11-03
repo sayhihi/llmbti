@@ -1,18 +1,39 @@
 {
-  "name": "llmbit",
-  "version": "0.0.0",
-  "description": "LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI. npx llmbit",
+  "name": "llmbti",
+  "version": "0.1.0",
+  "description": "LLM에게 일을 시키는 패턴과 셸 히스토리로 보는 개발자 MBTI. 픽셀 캐릭터와 개발 유머 디스로 보여준다.",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "llmbit": "./dist/index.js"
+    "llmbti": "dist/index.js"
   },
   "files": [
     "dist",
-    "skill"
+    "skill",
+    "README.md"
   ],
   "engines": {
     "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sayhihi/llmbti.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://llmbti.vercel.app",
+  "bugs": {
+    "url": "https://github.com/sayhihi/llmbti/issues"
+  },
+  "keywords": [
+    "mbti",
+    "claude-code",
+    "developer",
+    "cli",
+    "pixel-art",
+    "개발자 MBTI"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsup",
@@ -21,7 +42,7 @@
     "preview": "tsx src/dev/preview.ts"
   },
   "devDependencies": {
-    "@llmbit/core": "workspace:*",
+    "@llmbti/core": "workspace:*",
     "@types/node": "^24.19.2",
     "tsup": "^9.0.0",
     "tsx": "^4.20.6",

@@ -1,5 +1,5 @@
 /**
- * llmbit CLI 본체. index.ts가 process.argv로 main을 부른다.
+ * llmbti CLI 본체. index.ts가 process.argv로 main을 부른다.
  * 테스트는 io를 주입해서 stdout/stderr, TTY 여부, 질문 응답, 브라우저 열기를 잡는다.
  */
 
@@ -13,15 +13,15 @@ import { askYesNo } from "./prompt";
 const COMMANDS = ["run", "install", "analyze", "render"] as const;
 type Command = (typeof COMMANDS)[number];
 
-const USAGE = `llmbit - LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI
+const USAGE = `llmbti - LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI
 
 사용법:
-  llmbit [run] [--days N] [--no-shell] [--yes] [--no-open] [--base URL]
+  llmbti [run] [--days N] [--no-shell] [--yes] [--no-open] [--base URL]
                                라이트 모드: analyze -> 템플릿 문구 -> render
-  llmbit install [--force]     skill/ 을 ~/.claude/skills/llmbit/ 로 복사 (CLAUDE_CONFIG_DIR 존중)
-  llmbit analyze [--json] [--days N] [--no-shell] [--home DIR]
+  llmbti install [--force]     skill/ 을 ~/.claude/skills/llmbti/ 로 복사 (CLAUDE_CONFIG_DIR 존중)
+  llmbti analyze [--json] [--days N] [--no-shell] [--home DIR]
                                로그 집계 결과 출력. --home은 테스트용 가짜 홈
-  llmbit render --analysis F --copy F [--no-open] [--base URL]
+  llmbti render --analysis F --copy F [--no-open] [--base URL]
                                검증 -> 터미널 출력 -> 결과 URL -> 브라우저 열기
 
 옵션:
@@ -29,7 +29,7 @@ const USAGE = `llmbit - LLM에게 일을 시키는 패턴으로 보는 개발자
   --no-shell                   셸 히스토리 제외
   --yes                        셸 히스토리 질문을 건너뛰고 포함
   --no-open                    브라우저를 열지 않음
-  --base URL                   결과 페이지 주소 (기본 https://llmbit.vercel.app, env LLMBIT_BASE_URL)
+  --base URL                   결과 페이지 주소 (기본 https://llmbti.vercel.app, env LLMBTI_BASE_URL)
   --no-color                   캐릭터 생략
   -h, --help                   이 도움말
   -v, --version                버전
@@ -116,7 +116,7 @@ export async function main(argv: string[], io: CliIo = processIo): Promise<numbe
       const analysisPath = stringFlag(flags.analysis);
       const copyPath = stringFlag(flags.copy);
       if (!analysisPath || !copyPath) {
-        io.stderr("llmbit render: --analysis 파일과 --copy 파일이 둘 다 필요하다.\n\n");
+        io.stderr("llmbti render: --analysis 파일과 --copy 파일이 둘 다 필요하다.\n\n");
         io.stdout(USAGE);
         return 2;
       }
@@ -155,7 +155,7 @@ export async function main(argv: string[], io: CliIo = processIo): Promise<numbe
 
 /** tsup define으로 박히는 버전. 번들 밖(vitest)에서는 dev 표기. */
 function version(): string {
-  return typeof __LLMBIT_VERSION__ === "string" ? __LLMBIT_VERSION__ : "0.0.0-dev";
+  return typeof __LLMBTI_VERSION__ === "string" ? __LLMBTI_VERSION__ : "0.0.0-dev";
 }
 
 function stringFlag(v: string | boolean | undefined): string | undefined {
@@ -206,4 +206,4 @@ function runAnalyze(flags: ParsedArgs["flags"], io: CliIo): number {
   return 0;
 }
 
-declare const __LLMBIT_VERSION__: string;
+declare const __LLMBTI_VERSION__: string;

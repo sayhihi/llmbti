@@ -41,7 +41,7 @@ function pickEngine(engine: CompressEngine): "zlib" | "stream" {
   if (engine !== "auto") return engine;
   if (isNodeRuntime()) return "zlib";
   if (hasWebStreams()) return "stream";
-  throw new Error("llmbit: no deflate-raw implementation available in this runtime");
+  throw new Error("llmbti: no deflate-raw implementation available in this runtime");
 }
 
 async function pipeThrough(

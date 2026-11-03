@@ -1,4 +1,4 @@
-import { getCharacter, PALETTE } from "@llmbit/core";
+import { getCharacter, PALETTE } from "@llmbti/core";
 import { describe, expect, it } from "vitest";
 
 import { renderCharacterAnsi, renderFrameAnsi } from "./ansi";
@@ -48,7 +48,7 @@ describe("detectColorMode", () => {
     ["not a TTY (pipe)", { isTTY: false, argv: [], env: { COLORTERM: "truecolor" } }, "none"],
     [
       "--no-color flag",
-      { isTTY: true, argv: ["node", "llmbit", "--no-color"], env: { COLORTERM: "truecolor" } },
+      { isTTY: true, argv: ["node", "llmbti", "--no-color"], env: { COLORTERM: "truecolor" } },
       "none",
     ],
   ];

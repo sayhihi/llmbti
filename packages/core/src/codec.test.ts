@@ -55,7 +55,7 @@ describe("base64url", () => {
 
 describe("deflate-raw engines", () => {
   it("zlib and web stream implementations are interoperable", async () => {
-    const input = new TextEncoder().encode("llmbit ".repeat(50));
+    const input = new TextEncoder().encode("llmbti ".repeat(50));
     const viaZlib = await deflateRaw(input, "zlib");
     const viaStream = await deflateRaw(input, "stream");
     expect(await inflateRaw(viaZlib, "stream")).toEqual(input);
@@ -110,13 +110,13 @@ describe("codec", () => {
 
 describe("result URL", () => {
   it("builds `${base}/t/${TYPE}#r=${encoded}` and strips trailing slashes", async () => {
-    const url = await buildResultUrl("https://llmbit.vercel.app/", samplePayload);
+    const url = await buildResultUrl("https://llmbti.vercel.app/", samplePayload);
     const encoded = await encodePayload(samplePayload);
-    expect(url).toBe(`https://llmbit.vercel.app/t/ENFP#r=${encoded}`);
+    expect(url).toBe(`https://llmbti.vercel.app/t/ENFP#r=${encoded}`);
   });
 
   it("extracts the encoded result from a hash", async () => {
-    const url = await buildResultUrl("https://llmbit.vercel.app", samplePayload);
+    const url = await buildResultUrl("https://llmbti.vercel.app", samplePayload);
     const hash = new URL(url).hash;
     expect(extractEncodedResult(hash)).toBe(await encodePayload(samplePayload));
     expect(extractEncodedResult("#")).toBeNull();
@@ -126,13 +126,13 @@ describe("result URL", () => {
   });
 
   it("decodes straight from location.hash", async () => {
-    const url = await buildResultUrl("https://llmbit.vercel.app", samplePayload);
+    const url = await buildResultUrl("https://llmbti.vercel.app", samplePayload);
     expect(await decodeResultFromHash(new URL(url).hash)).toEqual(samplePayload);
     expect(await decodeResultFromHash("#r=garbage")).toBeNull();
   });
 
   it("keeps a typical payload well under the warning threshold", async () => {
-    const url = await buildResultUrl("https://llmbit.vercel.app", samplePayload);
+    const url = await buildResultUrl("https://llmbti.vercel.app", samplePayload);
     expect(URL_WARN_LENGTH).toBe(2000);
     expect(url.length).toBeLessThan(URL_WARN_LENGTH);
   });

@@ -1,12 +1,12 @@
 /**
- * `llmbit analyze` (SPEC 12장). 로그 읽기 → 기간 필터 → 시그널 → 점수 → 배지/샘플 → AnalysisOutput.
+ * `llmbti analyze` (SPEC 12장). 로그 읽기 → 기간 필터 → 시그널 → 점수 → 배지/샘플 → AnalysisOutput.
  *
  * 프롬프트 소스는 둘이다. 세션 로그(projects)가 1차, history.jsonl은 세션 로그에 없는 프롬프트만 보탠다
  * (세션 로그 보관 기간이 짧아서 history.jsonl이 더 길게 남는다). 같은 프롬프트는 ts ±2초로 중복 제거한다.
  */
 
-import { AXES } from "@llmbit/core";
-import type { AnalysisOutput, Axis, Stats } from "@llmbit/core";
+import { AXES } from "@llmbti/core";
+import type { AnalysisOutput, Axis, Stats } from "@llmbti/core";
 import { isLowSample, pickBadges } from "../badges";
 import { computeMetrics } from "../metrics";
 import { parseBashHistory } from "../parsers/bash";
@@ -165,7 +165,7 @@ export function formatAnalysis(result: AnalysisOutput): string {
     const mark = result.borderline.includes(axis) ? " (경계)" : "";
     return `${front} ${gauge} ${back}  ${v > 0 ? "+" : ""}${v}${mark}`;
   };
-  lines.push(`llmbit analyze  (최근 ${result.periodDays}일)`);
+  lines.push(`llmbti analyze  (최근 ${result.periodDays}일)`);
   lines.push("");
   if (result.insufficient) {
     lines.push(

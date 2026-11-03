@@ -16,9 +16,9 @@ import {
   type ResultMode,
   type ResultPayload,
   type Stats,
-} from "@llmbit/core";
+} from "@llmbti/core";
 
-export const DEFAULT_BASE_URL = "https://llmbit.vercel.app";
+export const DEFAULT_BASE_URL = "https://llmbti.vercel.app";
 
 /** 배지가 보여 주는 숫자 통계 키. 문자열 통계(shortestPrompt)는 URL에 싣지 않는다. */
 export const BADGE_STAT_KEYS: Readonly<Record<BadgeKey, ReadonlyArray<keyof Stats>>> = {
@@ -71,13 +71,13 @@ export function buildPayload(
   };
 }
 
-/** `--base` > `LLMBIT_BASE_URL` > 기본값. */
+/** `--base` > `LLMBTI_BASE_URL` > 기본값. */
 export function resolveBaseUrl(
   flag: string | boolean | undefined,
   env: Record<string, string | undefined> = process.env,
 ): string {
   if (typeof flag === "string" && flag.trim() !== "") return flag.trim();
-  const fromEnv = env.LLMBIT_BASE_URL;
+  const fromEnv = env.LLMBTI_BASE_URL;
   if (typeof fromEnv === "string" && fromEnv.trim() !== "") return fromEnv.trim();
   return DEFAULT_BASE_URL;
 }

@@ -7,8 +7,8 @@
  * - |점수| < BORDERLINE 이면 경계형. 판정은 부호대로, 0이면 앞 글자.
  */
 
-import { AXES, isMbtiType } from "@llmbit/core";
-import type { Axis, MbtiType, Scores, SignalKey, Signals } from "@llmbit/core";
+import { AXES, isMbtiType } from "@llmbti/core";
+import type { Axis, MbtiType, Scores, SignalKey, Signals } from "@llmbti/core";
 import { BORDERLINE, SIGNALS } from "./scoring.constants";
 
 export interface ScoringResult {

@@ -1,5 +1,5 @@
 /**
- * `llmbit` / `llmbit run` 라이트 모드 (SPEC 3장, 12장).
+ * `llmbti` / `llmbti run` 라이트 모드 (SPEC 3장, 12장).
  *
  * analyze → insufficient면 "아직 덜 컴파일됨" + 힌트 → 템플릿 문구 → render (mode "lite").
  * 셸 히스토리는 TTY에서 한 번 묻는다 (기본 Y). --no-shell이면 안 묻고 제외, --yes면 안 묻고 포함, 비TTY면 포함.

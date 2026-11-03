@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "tsup";
 
@@ -15,19 +15,28 @@ function copySkill(): void {
   cpSync(src, dst, { recursive: true });
 }
 
+/** 레포 루트 LICENSE → packages/cli/LICENSE (.gitignore 대상). npm은 패키지 디렉터리의 LICENSE만 자동 동봉한다. */
+function copyLicense(): void {
+  copyFileSync(
+    fileURLToPath(new URL("../../LICENSE", import.meta.url)),
+    fileURLToPath(new URL("./LICENSE", import.meta.url)),
+  );
+}
+
 export default defineConfig({
   entry: ["src/index.ts"],
   format: ["esm"],
   target: "node18",
   platform: "node",
-  // @llmbit/core를 번들에 포함한다. 런타임 의존성 0.
-  noExternal: ["@llmbit/core"],
+  // @llmbti/core를 번들에 포함한다. 런타임 의존성 0.
+  noExternal: ["@llmbti/core"],
   banner: { js: "#!/usr/bin/env node" },
-  define: { __LLMBIT_VERSION__: JSON.stringify(pkg.version) },
+  define: { __LLMBTI_VERSION__: JSON.stringify(pkg.version) },
   sourcemap: false,
   clean: true,
   minify: false,
   onSuccess: async () => {
     copySkill();
+    copyLicense();
   },
 });

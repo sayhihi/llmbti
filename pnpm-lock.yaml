@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@llmbit/core': workspace:@llmbti/core@*
+
 importers:
 
   .:
@@ -36,7 +39,7 @@ importers:
   apps/web:
     dependencies:
       '@llmbit/core':
-        specifier: workspace:*
+        specifier: workspace:@llmbti/core@*
         version: link:../../packages/core
       react:
         specifier: ^19.3.1
@@ -63,7 +66,7 @@ importers:
 
   packages/cli:
     devDependencies:
-      '@llmbit/core':
+      '@llmbti/core':
         specifier: workspace:*
         version: link:../core
       '@types/node':

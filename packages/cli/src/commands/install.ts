@@ -1,7 +1,7 @@
 /**
- * `llmbit install [--force]` (SPEC 3장, 11장, 12장).
+ * `llmbti install [--force]` (SPEC 3장, 11장, 12장).
  *
- * skill/SKILL.md를 `~/.claude/skills/llmbit/`로 복사한다. `CLAUDE_CONFIG_DIR`가 있으면 그 아래 skills/llmbit.
+ * skill/SKILL.md를 `~/.claude/skills/llmbti/`로 복사한다. `CLAUDE_CONFIG_DIR`가 있으면 그 아래 skills/llmbti.
  * 스킬 파일은 빌드 때 packages/cli/skill/ 로 복사돼 npm 패키지에 들어간다 (tsup onSuccess).
  * 런타임에는 번들(dist/index.js) 기준 상대 경로로 찾고, 없으면 레포 루트의 skill/ (개발 환경).
  */
@@ -11,7 +11,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const SKILL_NAME = "llmbit";
+export const SKILL_NAME = "llmbti";
 export const SKILL_MAIN_FILE = "SKILL.md";
 export const SKILL_TONE_FILE = "TONE.md";
 
@@ -99,6 +99,6 @@ export async function installCommand(opts: InstallOptions, io: InstallIo): Promi
   for (const f of files) copyFileSync(join(sourceDir, f), join(targetDir, f));
 
   io.stdout(`설치 완료: ${targetDir} (${files.join(", ")})\n`);
-  io.stdout("다음: Claude Code에서 /llmbit\n");
+  io.stdout("다음: Claude Code에서 /llmbti\n");
   return 0;
 }

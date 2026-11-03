@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // 샘플 결과 URL 3개를 찍는다. 웹 결과 페이지를 손으로 확인할 때 쓴다.
 //
-//   pnpm --filter @llmbit/core build   # 먼저 core dist 를 만든다
+//   pnpm --filter @llmbti/core build   # 먼저 core dist 를 만든다
 //   node scripts/sample-url.mjs [--base http://localhost:4173]
 //
 // 샘플: INTJ (claude 모드), ENFP (lite 모드), ISTP (JP 축 경계형)
@@ -21,7 +21,7 @@ for (let i = 0; i < args.length; i++) {
 }
 
 if (!existsSync(dist)) {
-  console.error("packages/core/dist 가 없다. 먼저 실행: pnpm --filter @llmbit/core build");
+  console.error("packages/core/dist 가 없다. 먼저 실행: pnpm --filter @llmbti/core build");
   process.exit(2);
 }
 

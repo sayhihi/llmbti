@@ -40,13 +40,13 @@ describe("skill source", () => {
   it("SKILL.md 는 SPEC 11장 frontmatter 와 절차, 금지 사항을 담고 TONE.md 규칙을 전부 포함한다", () => {
     const skill = readFileSync(join(repoSkillDir, "SKILL.md"), "utf8");
     const tone = readFileSync(join(repoSkillDir, "TONE.md"), "utf8");
-    expect(skill.startsWith("---\nname: llmbit\n")).toBe(true);
+    expect(skill.startsWith("---\nname: llmbti\n")).toBe(true);
     expect(skill).toContain(
-      "description: 사용자가 /llmbit, 개발자 MBTI, llmbit 분석을 요청할 때 사용",
+      "description: 사용자가 /llmbti, 개발자 MBTI, llmbti 분석을 요청할 때 사용",
     );
-    expect(skill).toContain("npx -y llmbit analyze --json");
+    expect(skill).toContain("npx -y llmbti analyze --json");
     expect(skill).toContain(
-      "npx -y llmbit render --analysis /tmp/llmbit-analysis.json --copy /tmp/llmbit-copy.json",
+      "npx -y llmbti render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json",
     );
     expect(skill).toContain("insufficient");
     expect(skill).toContain("원본 로그");
@@ -60,21 +60,21 @@ describe("skill source", () => {
 describe("installCommand", () => {
   let configDir: string;
   beforeEach(() => {
-    configDir = mkdtempSync(join(tmpdir(), "llmbit-install-"));
+    configDir = mkdtempSync(join(tmpdir(), "llmbti-install-"));
   });
   afterEach(() => {
     rmSync(configDir, { recursive: true, force: true });
   });
 
-  it("CLAUDE_CONFIG_DIR 아래 skills/llmbit 에 SKILL.md 를 복사하고 다음 단계를 안내한다", async () => {
+  it("CLAUDE_CONFIG_DIR 아래 skills/llmbti 에 SKILL.md 를 복사하고 다음 단계를 안내한다", async () => {
     const t = io({ env: { CLAUDE_CONFIG_DIR: configDir } });
     const code = await installCommand({ force: false }, t.io);
     expect(code).toBe(0);
     const target = resolveSkillTargetDir({ CLAUDE_CONFIG_DIR: configDir });
-    expect(target).toBe(join(configDir, "skills", "llmbit"));
-    expect(readFileSync(join(target, "SKILL.md"), "utf8")).toContain("name: llmbit");
+    expect(target).toBe(join(configDir, "skills", "llmbti"));
+    expect(readFileSync(join(target, "SKILL.md"), "utf8")).toContain("name: llmbti");
     expect(t.out()).toContain(target);
-    expect(t.out()).toContain("Claude Code에서 /llmbit");
+    expect(t.out()).toContain("Claude Code에서 /llmbti");
   });
 
   it("이미 있고 비TTY 면 --force 힌트와 함께 거부한다", async () => {
@@ -88,7 +88,7 @@ describe("installCommand", () => {
   it("TTY 면 y/N 을 묻고, N 이면 취소, --force 면 안 묻는다", async () => {
     const env = { CLAUDE_CONFIG_DIR: configDir };
     await installCommand({ force: false }, io({ env }).io);
-    const target = join(configDir, "skills", "llmbit", "SKILL.md");
+    const target = join(configDir, "skills", "llmbti", "SKILL.md");
     writeFileSync(target, "old");
 
     const asked: boolean[] = [];
@@ -105,12 +105,12 @@ describe("installCommand", () => {
 
     const yes = io({ env, isTTY: true, stdinIsTTY: true, ask: async () => true });
     expect(await installCommand({ force: false }, yes.io)).toBe(0);
-    expect(readFileSync(target, "utf8")).toContain("name: llmbit");
+    expect(readFileSync(target, "utf8")).toContain("name: llmbti");
 
     writeFileSync(target, "old");
     const forced = io({ env, isTTY: true, stdinIsTTY: true, ask: async () => false });
     expect(await installCommand({ force: true }, forced.io)).toBe(0);
-    expect(readFileSync(target, "utf8")).toContain("name: llmbit");
+    expect(readFileSync(target, "utf8")).toContain("name: llmbti");
   });
 
   it("원본이 없으면 1", async () => {

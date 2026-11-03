@@ -1,10 +1,10 @@
 /**
  * 개발용 미리보기. 캐릭터를 현재 터미널에 찍는다. 배포 번들에는 들어가지 않는다.
  *
- *   pnpm --filter llmbit preview INTJ
- *   pnpm --filter llmbit preview ENFP --mode 256
- *   pnpm --filter llmbit preview ISTP --frame 1 --width 60
- *   pnpm --filter llmbit preview --all
+ *   pnpm --filter llmbti preview INTJ
+ *   pnpm --filter llmbti preview ENFP --mode 256
+ *   pnpm --filter llmbti preview ISTP --frame 1 --width 60
+ *   pnpm --filter llmbti preview --all
  *
  * --mode truecolor|256|none   자동 판정 대신 강제
  * --frame N                   프레임 인덱스 (기본 0)
@@ -21,7 +21,7 @@ import {
   type CharacterId,
   type MbtiType,
   type Scores,
-} from "@llmbit/core";
+} from "@llmbti/core";
 
 import {
   axisBars,

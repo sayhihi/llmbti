@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { MAX_BADGES } from "@llmbit/core";
-import type { Stats } from "@llmbit/core";
+import { MAX_BADGES } from "@llmbti/core";
+import type { Stats } from "@llmbti/core";
 import { isLowSample, pickBadges } from "./badges";
 import { BADGE_THRESHOLDS, LOW_SAMPLE_PROMPTS } from "./scoring.constants";
 

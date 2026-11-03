@@ -5,11 +5,11 @@
  * 길이는 글자 수(코드 포인트) 기준이고 공백과 문장부호도 센다.
  */
 
-import { COPY_LIMITS, MBTI_TYPES, isMbtiType, type CopyJson } from "@llmbit/core";
+import { COPY_LIMITS, MBTI_TYPES, isMbtiType, type CopyJson } from "@llmbti/core";
 
 export type CopyValidation = { ok: true; copy: CopyJson } | { ok: false; problems: string[] };
 
-/** TONE.md 금지 문자: 가운뎃점 계열과 줄표 계열. */
+/** TONE.md 금지 문자: 가운뎃점 계열과 줄표 계열. 이모지는 EMOJI_RE로 따로 본다. */
 export const FORBIDDEN_CHARS: ReadonlyArray<{ char: string; name: string }> = [
   { char: "·", name: "가운뎃점(·)" },
   { char: "ㆍ", name: "가운뎃점(ㆍ)" },
@@ -18,6 +18,10 @@ export const FORBIDDEN_CHARS: ReadonlyArray<{ char: string; name: string }> = [
   { char: "–", name: "줄표(–)" },
   { char: "―", name: "줄표(―)" },
 ];
+
+/** 이모지 (Extended_Pictographic). 변형 선택자나 ZWJ 조합도 첫 글자가 여기 걸린다. */
+const EMOJI_RE = /\p{Extended_Pictographic}/u;
+const EMOJI_ALL_RE = /\p{Extended_Pictographic}/gu;
 
 export const ROAST_SENTENCES: readonly [number, number] = [2, 3];
 
@@ -38,6 +42,15 @@ export function countSentences(text: string): number {
 
 export function hasDigit(s: string): boolean {
   return /\d/.test(s);
+}
+
+export function hasEmoji(s: string): boolean {
+  return EMOJI_RE.test(s);
+}
+
+/** 문자열에 든 이모지를 중복 없이 순서대로. 에러 메시지용. */
+export function findEmoji(s: string): string[] {
+  return [...new Set(s.match(EMOJI_ALL_RE) ?? [])];
 }
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -108,6 +121,10 @@ export function validateCopy(value: unknown): CopyValidation {
   for (const [field, text] of stringFields(value)) {
     for (const { char, name } of FORBIDDEN_CHARS) {
       if (text.includes(char)) problems.push(`${field}: ${name} 금지. 쉼표나 콜론으로 바꾼다.`);
+    }
+    const emoji = findEmoji(text);
+    if (emoji.length > 0) {
+      problems.push(`${field}: 이모지 금지 (${emoji.join(" ")}). 글로 푼다.`);
     }
   }
 

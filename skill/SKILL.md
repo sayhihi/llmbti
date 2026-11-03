@@ -1,21 +1,21 @@
 ---
-name: llmbit
-description: 사용자가 /llmbit, 개발자 MBTI, llmbit 분석을 요청할 때 사용
+name: llmbti
+description: 사용자가 /llmbti, 개발자 MBTI, llmbti 분석을 요청할 때 사용
 ---
 
-# llmbit
+# llmbti
 
 LLM에게 일을 시키는 패턴과 셸 히스토리로 개발자 MBTI를 뽑는다. 점수와 유형은 스크립트가 정하고, Claude는 문구만 쓴다.
 
 ## 절차
 
-임시 파일은 `/tmp/llmbit-analysis.json`, `/tmp/llmbit-copy.json`을 쓴다. Windows면 `%TEMP%` 아래 같은 이름으로 바꿔 쓴다.
+임시 파일은 `/tmp/llmbti-analysis.json`, `/tmp/llmbti-copy.json`을 쓴다. Windows면 `%TEMP%` 아래 같은 이름으로 바꿔 쓴다.
 
 1. 셸 히스토리(zsh, bash)도 같이 분석할지 사용자에게 한 번만 묻는다. 기본값은 포함이다. 이미 답했으면 다시 묻지 않는다.
-2. `npx -y llmbit analyze --json > /tmp/llmbit-analysis.json` 을 실행한다. 셸을 빼기로 했으면 `--no-shell`을 붙인다.
-3. `/tmp/llmbit-analysis.json`을 읽는다. `insufficient`가 `true`면 "아직 덜 컴파일됨. 프롬프트 N개, 셸 명령 M개로는 유형이 안 나온다"라고 알리고 끝낸다. N, M은 `sampleSize.prompts`, `sampleSize.shell`이다.
-4. 아래 스키마와 톤 규칙대로 CopyJson을 써서 `/tmp/llmbit-copy.json`에 저장한다. 숫자는 `stats`, `signals`, `sampleSize`, `scores`에서만 가져온다. `samples`는 웃긴 포인트를 잡는 참고용이고, 인용은 짧게 한 번까지만 한다. `type`은 바꾸지 않는다.
-5. `npx -y llmbit render --analysis /tmp/llmbit-analysis.json --copy /tmp/llmbit-copy.json` 을 실행한다. 검증 에러가 번호 목록으로 나오면 해당 항목만 고쳐서 다시 실행한다. 최대 2회.
+2. `npx -y llmbti analyze --json > /tmp/llmbti-analysis.json` 을 실행한다. 셸을 빼기로 했으면 `--no-shell`을 붙인다.
+3. `/tmp/llmbti-analysis.json`을 읽는다. `insufficient`가 `true`면 "아직 덜 컴파일됨. 프롬프트 N개, 셸 명령 M개로는 유형이 안 나온다"라고 알리고 끝낸다. N, M은 `sampleSize.prompts`, `sampleSize.shell`이다.
+4. 아래 스키마와 톤 규칙대로 CopyJson을 써서 `/tmp/llmbti-copy.json`에 저장한다. 숫자는 `stats`, `signals`, `sampleSize`, `scores`에서만 가져온다. `samples`는 웃긴 포인트를 잡는 참고용이고, 인용은 짧게 한 번까지만 한다. `type`은 바꾸지 않는다.
+5. `npx -y llmbti render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json` 을 실행한다. 검증 에러가 번호 목록으로 나오면 해당 항목만 고쳐서 다시 실행한다. 최대 2회.
 6. 마지막에 결과 URL을 한 줄로 안내한다. 터미널 출력(캐릭터, 바, evidence)을 다시 요약하지 않는다.
 
 ## 금지
@@ -65,7 +65,7 @@ LLM에게 일을 시키는 패턴과 셸 히스토리로 개발자 MBTI를 뽑�
 - 외모, 성별, 나이, 국적 같은 개인 속성을 언급하지 않는다. 추측도 하지 않는다.
 - 회사명, 프로젝트명, 파일 경로, 레포 이름, 사람 이름을 쓰지 않는다. analyze 샘플에 들어 있어도 문구에 옮기지 않는다.
 - 가운뎃점과 줄표 금지. 구분은 쉼표나 콜론으로 한다. 괄호는 꼭 필요할 때 한 번까지.
-- 이모지는 쓰지 않는다. 느낌표는 commitMessage에서만 허용한다.
+- 이모지는 쓰지 않는다. 어느 필드든 이모지가 있으면 render 검증에서 거부된다. 느낌표는 commitMessage에서만 허용한다.
 - 원본 로그를 직접 열어 읽지 않는다. analyze 출력 JSON만 본다.
 
 ### 길이 제한
