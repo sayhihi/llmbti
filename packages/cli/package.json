@@ -17,12 +17,14 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "preview": "tsx src/dev/preview.ts"
   },
   "devDependencies": {
     "@llmbit/core": "workspace:*",
     "@types/node": "^24.19.2",
     "tsup": "^9.0.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vitest": "^5.1.0"
   }

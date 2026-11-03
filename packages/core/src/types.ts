@@ -41,6 +41,22 @@ export type Scores = Record<Axis, number>;
 /** 기질 4그룹. 캐릭터 몸 색과 연결된다 (SPEC 10장). */
 export type Temperament = "NT" | "NF" | "SJ" | "SP";
 
+export const TEMPERAMENTS: readonly Temperament[] = ["NT", "NF", "SJ", "SP"];
+
+/** 유형 → 기질. N이면 셋째 글자(T/F), S면 넷째 글자(J/P)로 가른다. */
+export function TEMPERAMENT_OF(type: MbtiType): Temperament {
+  if (type[1] === "N") return type[2] === "T" ? "NT" : "NF";
+  return type[3] === "J" ? "SJ" : "SP";
+}
+
+/** 기질별 몸 색 팔레트 인덱스 [기본, 그림자] (palette.json). */
+export const TEMPERAMENT_PALETTE: Readonly<Record<Temperament, readonly [number, number]>> = {
+  SJ: [5, 6],
+  NT: [7, 8],
+  NF: [9, 10],
+  SP: [11, 12],
+};
+
 /** SPEC 8장 CopyJson. Claude 또는 라이트 모드 템플릿이 채운다. */
 export type CopyJson = {
   lang: "ko" | "en";
