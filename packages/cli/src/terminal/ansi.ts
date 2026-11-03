@@ -13,7 +13,7 @@ import {
   type Palette,
   type PixelCharacter,
   type PixelFrame,
-} from "@llmbit/core";
+} from "@llmbti/core";
 
 import { BG_DEFAULT, RESET, bgCode, fgCode, type ColorMode } from "./color";
 

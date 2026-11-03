@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_BADGES } from "@llmbit/core";
+import { MAX_BADGES } from "@llmbti/core";
 import { FIXTURE_NOW, FIXTURE_TZ, fixtureHome } from "../testUtils";
 import { MAX_SAMPLES, MIN_PROMPTS, MIN_SHELL, SAMPLE_MAX_LENGTH } from "../scoring.constants";
 import { analyze, formatAnalysis, mergePrompts } from "./analyze";

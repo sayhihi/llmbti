@@ -11,7 +11,7 @@
  * - 가중치는 SPEC에 없어서 축 안에서 대략 균등하게 두되 신호가 또렷한 쪽(턴 수, 구체 비율, 계획 신호)에 조금 더 줬다.
  */
 
-import type { Axis, BadgeKey, SignalKey, Stats } from "@llmbit/core";
+import type { Axis, BadgeKey, SignalKey, Stats } from "@llmbti/core";
 
 /** 최소 표본 (SPEC 5장). 프롬프트 < MIN_PROMPTS 이고 셸 < MIN_SHELL 이면 insufficient. */
 export const MIN_PROMPTS = 30;

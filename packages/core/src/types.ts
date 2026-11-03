@@ -1,5 +1,5 @@
 /**
- * llmbit 공유 타입.
+ * llmbti 공유 타입.
  *
  * 이 파일은 M0 초안이다. 분석 엔진(M1)과 웹(M2) 에이전트가 필요한 필드를 덧붙인다.
  * 단, `ResultPayload`와 `CopyJson`은 SPEC 8장·9장과 1:1이므로 바꾸려면 SPEC을 먼저 고친다.
@@ -199,7 +199,7 @@ export interface SourceAvailability {
 }
 
 /**
- * `llmbit analyze --json`의 출력. 스킬과 render가 읽는다.
+ * `llmbti analyze --json`의 출력. 스킬과 render가 읽는다.
  * `insufficient: true`여도 scores/type은 채워져 있지만 신뢰하지 않는다 (SPEC 5장 최소 표본).
  */
 export interface AnalysisOutput {

@@ -3,8 +3,8 @@
  * lowSample은 표본 기준이라 stats가 아니라 호출 측이 넘긴다.
  */
 
-import { MAX_BADGES } from "@llmbit/core";
-import type { BadgeKey, Stats } from "@llmbit/core";
+import { MAX_BADGES } from "@llmbti/core";
+import type { BadgeKey, Stats } from "@llmbti/core";
 import { BADGE_RULES, LOW_SAMPLE_PROMPTS } from "./scoring.constants";
 
 export function isLowSample(promptCount: number): boolean {

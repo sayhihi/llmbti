@@ -65,7 +65,7 @@ export function validatePayload(value: unknown): ResultPayload | null {
 }
 
 /**
- * 결과 URL을 만든다. `https://llmbit.vercel.app` + payload -> `https://llmbit.vercel.app/t/ENFP#r=...`
+ * 결과 URL을 만든다. `https://llmbti.vercel.app` + payload -> `https://llmbti.vercel.app/t/ENFP#r=...`
  * 길이 경고는 호출 측이 `url.length > URL_WARN_LENGTH`로 판단한다.
  */
 export async function buildResultUrl(baseUrl: string, payload: ResultPayload): Promise<string> {

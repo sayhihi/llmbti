@@ -1,4 +1,4 @@
-import { MBTI_TYPES, TYPE_META, type Stats } from "@llmbit/core";
+import { MBTI_TYPES, TYPE_META, type Stats } from "@llmbti/core";
 import { describe, expect, it } from "vitest";
 
 import { analyze } from "../commands/analyze";

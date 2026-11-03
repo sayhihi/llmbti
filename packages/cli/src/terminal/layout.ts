@@ -4,7 +4,7 @@
  * 왼쪽에 캐릭터 16줄, 오른쪽에 유형·별명·4축 바·evidence. 폭이 80칸 미만이면 세로로 쌓는다.
  */
 
-import { AXES, type Axis, type Scores } from "@llmbit/core";
+import { AXES, type Axis, type Scores } from "@llmbti/core";
 
 import { displayWidth } from "./color";
 

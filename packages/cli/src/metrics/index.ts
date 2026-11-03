@@ -3,7 +3,7 @@
  * 입력은 이미 분석 기간으로 걸러진 이벤트다. 출력의 문자열 통계는 아직 redact 전이다 (analyze가 처리).
  */
 
-import type { Signals, Stats } from "@llmbit/core";
+import type { Signals, Stats } from "@llmbti/core";
 import type { PromptEvent, SessionLog, ShellEvent } from "../parsers/common";
 import { MIN_REPEAT_COUNT } from "../scoring.constants";
 import { classifyPrompt, type PromptFlags } from "./prompts";

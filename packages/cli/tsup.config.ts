@@ -20,10 +20,10 @@ export default defineConfig({
   format: ["esm"],
   target: "node18",
   platform: "node",
-  // @llmbit/core를 번들에 포함한다. 런타임 의존성 0.
-  noExternal: ["@llmbit/core"],
+  // @llmbti/core를 번들에 포함한다. 런타임 의존성 0.
+  noExternal: ["@llmbti/core"],
   banner: { js: "#!/usr/bin/env node" },
-  define: { __LLMBIT_VERSION__: JSON.stringify(pkg.version) },
+  define: { __LLMBTI_VERSION__: JSON.stringify(pkg.version) },
   sourcemap: false,
   clean: true,
   minify: false,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Signals } from "@llmbit/core";
+import type { Signals } from "@llmbti/core";
 import { displayType, normalizeSignal, score, scoreAxis } from "./scoring";
 import { BORDERLINE, SIGNALS } from "./scoring.constants";
 

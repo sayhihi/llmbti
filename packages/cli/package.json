@@ -1,11 +1,11 @@
 {
-  "name": "llmbit",
+  "name": "llmbti",
   "version": "0.0.0",
-  "description": "LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI. npx llmbit",
+  "description": "LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI. npx llmbti",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "llmbit": "./dist/index.js"
+    "llmbti": "./dist/index.js"
   },
   "files": [
     "dist",
@@ -21,7 +21,7 @@
     "preview": "tsx src/dev/preview.ts"
   },
   "devDependencies": {
-    "@llmbit/core": "workspace:*",
+    "@llmbti/core": "workspace:*",
     "@types/node": "^24.19.2",
     "tsup": "^9.0.0",
     "tsx": "^4.20.6",

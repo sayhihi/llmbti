@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { decodeResultFromHash } from "@llmbit/core";
+import { decodeResultFromHash } from "@llmbti/core";
 import { afterAll, describe, expect, it } from "vitest";
 
 import { main, parseArgs } from "./cli";
@@ -28,7 +28,7 @@ async function run(argv: string[], ioOverrides: Partial<CliIo> = {}): Promise<Ru
     isTTY: false,
     stdinIsTTY: false,
     columns: 100,
-    env: { LLMBIT_BASE_URL: "" },
+    env: { LLMBTI_BASE_URL: "" },
     openBrowser: async (u) => (opened.push(u), true),
     ask: async (q) => (asked.push(q), true),
     ...ioOverrides,
@@ -64,7 +64,7 @@ describe("parseArgs", () => {
   });
 });
 
-describe("llmbit analyze (CLI)", () => {
+describe("llmbti analyze (CLI)", () => {
   const base = ["analyze", ...fixtureP];
 
   it("--json 은 AnalysisOutput JSON 을 찍는다", async () => {
@@ -104,20 +104,20 @@ describe("llmbit analyze (CLI)", () => {
   });
 
   it("--help 와 인자 없는 render", async () => {
-    expect((await run(["--help"])).out).toContain("llmbit analyze");
+    expect((await run(["--help"])).out).toContain("llmbti analyze");
     const r = await run(["render"]);
     expect(r.code).toBe(2);
     expect(r.err).toContain("render");
   });
 });
 
-describe("llmbit run (라이트 모드)", () => {
+describe("llmbti run (라이트 모드)", () => {
   it("fixtures/home-p → URL 의 hash 가 mode lite, type ENFP 로 디코드된다", async () => {
     const r = await run(["run", ...fixtureP, "--no-open", "--yes"]);
     expect(r.code).toBe(0);
     expect(r.err).toBe("");
     const url = lastLine(r.out);
-    expect(url.startsWith("https://llmbit.vercel.app/t/ENFP#r=")).toBe(true);
+    expect(url.startsWith("https://llmbti.vercel.app/t/ENFP#r=")).toBe(true);
     const payload = await decodeResultFromHash(url.slice(url.indexOf("#")));
     expect(payload).not.toBeNull();
     expect(payload!.mode).toBe("lite");
@@ -139,11 +139,11 @@ describe("llmbit run (라이트 모드)", () => {
     expect(lastLine(a.out)).toBe(lastLine(b.out));
   });
 
-  it("명령 없이 실행해도 run 이고, --base 와 LLMBIT_BASE_URL 을 따른다", async () => {
+  it("명령 없이 실행해도 run 이고, --base 와 LLMBTI_BASE_URL 을 따른다", async () => {
     const flag = await run([...fixtureP, "--no-open", "--yes", "--base", "http://localhost:4173/"]);
     expect(lastLine(flag.out).startsWith("http://localhost:4173/t/ENFP#r=")).toBe(true);
     const env = await run([...fixtureP, "--no-open", "--yes"], {
-      env: { LLMBIT_BASE_URL: "http://x.test" },
+      env: { LLMBTI_BASE_URL: "http://x.test" },
     });
     expect(lastLine(env.out).startsWith("http://x.test/t/ENFP#r=")).toBe(true);
   });
@@ -209,7 +209,7 @@ describe("llmbit run (라이트 모드)", () => {
     // 캐릭터 16줄 (투명한 행은 ANSI 없이 비어 있을 수 있다) → 빈 줄 → URL
     expect(lines.slice(0, 16).filter((l) => l.includes("\x1b[")).length).toBeGreaterThanOrEqual(14);
     expect(lines[16]).toBe("");
-    expect(lines[17]).toMatch(/^https:\/\/llmbit\.vercel\.app\/t\/ENFP#r=/);
+    expect(lines[17]).toMatch(/^https:\/\/llmbti\.vercel\.app\/t\/ENFP#r=/);
 
     const narrow = await run([
       "run",
@@ -230,8 +230,8 @@ describe("llmbit run (라이트 모드)", () => {
   });
 });
 
-describe("llmbit render", () => {
-  const dir = mkdtempSync(join(tmpdir(), "llmbit-render-"));
+describe("llmbti render", () => {
+  const dir = mkdtempSync(join(tmpdir(), "llmbti-render-"));
   afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
   const analysisPath = join(dir, "analysis.json");

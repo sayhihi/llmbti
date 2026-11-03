@@ -49,7 +49,7 @@ describe("parseClaudeHistoryText", () => {
     const text = [
       JSON.stringify({ display: "/clear", timestamp: 1 }),
       JSON.stringify({ display: "   ", timestamp: 2 }),
-      JSON.stringify({ display: "/llmbit", timestamp: 3 }),
+      JSON.stringify({ display: "/llmbti", timestamp: 3 }),
       JSON.stringify({ display: "// 주석은 프롬프트다", timestamp: 4 }),
     ].join("\n");
     const { items, skipped } = parseClaudeHistoryText(text);

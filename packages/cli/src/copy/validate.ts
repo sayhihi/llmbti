@@ -5,7 +5,7 @@
  * 길이는 글자 수(코드 포인트) 기준이고 공백과 문장부호도 센다.
  */
 
-import { COPY_LIMITS, MBTI_TYPES, isMbtiType, type CopyJson } from "@llmbit/core";
+import { COPY_LIMITS, MBTI_TYPES, isMbtiType, type CopyJson } from "@llmbti/core";
 
 export type CopyValidation = { ok: true; copy: CopyJson } | { ok: false; problems: string[] };
 
