@@ -1,23 +1,28 @@
-import { MBTI_TYPES, URL_WARN_LENGTH } from "@llmbit/core";
+import { Layout } from "./components/Layout";
+import { Home } from "./pages/Home";
+import { NotFound } from "./pages/NotFound";
+import { Start } from "./pages/Start";
+import { TypePage } from "./pages/TypePage";
+import { Types } from "./pages/Types";
+import { matchPath, useRouter } from "./router";
 
 /**
- * M0 placeholder. 라우팅(/, /start, /t/{TYPE}, /types)과 결과 렌더링은 M2에서 웹 에이전트가 만든다.
+ * 경로 4개 (SPEC 13장). 서버 쪽 rewrite 는 vercel.json 에 있다.
+ *   /           랜딩
+ *   /start      테스트 방법
+ *   /t/:type    공유 페이지 (hash 있으면 결과, 없으면 소개)
+ *   /types      16종 도감
  */
 export function App() {
-  return (
-    <main className="terminal">
-      <pre className="prompt">
-        <span className="dim">$ </span>npx llmbit
-      </pre>
-      <h1 className="logo">llmbit</h1>
-      <p className="tagline">
-        <span className="dim">&gt; </span>typeof me
-      </p>
-      <p className="status">
-        <span className="dim">// </span>M0: 빌드 중. 유형 {MBTI_TYPES.length}종, URL 경고 기준{" "}
-        {URL_WARN_LENGTH}자
-      </p>
-      <span className="cursor" aria-hidden="true" />
-    </main>
-  );
+  const { path } = useRouter();
+  return <Layout>{route(path)}</Layout>;
+}
+
+function route(path: string) {
+  if (path === "/") return <Home />;
+  if (path === "/start") return <Start />;
+  if (path === "/types") return <Types />;
+  const t = matchPath("/t/:type", path);
+  if (t?.type) return <TypePage key={t.type} param={t.type} />;
+  return <NotFound />;
 }
