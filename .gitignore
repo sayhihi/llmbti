@@ -22,3 +22,4 @@ dist/
 
 # 빌드 때 skill/ 을 복사해 넣는 자리 (packages/cli/tsup.config.ts)
 packages/cli/skill/
+packages/cli/LICENSE

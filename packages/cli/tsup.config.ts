@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { copyFileSync, cpSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "tsup";
 
@@ -15,6 +15,14 @@ function copySkill(): void {
   cpSync(src, dst, { recursive: true });
 }
 
+/** 레포 루트 LICENSE → packages/cli/LICENSE (.gitignore 대상). npm은 패키지 디렉터리의 LICENSE만 자동 동봉한다. */
+function copyLicense(): void {
+  copyFileSync(
+    fileURLToPath(new URL("../../LICENSE", import.meta.url)),
+    fileURLToPath(new URL("./LICENSE", import.meta.url)),
+  );
+}
+
 export default defineConfig({
   entry: ["src/index.ts"],
   format: ["esm"],
@@ -29,5 +37,6 @@ export default defineConfig({
   minify: false,
   onSuccess: async () => {
     copySkill();
+    copyLicense();
   },
 });
