@@ -2,6 +2,6 @@ import { useEffect } from "react";
 
 export function useDocumentTitle(title: string | null) {
   useEffect(() => {
-    document.title = title ? `${title} | llmbit` : "llmbit";
+    document.title = title ? `${title} | llmbti` : "llmbti";
   }, [title]);
 }

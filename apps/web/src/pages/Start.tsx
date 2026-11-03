@@ -23,7 +23,7 @@ export function Start() {
           <div className="step-body">
             <h2 className="step-title">스킬 설치</h2>
             <p className="dim">
-              <code>~/.claude/skills/llmbit/</code> 에 스킬을 복사한다. 전역 설치 없이 npx로 돈다.
+              <code>~/.claude/skills/llmbti/</code> 에 스킬을 복사한다. 전역 설치 없이 npx로 돈다.
             </p>
             <CommandLine command={INSTALL_COMMAND} />
           </div>
@@ -33,7 +33,7 @@ export function Start() {
           <div className="step-body">
             <h2 className="step-title">Claude Code에서 실행</h2>
             <p className="dim">Claude Code 세션을 열고 슬래시 명령을 친다.</p>
-            <CommandLine command="/llmbit" />
+            <CommandLine command="/llmbti" />
             <p className="dim small">
               analyze 스크립트가 로그를 집계하고 점수와 유형을 정한다. Claude는 그 숫자를 보고
               디스를 쓴다.
@@ -60,7 +60,7 @@ export function Start() {
               링크를 붙여 넣으면 된다. 그 링크가 공유용이다.
             </p>
             <pre className="code-block">
-              <span className="dim">https://llmbit.vercel.app</span>/t/ENFP
+              <span className="dim">https://llmbti.vercel.app</span>/t/ENFP
               <span className="dim">#r=...</span>
             </pre>
           </div>

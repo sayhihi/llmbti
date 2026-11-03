@@ -1,8 +1,8 @@
 import { Link } from "../router";
 import { CommandLine } from "./CopyButton";
 
-export const INSTALL_COMMAND = "npx llmbit install";
-export const LITE_COMMAND = "npx llmbit";
+export const INSTALL_COMMAND = "npx llmbti install";
+export const LITE_COMMAND = "npx llmbti";
 
 /** "나도 해보기". /start 링크와 설치 명령 복사. */
 export function TryItCta({ title = "나도 해보기" }: { title?: string }) {

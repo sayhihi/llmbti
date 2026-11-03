@@ -1,6 +1,7 @@
 import { AxisGauges } from "../components/AxisGauges";
 import { TypeCard } from "../components/TypeCard";
 import { TypingLine } from "../components/TypingLine";
+import { WalkStrip } from "../components/WalkStrip";
 import { SAMPLE_RESULTS } from "../data/samples";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { Link } from "../router";
@@ -11,9 +12,9 @@ export function Home() {
     <>
       <section className="hero">
         <p className="eyebrow dim">
-          <span>$ </span>npx llmbit
+          <span>$ </span>npx llmbti
         </p>
-        <h1 className="hero-title">나의 llmbit는 무엇일까?</h1>
+        <h1 className="hero-title">나의 llmbti는 무엇일까?</h1>
         <p className="hero-sub">
           Claude Code에 일을 시키는 말투와 셸 히스토리로 보는 개발자 MBTI. 점수는 스크립트가
           계산하고 디스는 Claude가 쓴다.
@@ -67,6 +68,11 @@ export function Home() {
           원본 로그는 기기 밖으로 안 나간다. 결과 페이지로 가는 건 유형, 점수, 문구뿐이고 URL 안에만
           실린다.
         </p>
+      </section>
+
+      <section className="section walk-section">
+        <WalkStrip />
+        <p className="dim small center">지금까지 그려진 캐릭터. 나머지는 그리는 중이다.</p>
       </section>
     </>
   );

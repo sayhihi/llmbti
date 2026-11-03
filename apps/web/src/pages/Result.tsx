@@ -99,7 +99,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
           <span className="px section-eyebrow">// share</span>
           공유
         </h2>
-        <ShareRow />
+        <ShareRow type={type} nickname={copy.nickname} roast={copy.roast} scores={scores} />
         <p className="dim small">
           링크 안에 결과가 통째로 들어 있다. 서버에는 아무것도 남지 않는다.
         </p>
@@ -109,7 +109,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
         <section className="section card lite-cta">
           <h2 className="section-title">Claude가 쓴 버전은 더 맵다</h2>
           <p className="dim">
-            이 결과는 템플릿 문구다. Claude Code에서 <code>/llmbit</code> 을 돌리면 실제 프롬프트를
+            이 결과는 템플릿 문구다. Claude Code에서 <code>/llmbti</code> 을 돌리면 실제 프롬프트를
             보고 디스를 새로 쓴다.
           </p>
           <Link to="/start" className="btn btn-primary">

@@ -1,5 +1,5 @@
 /*
- * llmbit 웹 스타일. 다크 터미널 베이스, 모노스페이스, 픽셀 폰트 포인트.
+ * llmbti 웹 스타일. 다크 터미널 베이스, 모노스페이스, 픽셀 폰트 포인트.
  * 팔레트 색(--p-*)은 theme.ts 가 packages/core/src/palette.json 에서 올린다. 아래 fallback 값은 같은 파일에서 베꼈다.
  * 모바일 우선, 좌우 여백 16px, 가로 스크롤 없음.
  */
@@ -666,6 +666,23 @@ h3 {
 .pixel-placeholder-note {
   font-size: 11px;
   color: var(--dim);
+}
+
+/* ---------- 랜딩 하단 걷기 띠 ---------- */
+
+.walk-section {
+  gap: 4px;
+}
+
+.walk-strip {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 2px;
+}
+
+.walk-canvas {
+  display: block;
 }
 
 /* ---------- 게이지 ---------- */
