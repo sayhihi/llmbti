@@ -1,0 +1,54 @@
+{
+  "comments": [
+    "Recipes for scripts/pixel-compose.mjs. One entry per type; layer names are files under the group folder.",
+    "temperament picks the body colour remap for palette indices 5/6: sj 5/6 (mascot terracotta), nt 7/8, nf 9/a, sp b/c.",
+    "frames: the six poses every type gets, in order. anims index into frames and never duplicate frame data.",
+    "blink: group overrides applied only on the blink frame (default swaps eyes for eyes/blink)."
+  ],
+  "size": 32,
+  "fps": 6,
+  "temperaments": {
+    "sj": { "5": "5", "6": "6" },
+    "nt": { "5": "7", "6": "8" },
+    "nf": { "5": "9", "6": "a" },
+    "sp": { "5": "b", "6": "c" }
+  },
+  "order": ["back", "body", "back:front", "legs", "arms", "hand", "eyes", "mouths", "face", "brows", "head"],
+  "frames": [
+    { "name": "idle", "arms": "down", "legs": "stand" },
+    { "name": "blink", "arms": "down", "legs": "stand", "blink": true },
+    { "name": "wave-1", "arms": "wave-1", "legs": "stand" },
+    { "name": "wave-2", "arms": "wave-2", "legs": "stand" },
+    { "name": "walk-1", "arms": "down", "legs": "walk-1" },
+    { "name": "walk-2", "arms": "down", "legs": "walk-2" }
+  ],
+  "anims": {
+    "idle": [0, 0, 0, 0, 0, 1],
+    "wave": [2, 3, 2, 3, 0],
+    "walk": [4, 5]
+  },
+  "defaultBlink": { "eyes": "blink" },
+  "types": {
+    "_base": { "temperament": "sj", "eyes": "square" },
+
+    "INTJ": { "temperament": "nt", "eyes": "half", "brows": "raised-one", "mouths": "flat", "face": "glasses-thin", "head": "commit-tree" },
+    "INTP": { "temperament": "nt", "eyes": "uneven", "mouths": "o-small", "head": "headlamp", "hand": "tabs" },
+    "ENTJ": { "temperament": "nt", "eyes": "sharp", "brows": "raised", "mouths": "pressed", "head": "beret-red", "hand": "kanban" },
+    "ENTP": { "temperament": "nt", "eyes": "wink", "mouths": "smirk", "head": "flame", "hand": "match" },
+
+    "INFJ": { "temperament": "nf", "eyes": "soft", "mouths": "smile-small", "face": "glasses-round", "head": "quill" },
+    "INFP": { "temperament": "nf", "eyes": "sparkle", "mouths": "cat", "face": "tear", "head": "blocks" },
+    "ENFJ": { "temperament": "nf", "eyes": "round", "mouths": "smile-wide", "head": "stamp" },
+    "ENFP": { "temperament": "nf", "eyes": "big", "mouths": "open-laugh", "head": "branches", "back": "backpack" },
+
+    "ISTJ": { "temperament": "sj", "eyes": "square", "mouths": "flat-short", "face": "glasses-square", "head": "clipboard" },
+    "ISFJ": { "temperament": "sj", "eyes": "soft", "brows": "droop", "mouths": "smile-small", "face": "dark-circles", "head": "pager" },
+    "ESTJ": { "temperament": "sj", "eyes": "square", "brows": "lowered", "mouths": "flat", "head": "police-cap", "hand": "pr-template" },
+    "ESFJ": { "temperament": "sj", "eyes": "smile", "mouths": "big-smile", "head": "bubble-heart", "back": "wings" },
+
+    "ISTP": { "temperament": "sp", "eyes": "half", "mouths": "side-up", "head": "hardhat", "hand": "wrench" },
+    "ISFP": { "temperament": "sp", "eyes": "closed", "mouths": "smile-small", "head": "beret-black", "hand": "brush" },
+    "ESTP": { "temperament": "sp", "eyes": "square", "mouths": "crooked", "face": "sunglasses", "head": "server-fire", "blink": { "face": "sunglasses-glint" } },
+    "ESFP": { "temperament": "sp", "eyes": "star", "mouths": "open-big", "head": "party-hat", "hand": "mic" }
+  }
+}

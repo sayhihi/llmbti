@@ -1,0 +1,7 @@
+{
+  "note": "half closed: body-shadow lid on row 11, pupils rows 12-13 (INTJ, ISTP)",
+  "parts": [
+    { "x": 10, "y": 11, "rows": ["666", "111", "111"] },
+    { "x": 19, "y": 11, "rows": ["666", "111", "111"] }
+  ]
+}

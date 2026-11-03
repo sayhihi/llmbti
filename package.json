@@ -15,7 +15,10 @@
     "lint": "eslint .",
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "pixel:compose": "node scripts/pixel-compose.mjs",
+    "pixel:validate": "node scripts/pixel-validate.mjs",
+    "pixel:preview": "node scripts/pixel-preview.mjs --all --scale 6 --out docs/ref/preview-r2-sheet.png && node scripts/pixel-preview.mjs packages/core/src/characters/ENFP.json --scale 16 --out docs/ref/preview-r2-anim-ENFP.png"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

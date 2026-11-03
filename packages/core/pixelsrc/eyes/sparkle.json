@@ -1,0 +1,7 @@
+{
+  "note": "INFP: 3x3 with a glossy white corner",
+  "parts": [
+    { "x": 10, "y": 11, "rows": ["211", "111", "111"] },
+    { "x": 19, "y": 11, "rows": ["211", "111", "111"] }
+  ]
+}

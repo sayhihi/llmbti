@@ -1,0 +1,7 @@
+{
+  "note": "INTP: small 2x2 left eye, big 4x4 right eye",
+  "parts": [
+    { "x": 10, "y": 12, "rows": ["11", "11"] },
+    { "x": 18, "y": 10, "rows": ["1111", "1211", "1111", "1111"] }
+  ]
+}
