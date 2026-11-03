@@ -347,7 +347,7 @@ type ResultPayload = {
 
 | 경로 | 역할 | 내용 |
 |---|---|---|
-| `/` | 나의 llmbti는 무엇일까? | 훅 한 줄, `$ npx llmbti` 타이핑 애니메이션, 예시 결과 3개, "테스트 시작" 버튼 → `/start` |
+| `/` | 나의 LLM MBTI는 무엇일까? | 훅 한 줄, `$ npx llmbti` 타이핑 애니메이션, 예시 결과 3개, "테스트 시작" 버튼 → `/start` |
 | `/start` | 테스트 방법 | 순서대로 안내. 1. `npx llmbti install` 복사 2. Claude Code에서 `/llmbti` 3. 셸 히스토리 동의 4. 결과 URL 열기. 아래에 Claude 없이 `npx llmbti`만 돌리는 라이트 모드 안내와 "서버 없음" 프라이버시 설명 |
 | `/t/{TYPE}` | 공유 페이지 | hash가 있으면 개인 결과와 공유 버튼, 없으면 유형 소개. "나도 해보기"는 `/start`로 연결 |
 | `/types` | 16종 도감 | 그리드. 랜딩과 공유 페이지 하단에서 링크 |
