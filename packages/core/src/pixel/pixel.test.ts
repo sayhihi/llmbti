@@ -101,25 +101,17 @@ describe("validateCharacter", () => {
 });
 
 describe("getCharacter", () => {
-  it("returns the three M3 samples and the base", () => {
-    for (const id of ["INTJ", "ENFP", "ISTP", "_base"] as const) {
+  it("returns all 16 types and the base, each with 6 frames and the 4 named anims", () => {
+    for (const id of [...MBTI_TYPES, "_base"] as const) {
       const c = getCharacter(id);
       expect(c).not.toBeNull();
       expect(c!.id).toBe(id);
       expect(c!.size).toBe(PIXEL_SIZE);
-      expect(c!.frames.length).toBeGreaterThanOrEqual(1);
+      expect(c!.frames).toHaveLength(6);
+      expect(Object.keys(c!.anims ?? {}).sort()).toEqual(["blink", "idle", "walk", "wave"]);
     }
-    expect(DRAWN_TYPES).toEqual(["INTJ", "ENFP", "ISTP"]);
-  });
-
-  it("returns null and hasCharacter false for types not drawn yet", () => {
-    const missing = MBTI_TYPES.filter((t) => !DRAWN_TYPES.includes(t));
-    expect(missing).toHaveLength(13);
-    for (const t of missing) {
-      expect(getCharacter(t)).toBeNull();
-      expect(hasCharacter(t)).toBe(false);
-    }
-    expect(hasCharacter("INTJ")).toBe(true);
+    expect(DRAWN_TYPES).toEqual([...MBTI_TYPES]);
+    for (const t of MBTI_TYPES) expect(hasCharacter(t)).toBe(true);
   });
 
   it("samples use their temperament body colour", () => {
@@ -153,7 +145,8 @@ describe("getAnim", () => {
     const withAnims: PixelCharacter = { id: "T", size: 32, fps: 4, frames, anims: { idle: [1] } };
     expect(getAnim(withAnims, "walk")).toEqual([0, 1, 2]);
     expect(getAnim({ id: "T", size: 32, fps: 4, frames }, "idle")).toEqual([0, 1, 2]);
-    expect(getAnim(getCharacter("INTJ")!, "idle")).toEqual([0, 1]);
+    expect(getAnim(getCharacter("INTJ")!, "idle")).toEqual([0]);
+    expect(getAnim(getCharacter("INTJ")!, "blink")).toEqual([1]);
   });
 });
 
