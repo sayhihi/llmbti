@@ -1,0 +1,91 @@
+{
+  "comments": [
+    "index 0 is transparent; pixel rows use '.' for it.",
+    "1 black (eyes), 2 white (eye sparkle, paper), 3 grey-dark / 4 grey-light (props, metal, lines).",
+    "Body colours by temperament, base + shadow pairs: 5/6 SJ terracotta (sampled from docs/ref/mascot.png), 7/8 NT purple, 9/a NF mint, b/c SP yellow.",
+    "All four body hues share roughly the same saturation and lightness so they read as one family.",
+    "d prop-red, e prop-blue, f prop-green: accent colours for the 8x8 props only (never used for bodies)."
+  ],
+  "colors": [
+    {
+      "index": 0,
+      "name": "transparent",
+      "hex": null
+    },
+    {
+      "index": 1,
+      "name": "black",
+      "hex": "#111111"
+    },
+    {
+      "index": 2,
+      "name": "white",
+      "hex": "#FAFAFA"
+    },
+    {
+      "index": 3,
+      "name": "grey-dark",
+      "hex": "#5C5C5C"
+    },
+    {
+      "index": 4,
+      "name": "grey-light",
+      "hex": "#C4C4C4"
+    },
+    {
+      "index": 5,
+      "name": "sj-base",
+      "hex": "#E0654E"
+    },
+    {
+      "index": 6,
+      "name": "sj-shadow",
+      "hex": "#B5452F"
+    },
+    {
+      "index": 7,
+      "name": "nt-base",
+      "hex": "#9A6EE0"
+    },
+    {
+      "index": 8,
+      "name": "nt-shadow",
+      "hex": "#6F49B5"
+    },
+    {
+      "index": 9,
+      "name": "nf-base",
+      "hex": "#4ED9A5"
+    },
+    {
+      "index": 10,
+      "name": "nf-shadow",
+      "hex": "#2FA87A"
+    },
+    {
+      "index": 11,
+      "name": "sp-base",
+      "hex": "#EBC94A"
+    },
+    {
+      "index": 12,
+      "name": "sp-shadow",
+      "hex": "#BE9A25"
+    },
+    {
+      "index": 13,
+      "name": "prop-red",
+      "hex": "#E8433F"
+    },
+    {
+      "index": 14,
+      "name": "prop-blue",
+      "hex": "#3F8BE8"
+    },
+    {
+      "index": 15,
+      "name": "prop-green",
+      "hex": "#3FC96B"
+    }
+  ]
+}
