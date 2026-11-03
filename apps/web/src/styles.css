@@ -1,0 +1,77 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b0e14;
+  --fg: #d6deeb;
+  --dim: #5c6773;
+  --accent: #d97757;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.terminal {
+  min-height: 100vh;
+  padding: 48px 16px;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prompt {
+  margin: 0;
+  font-size: 14px;
+}
+
+.logo {
+  margin: 8px 0 0;
+  font-size: clamp(40px, 10vw, 72px);
+  letter-spacing: -0.04em;
+  color: var(--accent);
+}
+
+.tagline {
+  margin: 0;
+  font-size: 18px;
+}
+
+.status {
+  margin: 0;
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  background: var(--fg);
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
