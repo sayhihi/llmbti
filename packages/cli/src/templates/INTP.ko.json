@@ -1,0 +1,16 @@
+{
+  "type": "INTP",
+  "nickname": "탭 200개 토끼굴 탐험가",
+  "roast": [
+    "최장 세션 {longestSession}턴. 버그 하나 잡으러 들어가서 라이브러리 소스를 다 읽고 나왔다. 버그는 아직 그대로다.",
+    "프롬프트가 길다. 질문 하나에 왜가 세 개 붙고, Claude가 답하면 그 답에 또 왜를 붙인다. 프롬프트 {promptCount}개 중 끝까지 결론 난 게 몇 개인지 세어 봐라.",
+    "새벽 2시에서 5시 활동 {nightRatio}%. 그 시간에 한 건 코딩이 아니라 왜 그렇게 동작하는지 알아보기였다. 다음 날 보면 브라우저 탭만 늘어 있다."
+  ],
+  "commitMessage": [
+    "wip: investigating why this works",
+    "chore: close 200 tabs, open 201",
+    "fix: found root cause, forgot original bug",
+    "docs: notes from a rabbit hole",
+    "feat: unrelated but interesting"
+  ]
+}

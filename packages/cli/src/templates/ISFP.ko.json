@@ -1,0 +1,16 @@
+{
+  "type": "ISFP",
+  "nickname": "안 보이는 1px 보는 장인",
+  "roast": [
+    "다시 {redoCount}번. 대부분 남들은 못 보는 차이 때문이다. Claude가 보기엔 똑같은 화면인데 이 사람 눈엔 1px이 밀려 있다.",
+    "프롬프트는 짧은데 횟수가 많다. 프롬프트 {promptCount}개 중 상당수가 \"조금만 더\"다. 조금의 기준은 본인만 안다.",
+    "최장 세션 {longestSession}턴. 기능은 10턴 만에 끝났고 나머지는 여백 조정이었다. 머지는 늦어도 결과물은 예쁘다는 건 인정한다."
+  ],
+  "commitMessage": [
+    "style: 1px",
+    "style: 1px, again",
+    "fix: align, for real this time",
+    "style: padding 7px to 8px",
+    "chore: margin feels off"
+  ]
+}

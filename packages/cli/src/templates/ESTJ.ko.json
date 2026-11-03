@@ -1,0 +1,16 @@
+{
+  "type": "ESTJ",
+  "nickname": "PR 템플릿 검문하는 컨벤션 경찰",
+  "roast": [
+    "프롬프트가 짧고 명령형이다. 제일 짧은 프롬프트가 \"{shortestPrompt}\"다. 남한테는 PR 템플릿 채우라고 하면서 본인 프롬프트엔 템플릿이 없다.",
+    "계획, 단계, 규칙이 프롬프트에 많다. 세션당 평균 {avgTurns}턴인데 그중 몇 턴은 Claude 코드의 네이밍을 지적하는 턴이다. 린터 있는데 왜 사람이 하나.",
+    "제일 많이 친 명령이 {topCommand}다. 남의 커밋 메시지를 검문하는 데 쓴 시간이 본인 코드 쓴 시간보다 길다는 소문이 있다."
+  ],
+  "commitMessage": [
+    "chore: enforce commit message format",
+    "chore: reject PR, template empty",
+    "style: tabs are wrong",
+    "docs: CONTRIBUTING.md, read it",
+    "chore: rename folder to match convention"
+  ]
+}

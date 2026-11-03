@@ -1,0 +1,16 @@
+{
+  "type": "ISTP",
+  "nickname": "프롬프트 두 글자로 끝내는 장인",
+  "roast": [
+    "제일 짧은 프롬프트가 \"{shortestPrompt}\"고 평균 길이도 별로 다르지 않다. 에러 로그는 붙이는데 설명은 안 붙인다. 나머지는 Claude가 알아서 하는 거다.",
+    "고쳐, 다시, 해줘로 거의 다 해결하는데 다시만 {redoCount}번이다. 뭐가 틀렸는지는 말 안 하고 맞을 때까지 다시만 친다.",
+    "세션당 평균 {avgTurns}턴, 짧게 시키고 바로 나간다. 고마워는 안 하지만 그렇다고 화난 것도 아니다. 원래 그렇다."
+  ],
+  "commitMessage": [
+    "fix",
+    "fix: fix",
+    "fix: fix the fix",
+    "chore: ok",
+    "fix: works"
+  ]
+}

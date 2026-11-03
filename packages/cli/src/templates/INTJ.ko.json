@@ -1,0 +1,16 @@
+{
+  "type": "INTJ",
+  "nickname": "머지 커밋 못 보는 리베이스 장인",
+  "roast": [
+    "프롬프트 {promptCount}개를 썼는데 짧은 게 없다. 계획부터 세워 주고 시키는 건 좋은데, Claude가 답하기 전에 이미 다음 단계까지 적어 놓는다. 그럼 왜 물어보나 싶다.",
+    "세션당 평균 {avgTurns}턴. 길게 말하고 짧게 끝낸다. 고마워 대신 \"다음\"이 붙는 사람이라 Claude가 눈치를 본다.",
+    "커밋 트리가 한 줄이 아니면 못 참는 사람. rebase 치다가 날린 커밋도 계획의 일부였다고 하면 믿어 주겠다. 제일 많이 친 명령이 {topCommand}인 건 우연이 아니다."
+  ],
+  "commitMessage": [
+    "refactor: rebase onto main, again",
+    "chore: squash 47 commits into 1",
+    "fix: history was not linear",
+    "docs: explain the plan nobody asked for",
+    "feat: implement what was planned in 2019"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "ESTP",
+  "nickname": "테스트는 prd에서 하는 직배포러",
+  "roast": [
+    "--force push {forceCount}번. 브랜치를 안 따고 main에서 쏘는데 그마저도 힘으로 민다. 테스트는 prd 사용자가 해 준다는 믿음이 있다.",
+    "rm -rf {rmrfCount}번. 커밋 메시지는 fix가 절반이고 나머지는 fix fix다. 장애가 나면 제일 빨리 고치는 것도 이 사람인 게 더 문제다.",
+    "새벽 2시에서 5시 활동 {nightRatio}%. 그 시간 배포가 사고 안 난 적 있냐고 물어보면 \"대부분\"이라고 한다. 대부분이 문제다."
+  ],
+  "commitMessage": [
+    "fix: prod",
+    "fix: prod again",
+    "feat: deploy first, test never",
+    "fix: force push, sorry not sorry",
+    "hotfix: it works on prod"
+  ]
+}

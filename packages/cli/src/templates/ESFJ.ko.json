@@ -1,0 +1,16 @@
+{
+  "type": "ESFJ",
+  "nickname": "리뷰보다 리액션이 빠른 요정",
+  "roast": [
+    "고마워 {thanksCount}번. Claude한테 고마워를 제일 많이 한 유형이다. Claude는 고마운데 테스트는 누가 돌리나 싶다.",
+    "프롬프트 끝에 ㅋㅋ가 거의 항상 붙는다. 세션당 평균 {avgTurns}턴 중 절반은 대화고 나머지가 작업이다. 작업도 재밌게 하는 건 인정.",
+    "제일 짧은 프롬프트가 \"{shortestPrompt}\"다. 이것도 리액션이다. 코드 리뷰 요청에 이모지로만 답한 적 있으면 손."
+  ],
+  "commitMessage": [
+    "feat: add thumbs up reaction",
+    "chore: thanks everyone!!",
+    "fix: works now lol",
+    "feat: team vibe improved",
+    "docs: add emoji to README"
+  ]
+}

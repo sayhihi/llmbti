@@ -1,0 +1,16 @@
+{
+  "type": "INFJ",
+  "nickname": "코드보다 주석이 긴 시인",
+  "roast": [
+    "프롬프트가 길고 정중하다. 고마워 {thanksCount}번, 그 앞에 항상 이유가 붙는다. Claude가 코드보다 문맥을 더 많이 읽은 몇 안 되는 사용자다.",
+    "왜 이렇게 짰는지가 코드보다 길다. README는 정성스러운데 세션당 평균 {avgTurns}턴 중 절반은 설명하는 데 쓴다. Claude는 이미 알아들었다.",
+    "새벽 2시에서 5시 활동 {nightRatio}%. 그 시간에 쓴 건 코드가 아니라 주석이었다. 다음 날 보면 함수 하나에 문단이 세 개 붙어 있다."
+  ],
+  "commitMessage": [
+    "docs: explain the why, at length",
+    "chore: add context to the context",
+    "docs: README is now longer than src",
+    "fix: typo in a comment nobody reads",
+    "feat: comment first, code later"
+  ]
+}

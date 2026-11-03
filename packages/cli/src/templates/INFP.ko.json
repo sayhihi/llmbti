@@ -1,0 +1,16 @@
+{
+  "type": "INFP",
+  "nickname": "첫 커밋 전문 레포 수집가",
+  "roast": [
+    "프롬프트에 ㅋㅋ와 고마워가 많다. 고마워 {thanksCount}번. 그런데 그 세션에서 끝까지 간 작업이 있는지 보면 얘기가 달라진다.",
+    "다시 {redoCount}번. 틀려서 다시가 아니라 더 좋은 생각이 나서 다시다. 레포는 늘어나는데 README까지 있는 레포는 손에 꼽는다.",
+    "최장 세션 {longestSession}턴. 그 세션에서 만든 건 새 레포 하나와 첫 커밋 하나다. 두 번째 커밋은 다음 세션에서도 안 나왔다."
+  ],
+  "commitMessage": [
+    "feat: initial commit",
+    "feat: initial commit, another repo",
+    "wip: someday",
+    "chore: rename project for the 4th time",
+    "docs: todo, finish this"
+  ]
+}
