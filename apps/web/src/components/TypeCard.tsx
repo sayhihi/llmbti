@@ -37,7 +37,7 @@ export function TypeCard({ type, note, children }: Props) {
   );
 }
 
-/** 페어 또는 상극 카드 */
+/** 궁합 카드 두 장. pair 는 잘 맞는 쪽, clash 는 안 맞는 쪽. 둘 다 상대 유형 페이지로 링크한다. */
 export function RelationCard({
   kind,
   type,
@@ -55,7 +55,9 @@ export function RelationCard({
       className={kind === "pair" ? "relation-card pair" : "relation-card clash"}
       style={{ ["--accent" as string]: temperamentVar(t) }}
     >
-      <span className="relation-kind dim">{kind === "pair" ? "페어 궁합" : "상극"}</span>
+      <span className="relation-kind dim">
+        {kind === "pair" ? "같이 하면 좋은 페어" : "같이 하면 PR이 안 닫히는 페어"}
+      </span>
       <div className="relation-main">
         <PixelCharacter type={type} maxScale={4} className="relation-char" />
         <div>
