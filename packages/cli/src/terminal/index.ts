@@ -28,3 +28,4 @@ export {
   type AxisBarOptions,
   type LayoutOptions,
 } from "./layout";
+export { wrapLines, wrapText } from "./wrap";

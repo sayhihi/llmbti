@@ -1,11 +1,14 @@
 /**
  * llmbit CLI 본체. index.ts가 process.argv로 main을 부른다.
- * 테스트는 io를 주입해서 stdout/stderr를 잡는다.
- * analyze는 M1에서 구현. render(M3), install/run(M4)은 아직 스텁이다.
+ * 테스트는 io를 주입해서 stdout/stderr, TTY 여부, 질문 응답, 브라우저 열기를 잡는다.
  */
 
-import { URL_WARN_LENGTH } from "@llmbit/core";
 import { analyze, formatAnalysis } from "./commands/analyze";
+import { installCommand } from "./commands/install";
+import { renderCommand } from "./commands/render";
+import { runCommand } from "./commands/run";
+import { openBrowser } from "./open";
+import { askYesNo } from "./prompt";
 
 const COMMANDS = ["run", "install", "analyze", "render"] as const;
 type Command = (typeof COMMANDS)[number];
@@ -13,14 +16,21 @@ type Command = (typeof COMMANDS)[number];
 const USAGE = `llmbit - LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI
 
 사용법:
-  llmbit                       라이트 모드: analyze -> 템플릿 문구 -> render (= run)
-  llmbit install [--force]     skill/ 을 ~/.claude/skills/llmbit/ 로 복사
+  llmbit [run] [--days N] [--no-shell] [--yes] [--no-open] [--base URL]
+                               라이트 모드: analyze -> 템플릿 문구 -> render
+  llmbit install [--force]     skill/ 을 ~/.claude/skills/llmbit/ 로 복사 (CLAUDE_CONFIG_DIR 존중)
   llmbit analyze [--json] [--days N] [--no-shell] [--home DIR]
                                로그 집계 결과 출력. --home은 테스트용 가짜 홈
-  llmbit render --analysis F --copy F [--no-open]
+  llmbit render --analysis F --copy F [--no-open] [--base URL]
                                검증 -> 터미널 출력 -> 결과 URL -> 브라우저 열기
 
 옵션:
+  --days N                     분석 기간 (기본 30일)
+  --no-shell                   셸 히스토리 제외
+  --yes                        셸 히스토리 질문을 건너뛰고 포함
+  --no-open                    브라우저를 열지 않음
+  --base URL                   결과 페이지 주소 (기본 https://llmbit.vercel.app, env LLMBIT_BASE_URL)
+  --no-color                   캐릭터 생략
   -h, --help                   이 도움말
   -v, --version                버전
 `;
@@ -64,14 +74,28 @@ export function parseArgs(argv: string[]): ParsedArgs {
 export interface CliIo {
   stdout: (s: string) => void;
   stderr: (s: string) => void;
+  /** 기본 process.stdout.isTTY */
+  isTTY?: boolean;
+  /** 기본 process.stdin.isTTY */
+  stdinIsTTY?: boolean;
+  /** 기본 process.stdout.columns */
+  columns?: number;
+  /** 기본 process.env */
+  env?: Record<string, string | undefined>;
+  /** y/N 질문. 기본 readline. 테스트는 고정 답을 넣는다 */
+  ask?: (question: string, defaultYes: boolean) => Promise<boolean>;
+  /** 브라우저 열기. 기본 open/xdg-open/start */
+  openBrowser?: (url: string) => Promise<boolean>;
 }
 
 const processIo: CliIo = {
   stdout: (s) => process.stdout.write(s),
   stderr: (s) => process.stderr.write(s),
+  ask: askYesNo,
+  openBrowser,
 };
 
-export function main(argv: string[], io: CliIo = processIo): number {
+export async function main(argv: string[], io: CliIo = processIo): Promise<number> {
   if (argv.includes("--help") || argv.includes("-h")) {
     io.stdout(USAGE);
     return 0;
@@ -82,18 +106,60 @@ export function main(argv: string[], io: CliIo = processIo): number {
   }
 
   const parsed = parseArgs(argv);
-  if (parsed.command === "analyze") return runAnalyze(parsed.flags, io);
-  // TODO(M3~M4): run, install, render를 src/commands/ 로 연결한다.
-  io.stderr(
-    `llmbit ${parsed.command}: 아직 구현되지 않았습니다 (M0 스텁). URL 경고 기준 ${URL_WARN_LENGTH}자.\n\n`,
-  );
-  io.stdout(USAGE);
-  return 2;
+  const { flags } = parsed;
+  switch (parsed.command) {
+    case "analyze":
+      return runAnalyze(flags, io);
+    case "install":
+      return installCommand({ force: flags.force === true }, io);
+    case "render": {
+      const analysisPath = stringFlag(flags.analysis);
+      const copyPath = stringFlag(flags.copy);
+      if (!analysisPath || !copyPath) {
+        io.stderr("llmbit render: --analysis 파일과 --copy 파일이 둘 다 필요하다.\n\n");
+        io.stdout(USAGE);
+        return 2;
+      }
+      return renderCommand(
+        {
+          analysisPath,
+          copyPath,
+          base: flags.base,
+          open: flags["no-open"] !== true,
+          color: flags.color,
+          width: numberFlag(flags.width),
+          argv,
+        },
+        io,
+      );
+    }
+    case "run": {
+      const analyzeOpts = parseAnalyzeFlags(flags, io);
+      if (analyzeOpts === null) return 2;
+      return runCommand(
+        {
+          analyze: analyzeOpts,
+          noShell: flags["no-shell"] === true,
+          yes: flags.yes === true,
+          base: flags.base,
+          open: flags["no-open"] !== true,
+          color: flags.color,
+          width: numberFlag(flags.width),
+          argv,
+        },
+        io,
+      );
+    }
+  }
 }
 
 /** tsup define으로 박히는 버전. 번들 밖(vitest)에서는 dev 표기. */
 function version(): string {
   return typeof __LLMBIT_VERSION__ === "string" ? __LLMBIT_VERSION__ : "0.0.0-dev";
+}
+
+function stringFlag(v: string | boolean | undefined): string | undefined {
+  return typeof v === "string" && v !== "" ? v : undefined;
 }
 
 function numberFlag(v: string | boolean | undefined): number | undefined {
@@ -102,29 +168,36 @@ function numberFlag(v: string | boolean | undefined): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-function runAnalyze(flags: ParsedArgs["flags"], io: CliIo): number {
+interface AnalyzeFlags {
+  home?: string;
+  days?: number;
+  now?: number;
+  tzOffsetMinutes?: number;
+}
+
+/** analyze와 run이 공유하는 옵션. 잘못되면 메시지를 찍고 null. */
+function parseAnalyzeFlags(flags: ParsedArgs["flags"], io: CliIo): AnalyzeFlags | null {
   const days = numberFlag(flags.days);
   if (flags.days !== undefined && (days === undefined || days <= 0)) {
     io.stderr("--days 는 1 이상의 숫자여야 합니다.\n");
-    return 2;
+    return null;
   }
-  const home = typeof flags.home === "string" ? flags.home : undefined;
+  const home = stringFlag(flags.home);
   // --now 는 테스트용 숨은 옵션 (ISO 또는 epoch ms). fixtures 결과가 날짜에 따라 변하지 않게 한다.
-  const nowRaw = typeof flags.now === "string" ? flags.now : undefined;
+  const nowRaw = stringFlag(flags.now);
   const now =
     nowRaw === undefined ? undefined : /^\d+$/.test(nowRaw) ? Number(nowRaw) : Date.parse(nowRaw);
   if (now !== undefined && Number.isNaN(now)) {
     io.stderr("--now 는 ISO 날짜 또는 epoch ms 여야 합니다.\n");
-    return 2;
+    return null;
   }
-  const tz = numberFlag(flags.tz);
-  const result = analyze({
-    home,
-    days,
-    shell: flags["no-shell"] !== true,
-    now,
-    tzOffsetMinutes: tz,
-  });
+  return { home, days, now, tzOffsetMinutes: numberFlag(flags.tz) };
+}
+
+function runAnalyze(flags: ParsedArgs["flags"], io: CliIo): number {
+  const opts = parseAnalyzeFlags(flags, io);
+  if (opts === null) return 2;
+  const result = analyze({ ...opts, shell: flags["no-shell"] !== true });
   if (flags.json === true) {
     io.stdout(JSON.stringify(result, null, 2) + "\n");
   } else {
