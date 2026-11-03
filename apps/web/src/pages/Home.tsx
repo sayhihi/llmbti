@@ -40,7 +40,6 @@ export function Home() {
             </TypeCard>
           ))}
         </div>
-        <p className="dim small">예시 점수다. 실제 결과는 본인 로그에서 나온다.</p>
       </section>
 
       <section className="section card">
