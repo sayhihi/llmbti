@@ -1,0 +1,48 @@
+not json at all
+{"display":"/clear","pastedContents":{},"timestamp":1793235600000,"project":"/Users/tester/work/app"}
+{"display":"1단계 끝났으면 2단계 진행","pastedContents":{},"timestamp":1791594420083,"project":"/Users/tester/work/app"}
+{"display":"1단계 끝났으면 2단계 진행","pastedContents":{},"timestamp":1792458000090,"project":"/Users/tester/work/app"}
+{"display":"README.md 12번째 줄 오타 수정","pastedContents":{},"timestamp":1792026840412,"project":"/Users/tester/work/app"}
+{"display":"README.md 12번째 줄 오타 수정","pastedContents":{},"timestamp":1793331720050,"project":"/Users/tester/work/app"}
+{"display":"```\nTypeError: Cannot read properties of undefined (reading 'map')\n    at render (src/list.tsx:42:17)\n```\n이거 고쳐","pastedContents":{},"timestamp":1792026420432,"project":"/Users/tester/work/app"}
+{"display":"```\nTypeError: Cannot read properties of undefined (reading 'map')\n    at render (src/list.tsx:42:17)\n```\n이거 고쳐","pastedContents":{},"timestamp":1793327700279,"project":"/Users/tester/work/app"}
+{"display":"docs/SPEC.md 5장 기준대로 fixtures 만들어","pastedContents":{},"timestamp":1792035720135,"project":"/Users/tester/work/app"}
+{"display":"docs/SPEC.md 5장 기준대로 fixtures 만들어","pastedContents":{},"timestamp":1792894860250,"project":"/Users/tester/work/app"}
+{"display":"fixtures/home-j/.zsh_history 포맷 확인해","pastedContents":{},"timestamp":1791594840381,"project":"/Users/tester/work/app"}
+{"display":"fixtures/home-j/.zsh_history 포맷 확인해","pastedContents":{},"timestamp":1792458420099,"project":"/Users/tester/work/app"}
+{"display":"line 88 의 null 체크 빼","pastedContents":{},"timestamp":1791599280286,"project":"/Users/tester/work/app"}
+{"display":"line 88 의 null 체크 빼","pastedContents":{},"timestamp":1792462860207,"project":"/Users/tester/work/app"}
+{"display":"lint 통과시켜","pastedContents":{},"timestamp":1791605400202,"project":"/Users/tester/work/app"}
+{"display":"lint 통과시켜","pastedContents":{},"timestamp":1792026000219,"project":"/Users/tester/work/app"}
+{"display":"lint 통과시켜","pastedContents":{},"timestamp":1793327280435,"project":"/Users/tester/work/app"}
+{"display":"ok","pastedContents":{},"timestamp":1791598860183,"project":"/Users/tester/work/app"}
+{"display":"ok","pastedContents":{},"timestamp":1792458840148,"project":"/Users/tester/work/app"}
+{"display":"packages/cli/src/index.ts 의 parseArgs 에 --home 옵션 추가해","pastedContents":{},"timestamp":1791604140081,"project":"/Users/tester/work/app"}
+{"display":"packages/cli/src/index.ts 의 parseArgs 에 --home 옵션 추가해","pastedContents":{},"timestamp":1792467720073,"project":"/Users/tester/work/app"}
+{"display":"packages/cli/src/index.ts 의 parseArgs 에 --home 옵션 추가해","pastedContents":{},"timestamp":1793322420274,"project":"/Users/tester/work/app"}
+{"display":"plan 모드로 먼저 설계안 보여줘","pastedContents":{},"timestamp":1792031700321,"project":"/Users/tester/work/app"}
+{"display":"plan 모드로 먼저 설계안 보여줘","pastedContents":{},"timestamp":1792890840235,"project":"/Users/tester/work/app"}
+{"display":"pnpm test 돌리고 실패하는 것만 알려줘","pastedContents":{},"timestamp":1792036140038,"project":"/Users/tester/work/app"}
+{"display":"pnpm test 돌리고 실패하는 것만 알려줘","pastedContents":{},"timestamp":1792895280431,"project":"/Users/tester/work/app"}
+{"display":"src/metrics/time.ts 에 tzOffsetMinutes 파라미터 추가해","pastedContents":{},"timestamp":1792031280168,"project":"/Users/tester/work/app"}
+{"display":"src/metrics/time.ts 에 tzOffsetMinutes 파라미터 추가해","pastedContents":{},"timestamp":1792890420313,"project":"/Users/tester/work/app"}
+{"display":"src/parsers/zsh.ts:42 에서 멀티라인 처리가 빠졌다. 고쳐","pastedContents":{},"timestamp":1791603720432,"project":"/Users/tester/work/app"}
+{"display":"src/parsers/zsh.ts:42 에서 멀티라인 처리가 빠졌다. 고쳐","pastedContents":{},"timestamp":1792463700301,"project":"/Users/tester/work/app"}
+{"display":"src/parsers/zsh.ts:42 에서 멀티라인 처리가 빠졌다. 고쳐","pastedContents":{},"timestamp":1793322000265,"project":"/Users/tester/work/app"}
+{"display":"src/redact.ts 에 IPv4 패턴 추가","pastedContents":{},"timestamp":1792036980498,"project":"/Users/tester/work/app"}
+{"display":"src/redact.ts 에 IPv4 패턴 추가","pastedContents":{},"timestamp":1792899720345,"project":"/Users/tester/work/app"}
+{"display":"vitest 돌려","pastedContents":{},"timestamp":1791604980420,"project":"/Users/tester/work/app"}
+{"display":"vitest 돌려","pastedContents":{},"timestamp":1792468560298,"project":"/Users/tester/work/app"}
+{"display":"vitest 돌려","pastedContents":{},"timestamp":1793326860305,"project":"/Users/tester/work/app"}
+{"display":"계속","pastedContents":{},"timestamp":1791594000158,"project":"/Users/tester/work/app"}
+{"display":"계속","pastedContents":{},"timestamp":1792900140350,"project":"/Users/tester/work/app"}
+{"display":"오래된 프롬프트. 30일 밖이라 안 센다","pastedContents":{},"timestamp":1789606800000,"project":"/Users/tester/work/app"}
+{"display":"커밋해","pastedContents":{},"timestamp":1792030860394,"project":"/Users/tester/work/app"}
+{"display":"커밋해","pastedContents":{},"timestamp":1792890000275,"project":"/Users/tester/work/app"}
+{"display":"타입체크 돌려","pastedContents":{},"timestamp":1792036560380,"project":"/Users/tester/work/app"}
+{"display":"타입체크 돌려","pastedContents":{},"timestamp":1792895700219,"project":"/Users/tester/work/app"}
+{"display":"테스트 먼저 작성하고 구현해. 단계별로 계획 세워서","pastedContents":{},"timestamp":1791604560434,"project":"/Users/tester/work/app"}
+{"display":"테스트 먼저 작성하고 구현해. 단계별로 계획 세워서","pastedContents":{},"timestamp":1792468140308,"project":"/Users/tester/work/app"}
+{"display":"테스트 먼저 작성하고 구현해. 단계별로 계획 세워서","pastedContents":{},"timestamp":1793322840314,"project":"/Users/tester/work/app"}
+{"display":"테스트 추가해","pastedContents":{},"timestamp":1791599700298,"project":"/Users/tester/work/app"}
+{"display":"테스트 추가해","pastedContents":{},"timestamp":1792463280198,"project":"/Users/tester/work/app"}
