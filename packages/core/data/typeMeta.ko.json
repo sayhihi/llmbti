@@ -1,0 +1,130 @@
+{
+  "INTJ": {
+    "nickname": "리베이스 장인",
+    "tagline": "머지 커밋은 눈에 거슬려서 못 참음",
+    "description": "커밋 트리가 한 줄이 아니면 잠이 안 온다. 계획부터 세우고 프롬프트는 길고 정확하게 쓴다. 고마워 대신 다음 작업을 바로 붙이는 사람이다.",
+    "prop": "커밋트리",
+    "pairWith": { "type": "ENFP", "reason": "사방으로 뻗은 브랜치를 한 줄로 정리해 줌" },
+    "clashWith": { "type": "ESFP", "reason": "리베이스 중인데 데모부터 하자고 함" }
+  },
+  "INTP": {
+    "nickname": "토끼굴 탐험가",
+    "tagline": "왜 되는지 알아내다 원래 하려던 걸 잊음",
+    "description": "버그 하나 잡으러 들어갔다가 라이브러리 소스를 읽고 있다. 프롬프트가 길고 질문 끝에 질문이 붙는다. 탭은 안 닫는 게 아니라 못 닫는 거다.",
+    "prop": "탭더미",
+    "pairWith": { "type": "ENTJ", "reason": "토끼굴에 들어가면 꺼내서 마감에 맞춰 줌" },
+    "clashWith": { "type": "ISTP", "reason": "왜 그런지 설명하는데 이미 고쳐 놓음" }
+  },
+  "ENTJ": {
+    "nickname": "스프린트 사령관",
+    "tagline": "Claude한테도 데드라인을 준다",
+    "description": "세션마다 계획부터 짜고 턴을 짧게 끊어서 시킨다. 테스트는 돌리고 머지는 오늘 안에 한다. 토끼굴 파는 동료를 꺼내 오는 게 취미다.",
+    "prop": "칸반보드",
+    "pairWith": { "type": "INTP", "reason": "스프린트에 깊이 파는 사람 하나는 필요함" },
+    "clashWith": { "type": "INFP", "reason": "스프린트 안에 끝나는 레포가 없음" }
+  },
+  "ENTP": {
+    "nickname": "레거시 방화범",
+    "tagline": "이거 다 갈아엎으면 되는데요?",
+    "description": "레거시를 보면 고치는 대신 새로 짠다. 구조, 설계, 리팩터 얘기가 프롬프트의 절반이다. 불은 잘 지르는데 끄는 건 다른 사람 몫일 때가 많다.",
+    "prop": "불난폴더",
+    "pairWith": { "type": "ISTJ", "reason": "불 지른 레거시를 체크리스트로 수습해 줌" },
+    "clashWith": { "type": "ESTJ", "reason": "불 지르기 전에 PR 템플릿부터 채우라고 함" }
+  },
+  "INFJ": {
+    "nickname": "주석 시인",
+    "tagline": "코드보다 README가 긴 사람",
+    "description": "왜 이렇게 짰는지를 코드보다 길게 적는다. 프롬프트도 정중하고 길다. 급하게 쏘는 배포 옆에서 조용히 문서를 채워 넣는 사람이다.",
+    "prop": "README",
+    "pairWith": { "type": "ESTP", "reason": "직배포한 거 설명은 내가 README에 써 줌" },
+    "clashWith": { "type": "ESFJ", "reason": "세 문단 쓴 주석에 엄지 하나로 답함" }
+  },
+  "INFP": {
+    "nickname": "미완성 레포 수집가",
+    "tagline": "첫 커밋은 완벽, 두 번째 커밋은 없음",
+    "description": "아이디어가 떠오르면 레포부터 판다. 프롬프트에 ㅋㅋ와 고마워가 많고 방향도 자주 바뀐다. 레포 열 개 중 README까지 있는 건 두 개쯤이다.",
+    "prop": "레포더미",
+    "pairWith": { "type": "ESTJ", "reason": "PR 템플릿 채우다 보면 레포 하나는 끝남" },
+    "clashWith": { "type": "ENTJ", "reason": "마감 얘기부터 꺼내서 레포 하나 더 생김" }
+  },
+  "ENFJ": {
+    "nickname": "코드리뷰 멘토",
+    "tagline": "LGTM 전에 코멘트 열 줄은 기본",
+    "description": "리뷰에 진심이다. 고쳐 한 마디로 끝낼 걸 왜 고쳐야 하는지 설명해 준다. Claude한테도 고마워를 잊지 않아서 턴이 길어진다.",
+    "prop": "LGTM도장",
+    "pairWith": { "type": "ISTP", "reason": "고쳐 한 마디에 리뷰 코멘트 달아 줌" },
+    "clashWith": { "type": "ISFP", "reason": "1px PR에 리뷰 20줄 달아도 안 읽음" }
+  },
+  "ENFP": {
+    "nickname": "브랜치 방랑자",
+    "tagline": "브랜치 23개, 머지 0개",
+    "description": "새 아이디어가 나오면 브랜치부터 딴다. 다시, 아니 그게 아니라가 프롬프트의 주 메뉴다. 세션은 길고 즐거운데 끝나고 남는 건 브랜치 목록이다.",
+    "prop": "브랜치",
+    "pairWith": { "type": "INTJ", "reason": "계획 없이 뻗은 브랜치를 누가 합쳐 줘야 함" },
+    "clashWith": { "type": "ISTJ", "reason": "브랜치 만들 때마다 체크리스트 들이밈" }
+  },
+  "ISTJ": {
+    "nickname": "린터 수호자",
+    "tagline": "린트 안 돌린 PR은 PR이 아님",
+    "description": "체크리스트 없이는 머지를 안 한다. 프롬프트에 파일 경로와 라인 번호가 꼭 붙고 테스트는 매번 돌린다. --force를 친 기록이 없는 몇 안 되는 사람이다.",
+    "prop": "체크리스트",
+    "pairWith": { "type": "ENTP", "reason": "린트 통과한 코드에 가끔 불씨가 필요함" },
+    "clashWith": { "type": "ENFP", "reason": "체크리스트 안 보고 브랜치만 늘림" }
+  },
+  "ISFJ": {
+    "nickname": "온콜 지킴이",
+    "tagline": "새벽 알림 받고도 미안하다고 하는 사람",
+    "description": "남이 쏜 배포의 뒷정리를 묵묵히 한다. 에러 로그를 그대로 붙여 넣고 정중하게 고쳐 달라고 한다. 호출기는 남이 울리는데 깨는 건 이 사람이다.",
+    "prop": "호출기",
+    "pairWith": { "type": "ESFJ", "reason": "호출기 울릴 때 같이 깨어 있어 줌" },
+    "clashWith": { "type": "ESTP", "reason": "새벽 호출기가 울리는 원인 1순위" }
+  },
+  "ESTJ": {
+    "nickname": "컨벤션 경찰",
+    "tagline": "PR 템플릿 안 채우면 리뷰 안 함",
+    "description": "커밋 메시지 규칙부터 폴더 구조까지 다 정해 놓는다. 프롬프트가 짧고 명령형이며 계획 신호가 많다. 템플릿을 안 채운 PR은 열어 보지도 않는다.",
+    "prop": "PR템플릿",
+    "pairWith": { "type": "INFP", "reason": "템플릿 채울 사람이 아이디어는 많음" },
+    "clashWith": { "type": "ENTP", "reason": "템플릿 안 채우고 레거시부터 태움" }
+  },
+  "ESFJ": {
+    "nickname": "이모지 리액션 요정",
+    "tagline": "코드 리뷰보다 리액션이 빠른 사람",
+    "description": "프롬프트 끝에 ㅋㅋ나 이모지가 거의 항상 붙는다. Claude한테 고마워를 제일 많이 하는 유형이다. 세션이 길고 대화가 많은데 테스트 얘기는 적다.",
+    "prop": "말풍선",
+    "pairWith": { "type": "ISFJ", "reason": "새벽 알림에 리액션이라도 달아 줌" },
+    "clashWith": { "type": "INFJ", "reason": "리액션 하나 달면 설명을 세 문단 요구함" }
+  },
+  "ISTP": {
+    "nickname": "\"고쳐\" 장인",
+    "tagline": "프롬프트 평균 길이 두 글자",
+    "description": "고쳐, 다시, 해줘로 대부분의 일을 끝낸다. 에러 로그는 붙이되 설명은 안 붙인다. 짧게 시키고 바로 결과를 보는 쪽이라 세션도 짧다.",
+    "prop": "렌치",
+    "pairWith": { "type": "ENFJ", "reason": "왜 고쳤는지 대신 설명해 줌" },
+    "clashWith": { "type": "INTP", "reason": "고쳐 한 마디면 되는데 논문을 보냄" }
+  },
+  "ISFP": {
+    "nickname": "1px 장인",
+    "tagline": "안 보이는 1px 차이가 보이는 사람",
+    "description": "남들은 못 보는 1px을 보고 다시를 누른다. 프롬프트는 짧은데 횟수가 많고 스크린샷과 코드 블록을 자주 붙인다. 머지는 느린데 결과물은 예쁘다.",
+    "prop": "픽셀자",
+    "pairWith": { "type": "ESFP", "reason": "1px 맞춘 화면을 데모에서 자랑해 줌" },
+    "clashWith": { "type": "ENFJ", "reason": "1px 옮긴 PR에 리뷰 코멘트 20개 담" }
+  },
+  "ESTP": {
+    "nickname": "prd 직배포러",
+    "tagline": "테스트는 prd 사용자가 해 줌",
+    "description": "브랜치를 안 따고 main에서 바로 쏜다. --force와 reset --hard가 익숙하고 커밋 메시지는 fix가 절반이다. 장애가 나면 제일 빨리 고치는 것도 이 사람이다.",
+    "prop": "불난서버",
+    "pairWith": { "type": "INFJ", "reason": "내가 쏘고 나면 문서는 저쪽이 써 줌" },
+    "clashWith": { "type": "ISFJ", "reason": "내가 쏘면 저쪽 호출기가 울림" }
+  },
+  "ESFP": {
+    "nickname": "데모 장인",
+    "tagline": "동작하는 건 데모 때만",
+    "description": "보여 주는 데 진심이다. 세션마다 턴이 많고 중간에 끼어드는 비율이 높다. 데모 전날 밤 커밋이 몰려 있고 테스트는 데모 이후에 생각한다.",
+    "prop": "마이크",
+    "pairWith": { "type": "ISFP", "reason": "데모 화면이 1px도 안 밀림" },
+    "clashWith": { "type": "INTJ", "reason": "데모 중인데 리베이스 중이라 안 된다고 함" }
+  }
+}
