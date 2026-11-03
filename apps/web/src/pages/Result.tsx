@@ -100,9 +100,6 @@ export function Result({ payload }: { payload: ResultPayload }) {
           공유
         </h2>
         <ShareRow type={type} nickname={copy.nickname} roast={copy.roast} scores={scores} />
-        <p className="dim small">
-          링크 안에 결과가 통째로 들어 있다. 서버에는 아무것도 남지 않는다.
-        </p>
       </section>
 
       {mode === "lite" && (
