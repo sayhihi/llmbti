@@ -41,8 +41,8 @@ export async function runCommand(opts: RunOptions, io: RunIo): Promise<number> {
 
   if (analysis.insufficient) {
     const msg = buildInsufficientMessage(analysis.sampleSize);
-    io.stdout(`${msg.title}\n\n${msg.body}\n${msg.hint}\n`);
-    if (!shell) io.stdout("셸 히스토리를 포함하려면 --no-shell 없이 다시 실행한다.\n");
+    io.stdout(`🧩 ${msg.title}\n\n${msg.body}\n${msg.hint}\n`);
+    if (!shell) io.stdout("💡 셸 히스토리를 포함하려면 --no-shell 없이 다시 실행한다.\n");
     return 0;
   }
 

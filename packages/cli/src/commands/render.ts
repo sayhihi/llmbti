@@ -132,19 +132,19 @@ export async function renderResult(
   const { url, tooLong } = await buildUrl(base, payload);
   if (tooLong) {
     io.stderr(
-      `경고: 결과 URL이 ${URL_WARN_LENGTH}자를 넘는다 (${url.length}자). 일부 메신저가 링크를 자를 수 있다.\n`,
+      `⚠️  결과 URL이 ${URL_WARN_LENGTH}자를 넘는다 (${url.length}자). 일부 메신저가 링크를 자를 수 있다.\n`,
     );
   }
 
   const colorMode = resolveColorMode(opts, io);
   const width = opts.width ?? io.columns ?? process.stdout.columns ?? DEFAULT_WIDTH;
   const lines = layoutLines(analysis, safeCopy, colorMode, width);
-  io.stdout(lines.join("\n") + "\n\n" + url + "\n");
+  io.stdout(lines.join("\n") + "\n\n🔗 " + url + "\n");
 
   const isTTY = io.isTTY ?? Boolean(process.stdout.isTTY);
   if (opts.open && isTTY && io.openBrowser) {
     const ok = await io.openBrowser(url);
-    if (!ok) io.stderr("브라우저를 열지 못했다. 위 URL을 직접 열면 된다.\n");
+    if (!ok) io.stderr("⚠️  브라우저를 열지 못했다. 위 URL을 직접 열면 된다.\n");
   }
   return { url, copy: safeCopy };
 }

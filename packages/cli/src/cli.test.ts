@@ -37,9 +37,10 @@ async function run(argv: string[], ioOverrides: Partial<CliIo> = {}): Promise<Ru
   return { code, out, err, opened, asked };
 }
 
+/** 마지막 줄. URL 줄 앞의 🔗 표시는 뗀다. */
 function lastLine(out: string): string {
   const lines = out.trimEnd().split("\n");
-  return lines[lines.length - 1]!;
+  return lines[lines.length - 1]!.replace(/^🔗 /, "");
 }
 
 const fixtureP = ["--home", fixtureHome("home-p"), "--now", "2026-11-01T12:00:00Z", "--tz", "540"];
@@ -215,7 +216,7 @@ describe("llmbti run (라이트 모드)", () => {
     const urlIdx = lines.length - 1;
     expect(urlIdx).toBeGreaterThanOrEqual(17);
     expect(lines[urlIdx - 1]).toBe("");
-    expect(lines[urlIdx]).toMatch(/^https:\/\/llmbti\.vercel\.app\/t\/ENFP#r=/);
+    expect(lines[urlIdx]).toMatch(/^🔗 https:\/\/llmbti\.vercel\.app\/t\/ENFP#r=/);
     // 별명 다음 줄은 빈 칸, 그 다음부터 roast 가 캐릭터 옆 66칸 안에서 접힌다
     expect(stripAnsi(lines[1]!).slice(34).trim()).toBe("");
     expect(stripAnsi(lines[2]!)).toMatch(/^.{32} {2}\S/);

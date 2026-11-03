@@ -84,12 +84,12 @@ export async function installCommand(opts: InstallOptions, io: InstallIo): Promi
     const stdoutTTY = io.isTTY ?? Boolean(process.stdout.isTTY);
     const stdinTTY = io.stdinIsTTY ?? Boolean(process.stdin.isTTY);
     if (!stdoutTTY || !stdinTTY || !io.ask) {
-      io.stderr(`이미 설치돼 있다: ${targetDir}\n덮어쓰려면 --force 를 붙여서 다시 실행한다.\n`);
+      io.stderr(`⚠️  이미 설치돼 있다: ${targetDir}\n덮어쓰려면 --force 를 붙여서 다시 실행한다.\n`);
       return 2;
     }
-    const yes = await io.ask(`이미 설치돼 있다: ${targetDir}\n덮어쓸까요?`, false);
+    const yes = await io.ask(`⚠️  이미 설치돼 있다: ${targetDir}\n덮어쓸까요?`, false);
     if (!yes) {
-      io.stdout("취소했다. 덮어쓰려면 --force 를 붙여서 다시 실행한다.\n");
+      io.stdout("🚫 취소했다. 덮어쓰려면 --force 를 붙여서 다시 실행한다.\n");
       return 0;
     }
   }
@@ -98,7 +98,7 @@ export async function installCommand(opts: InstallOptions, io: InstallIo): Promi
   const files = skillFilesToCopy(sourceDir);
   for (const f of files) copyFileSync(join(sourceDir, f), join(targetDir, f));
 
-  io.stdout(`설치 완료: ${targetDir} (${files.join(", ")})\n`);
-  io.stdout("다음: Claude Code에서 /llmbti\n");
+  io.stdout(`✅ 설치 완료: ${targetDir} (${files.join(", ")})\n`);
+  io.stdout("👉 다음: Claude Code에서 /llmbti\n");
   return 0;
 }
