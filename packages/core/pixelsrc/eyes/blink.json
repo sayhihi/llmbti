@@ -1,0 +1,7 @@
+{
+  "note": "closed for the blink frame: one line on row 13",
+  "parts": [
+    { "x": 10, "y": 14, "rows": ["111"] },
+    { "x": 19, "y": 14, "rows": ["111"] }
+  ]
+}

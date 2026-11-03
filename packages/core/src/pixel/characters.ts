@@ -1,19 +1,29 @@
 import { MBTI_TYPES, type MbtiType } from "../types";
 import baseJson from "../characters/_base.json";
-import ENFP from "../characters/ENFP.json";
 import INTJ from "../characters/INTJ.json";
+import INTP from "../characters/INTP.json";
+import ENTJ from "../characters/ENTJ.json";
+import ENTP from "../characters/ENTP.json";
+import INFJ from "../characters/INFJ.json";
+import INFP from "../characters/INFP.json";
+import ENFJ from "../characters/ENFJ.json";
+import ENFP from "../characters/ENFP.json";
+import ISTJ from "../characters/ISTJ.json";
+import ISFJ from "../characters/ISFJ.json";
+import ESTJ from "../characters/ESTJ.json";
+import ESFJ from "../characters/ESFJ.json";
 import ISTP from "../characters/ISTP.json";
+import ISFP from "../characters/ISFP.json";
+import ESTP from "../characters/ESTP.json";
+import ESFP from "../characters/ESFP.json";
 import type { PixelCharacter } from "./types";
 import { validateCharacter } from "./validate";
 
 export type CharacterId = MbtiType | "_base";
 
-/**
- * 그려진 캐릭터 레지스트리. 픽셀 에이전트가 json을 추가하면 import 하나와 아래 배열에 한 줄 더한다.
- * (M3: _base + INTJ, ENFP, ISTP. 나머지 13종은 M6.)
- */
+/** 그려진 캐릭터 레지스트리. _base + 16종 전부 (M3 2라운드). */
 const REGISTRY: Partial<Record<CharacterId, PixelCharacter>> = Object.fromEntries(
-  [baseJson, INTJ, ENFP, ISTP].map((c: unknown) => {
+  [baseJson, INTJ, INTP, ENTJ, ENTP, INFJ, INFP, ENFJ, ENFP, ISTJ, ISFJ, ESTJ, ESFJ, ISTP, ISFP, ESTP, ESFP].map((c: unknown) => {
     validateCharacter(c);
     return [c.id, c] as const;
   }),

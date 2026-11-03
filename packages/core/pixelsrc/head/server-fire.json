@@ -1,0 +1,15 @@
+{
+  "note": "ESTP: small grey server with LEDs and slots, flames on top",
+  "x": 12,
+  "y": 1,
+  "rows": [
+    "....d.....",
+    "...dd.d...",
+    "..dbd.dd..",
+    ".dbbbddbd.",
+    ".33333333.",
+    ".3f311113.",
+    ".33333333.",
+    ".3e311113."
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "note": "INTJ: left brow resting on the lid (row 10), right brow raised (row 9)",
+  "parts": [
+    { "x": 10, "y": 11, "rows": ["111"] },
+    { "x": 19, "y": 10, "rows": ["111"] }
+  ]
+}

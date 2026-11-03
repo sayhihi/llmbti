@@ -1,36 +1,58 @@
 #!/usr/bin/env node
 // Renders the palette plus any character JSONs to a single PNG, zero dependencies.
 //
-//   node scripts/pixel-preview.mjs packages/core/src/characters/*.json --out docs/ref/preview.png
+//   node scripts/pixel-preview.mjs packages/core/src/characters/ENFP.json --out docs/ref/preview.png
+//   node scripts/pixel-preview.mjs --all --out docs/ref/preview-sheet.png
 //
 // Options:
 //   --out <path>       output PNG (required)
+//   --all              every packages/core/src/characters/*.json except _base, sorted (16-row sheet)
 //   --scale <n>        integer pixel scale, default 8
 //   --palette <path>   palette JSON, default packages/core/src/palette.json
+//   --no-palette       skip the swatch strip
 //
-// Layout: palette swatches on top, then one row per character with its frames side by side.
+// Layout: palette swatches on top, then one row per character (id label on the left) with all of its
+// frames side by side.
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { dirname, resolve, basename } from "node:path";
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
+import { dirname, resolve, basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateSync } from "node:zlib";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
 
+// --all sheet order: temperament groups NT, NF, SJ, SP (SPEC §10) so body colours sit together.
+const TYPE_ORDER = [
+  "INTJ", "INTP", "ENTJ", "ENTP",
+  "INFJ", "INFP", "ENFJ", "ENFP",
+  "ISTJ", "ISFJ", "ESTJ", "ESFJ",
+  "ISTP", "ISFP", "ESTP", "ESFP",
+];
+
 // ---------- args ----------
 const args = process.argv.slice(2);
-const opts = { out: null, scale: 8, palette: resolve(root, "packages/core/src/palette.json") };
+const opts = { out: null, scale: 8, palette: resolve(root, "packages/core/src/palette.json"), showPalette: true };
 const files = [];
 for (let i = 0; i < args.length; i++) {
   const a = args[i];
   if (a === "--out") opts.out = args[++i];
   else if (a === "--scale") opts.scale = Number(args[++i]);
   else if (a === "--palette") opts.palette = args[++i];
-  else files.push(a);
+  else if (a === "--no-palette") opts.showPalette = false;
+  else if (a === "--all") {
+    const dir = resolve(root, "packages/core/src/characters");
+    const rank = (f) => {
+      const i = TYPE_ORDER.indexOf(basename(f, ".json"));
+      return i === -1 ? TYPE_ORDER.length : i;
+    };
+    const all = readdirSync(dir).filter((f) => f.endsWith(".json") && !f.startsWith("_"));
+    all.sort((p, q) => rank(p) - rank(q) || p.localeCompare(q));
+    for (const f of all) files.push(join(dir, f));
+  } else files.push(a);
 }
-if (!opts.out) {
-  console.error("usage: pixel-preview.mjs <character.json ...> --out <file.png> [--scale 8] [--palette palette.json]");
+if (!opts.out || files.length === 0) {
+  console.error("usage: pixel-preview.mjs (<character.json ...> | --all) --out <file.png> [--scale 8] [--palette palette.json] [--no-palette]");
   process.exit(2);
 }
 if (!Number.isInteger(opts.scale) || opts.scale < 1) {
@@ -84,22 +106,52 @@ class Canvas {
   }
 }
 
+// ---------- 3x5 label font ----------
+const FONT = {
+  A: ["010", "101", "111", "101", "101"], B: ["110", "101", "110", "101", "110"], C: ["011", "100", "100", "100", "011"],
+  D: ["110", "101", "101", "101", "110"], E: ["111", "100", "110", "100", "111"], F: ["111", "100", "110", "100", "100"],
+  G: ["011", "100", "101", "101", "011"], H: ["101", "101", "111", "101", "101"], I: ["111", "010", "010", "010", "111"],
+  J: ["001", "001", "001", "101", "010"], K: ["101", "101", "110", "101", "101"], L: ["100", "100", "100", "100", "111"],
+  M: ["101", "111", "111", "101", "101"], N: ["110", "101", "101", "101", "101"], O: ["010", "101", "101", "101", "010"],
+  P: ["110", "101", "110", "100", "100"], Q: ["010", "101", "101", "011", "001"], R: ["110", "101", "110", "101", "101"],
+  S: ["011", "100", "010", "001", "110"], T: ["111", "010", "010", "010", "010"], U: ["101", "101", "101", "101", "111"],
+  V: ["101", "101", "101", "101", "010"], W: ["101", "101", "111", "111", "101"], X: ["101", "101", "010", "101", "101"],
+  Y: ["101", "101", "010", "010", "010"], Z: ["111", "001", "010", "100", "111"], _: ["000", "000", "000", "000", "111"],
+  "-": ["000", "000", "111", "000", "000"], 0: ["111", "101", "101", "101", "111"], 1: ["010", "110", "010", "010", "111"],
+  2: ["111", "001", "111", "100", "111"], 3: ["111", "001", "011", "001", "111"], 4: ["101", "101", "111", "001", "001"],
+  5: ["111", "100", "111", "001", "111"], 6: ["111", "100", "111", "101", "111"], 7: ["111", "001", "001", "001", "001"],
+  8: ["111", "101", "111", "101", "111"], 9: ["111", "101", "111", "001", "111"],
+};
+const LABEL = hexToRgb("#D0D0D0");
+function drawText(cv, text, x, y, s) {
+  for (const ch of text.toUpperCase()) {
+    const g = FONT[ch];
+    if (g)
+      g.forEach((row, r) => {
+        for (let c = 0; c < 3; c++) if (row[c] === "1") cv.rect(x + c * s, y + r * s, s, s, LABEL);
+      });
+    x += 4 * s;
+  }
+}
+
 // ---------- layout ----------
 const S = opts.scale;
 const PAD = 16;
 const GAP = 16;
 const SWATCH = 4 * S;
+const FS = Math.max(2, Math.floor(S / 2)); // label font pixel size
+const LABEL_W = 5 * 4 * FS + GAP; // room for 5 glyphs on the left
 const chars = files.map((f) => ({ name: basename(f, ".json"), json: JSON.parse(readFileSync(f, "utf8")) }));
 
-const paletteW = colors.length * (SWATCH + 4) - 4;
-const paletteH = SWATCH;
+const paletteW = opts.showPalette ? colors.length * (SWATCH + 4) - 4 : 0;
+const paletteH = opts.showPalette ? SWATCH : 0;
 let maxRowW = paletteW;
-let totalH = PAD + paletteH + GAP;
+let totalH = PAD + (opts.showPalette ? paletteH + GAP : 0);
 const rows = [];
 for (const c of chars) {
   const size = c.json.size;
   const frames = c.json.frames;
-  const w = frames.length * (size * S + GAP) - GAP;
+  const w = LABEL_W + frames.length * (size * S + GAP) - GAP;
   const h = size * S;
   rows.push({ y: totalH, w, h, c });
   maxRowW = Math.max(maxRowW, w);
@@ -110,18 +162,20 @@ const H = totalH - GAP + PAD;
 const cv = new Canvas(W, H, BG);
 
 // palette strip
-colors.forEach((rgb, i) => {
-  const x = PAD + i * (SWATCH + 4);
-  if (rgb) cv.rect(x, PAD, SWATCH, SWATCH, rgb);
-  else cv.checker(x, PAD, SWATCH, SWATCH, Math.max(2, S / 2));
-  cv.outline(x, PAD, SWATCH, SWATCH, BORDER);
-});
+if (opts.showPalette)
+  colors.forEach((rgb, i) => {
+    const x = PAD + i * (SWATCH + 4);
+    if (rgb) cv.rect(x, PAD, SWATCH, SWATCH, rgb);
+    else cv.checker(x, PAD, SWATCH, SWATCH, Math.max(2, S / 2));
+    cv.outline(x, PAD, SWATCH, SWATCH, BORDER);
+  });
 
 // characters
 for (const row of rows) {
   const size = row.c.json.size;
+  drawText(cv, row.c.name, PAD, row.y + 2, FS);
   row.c.json.frames.forEach((frame, fi) => {
-    const ox = PAD + fi * (size * S + GAP);
+    const ox = PAD + LABEL_W + fi * (size * S + GAP);
     const oy = row.y;
     cv.checker(ox, oy, size * S, size * S, S);
     for (let y = 0; y < size; y++) {
