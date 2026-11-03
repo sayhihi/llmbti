@@ -16,8 +16,8 @@ LLM에게 일을 시키는 패턴과 셸 히스토리로 개발자 MBTI를 뽑�
 3. `npx -y llmbti@latest analyze --json > /tmp/llmbti-analysis.json` 을 실행한다. 셸을 빼기로 했으면 `--no-shell`을 붙인다.
 4. `/tmp/llmbti-analysis.json`을 읽는다. `insufficient`가 `true`면 "아직 덜 컴파일됨. 프롬프트 N개, 셸 명령 M개로는 유형이 안 나온다"라고 알리고 끝낸다. N, M은 `sampleSize.prompts`, `sampleSize.shell`이다.
 5. 아래 스키마와 톤 규칙대로 CopyJson을 써서 `/tmp/llmbti-copy.json`에 저장한다. 숫자는 `stats`, `signals`, `sampleSize`, `scores`에서만 가져온다. `samples`는 웃긴 포인트를 잡는 참고용이고, 인용은 짧게 한 번까지만 한다. `type`은 바꾸지 않는다.
-6. `npx -y llmbti@latest render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json` 을 실행한다. 검증 에러가 번호 목록으로 나오면 해당 항목만 고쳐서 다시 실행한다. 최대 2회.
-7. render 가 찍은 터미널 출력(캐릭터 블록, 유형과 별명, 4축 바, evidence, 커밋 메시지, URL 줄)을 코드 블록 안에 그대로 붙여서 보여 준다. 줄을 빼거나 고쳐 쓰지 않는다. 그 아래에 결과 URL을 한 줄 더 적는다. 그 외 요약이나 해설은 붙이지 않는다.
+6. `npx -y llmbti@latest render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json --no-color` 을 실행한다. `--no-color`는 Claude Code 안에서는 색이 안 나와 캐릭터가 뭉개지므로 캐릭터를 빼고 글만 찍는 옵션이다. 검증 에러가 번호 목록으로 나오면 해당 항목만 고쳐서 다시 실행한다. 최대 2회.
+7. render 가 찍은 출력(유형과 별명, roast, 4축 바, evidence, 커밋 메시지, URL 줄)을 코드 블록 안에 그대로 붙여서 보여 준다. 줄을 빼거나 고쳐 쓰지 않는다. 그 아래에 결과 URL을 한 줄 더 적고, 캐릭터는 그 링크에서 보라고 한 줄 덧붙인다. 그 외 요약이나 해설은 붙이지 않는다.
 
 ## 금지
 
