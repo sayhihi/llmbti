@@ -5,6 +5,9 @@
  * URL:    `${base}/t/${TYPE}#r=${encoded}`
  *
  * 디코딩은 어떤 입력에도 throw하지 않고 null을 돌려준다. 호출 측은 null이면 유형 소개 페이지로 fallback한다.
+ *
+ * TODO(decision): encode/decode를 Node에서도 async로 통일했다 (브라우저 스트림 API가 async라서).
+ * CLI render에서 동기 API가 편하면 zlib 전용 encodePayloadSync를 따로 열지 결정 필요.
  */
 
 import { fromBase64Url, toBase64Url } from "./base64url";
