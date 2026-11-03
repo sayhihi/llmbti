@@ -28,3 +28,9 @@
 - 픽셀 데이터와 콘텐츠는 데이터 파일(json)로만 산출한다. 코드 에이전트가 가져다 쓴다.
 - 한글 문구는 SPEC 8장의 톤 규칙을 따른다.
 - 커밋 메시지는 `feat(core): ...`, `feat(web): ...`, `chore: ...` 형식. 마일스톤 완료 커밋은 본문에 `M0 done` 처럼 표기.
+
+## 브랜치 규칙
+
+- 에이전트마다 `agent/<이름>` 브랜치를 따서 작업하고 커밋 후 `origin`에 푸시한다. 예: `agent/analysis`, `agent/renderer`, `agent/web`.
+- main에는 직접 커밋하지 않는다. 검수 후 main에 머지하고 main도 푸시한다.
+- 지난 작업도 같은 규칙으로 정리했다: `agent/foundation`(M0), `agent/pixel`(M3 데이터), `agent/content`.
