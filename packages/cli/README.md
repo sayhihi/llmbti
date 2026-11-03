@@ -1,85 +1,85 @@
 # llmbti
 
-LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분석해서, 개발자의 MBTI를 픽셀 캐릭터와 개발 유머 디스로 보여주는 사이드프로젝트.
+Claude Code에 일을 시키는 말투와 셸 히스토리로 보는 개발자 MBTI.
+점수는 스크립트가 계산하고, 디스는 Claude가 쓴다.
 
 ```
 $ npx llmbti
 ENFP  // 브랜치 23개, 머지 0개
 ```
 
-- 실행: `npx llmbti`
-- 웹: https://llmbti.vercel.app
-- 슬래시 명령: `/llmbti`
+👉 https://llmbti.vercel.app
 
 ## 빠른 시작
 
-Claude Code가 있으면 스킬을 설치하고 슬래시 명령을 부른다. 분석은 스크립트가 하고, 디스 문구는 Claude가 쓴다.
-
 ```sh
-npx llmbti install
+npx llmbti install   # Claude Code 스킬 설치
 ```
 
-그 다음 Claude Code에서
+Claude Code에서 `/llmbti` 를 치면 끝. 터미널에 픽셀 캐릭터와 결과 링크가 뜬다.
 
-```
-/llmbti
-```
-
-Claude Code를 안 쓰면 라이트 모드로 돈다. 셸 히스토리만으로 유형이 나오고, 문구는 유형별 템플릿을 쓴다.
+Claude Code가 없으면 라이트 모드. 셸 히스토리만으로 유형이 나오고 문구는 템플릿을 쓴다.
 
 ```sh
 npx llmbti
 ```
 
-둘 다 마지막에 결과 URL을 찍고 브라우저를 연다. `--no-open`을 붙이면 URL만 찍는다.
+## 16종 도감
 
-## 무엇을 읽고 무엇이 나가는지
+<table>
+  <tbody>
+    <tr>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/INTJ.png" width="96" alt="INTJ"><br><b>INTJ</b><br>리베이스 장인<br><sub>머지 커밋은 눈에 거슬려서 못 참음</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/INTP.png" width="96" alt="INTP"><br><b>INTP</b><br>토끼굴 탐험가<br><sub>왜 되는지 알아내다 원래 하려던 걸 잊음</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ENTJ.png" width="96" alt="ENTJ"><br><b>ENTJ</b><br>스프린트 사령관<br><sub>Claude한테도 데드라인을 준다</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ENTP.png" width="96" alt="ENTP"><br><b>ENTP</b><br>레거시 방화범<br><sub>이거 다 갈아엎으면 되는데요?</sub></td>
+    </tr>
+    <tr>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/INFJ.png" width="96" alt="INFJ"><br><b>INFJ</b><br>주석 시인<br><sub>코드보다 README가 긴 사람</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/INFP.png" width="96" alt="INFP"><br><b>INFP</b><br>미완성 레포 수집가<br><sub>첫 커밋은 완벽, 두 번째 커밋은 없음</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ENFJ.png" width="96" alt="ENFJ"><br><b>ENFJ</b><br>코드리뷰 멘토<br><sub>LGTM 전에 코멘트 열 줄은 기본</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ENFP.png" width="96" alt="ENFP"><br><b>ENFP</b><br>브랜치 방랑자<br><sub>브랜치 23개, 머지 0개</sub></td>
+    </tr>
+    <tr>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ISTJ.png" width="96" alt="ISTJ"><br><b>ISTJ</b><br>린터 수호자<br><sub>린트 안 돌린 PR은 PR이 아님</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ISFJ.png" width="96" alt="ISFJ"><br><b>ISFJ</b><br>온콜 지킴이<br><sub>새벽 알림 받고도 미안하다고 하는 사람</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ESTJ.png" width="96" alt="ESTJ"><br><b>ESTJ</b><br>컨벤션 경찰<br><sub>PR 템플릿 안 채우면 리뷰 안 함</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ESFJ.png" width="96" alt="ESFJ"><br><b>ESFJ</b><br>이모지 리액션 요정<br><sub>코드 리뷰보다 리액션이 빠른 사람</sub></td>
+    </tr>
+    <tr>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ISTP.png" width="96" alt="ISTP"><br><b>ISTP</b><br>"고쳐" 장인<br><sub>프롬프트 평균 길이 두 글자</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ISFP.png" width="96" alt="ISFP"><br><b>ISFP</b><br>1px 장인<br><sub>안 보이는 1px 차이가 보이는 사람</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ESTP.png" width="96" alt="ESTP"><br><b>ESTP</b><br>prd 직배포러<br><sub>테스트는 prd 사용자가 해 줌</sub></td>
+      <td align="center" width="25%"><img src="https://llmbti.vercel.app/characters/ESFP.png" width="96" alt="ESFP"><br><b>ESFP</b><br>데모 장인<br><sub>동작하는 건 데모 때만</sub></td>
+    </tr>
+  </tbody>
+</table>
 
-읽는 것은 로컬 파일 네 가지다. `~/.claude/history.jsonl`, `~/.claude/projects/`, `~/.zsh_history`, `~/.bash_history`. 셸 히스토리는 읽기 전에 한 번 묻는다. 기본 30일치, `--days N`으로 바꾼다.
+## 어떻게 정하나
 
-나가는 것은 결과뿐이다. 원본 로그는 기기 밖으로 나가지 않는다.
-
-- 사이트는 정적 파일만 있다. API, DB, 서버리스 함수가 없다.
-- 결과는 URL의 `#r=` 뒤에 압축돼 실린다. 브라우저는 hash를 서버로 보내지 않는다.
-- URL에 담기는 것은 유형, 축 점수, 배지 숫자, 문구뿐이다. 프롬프트 원문과 셸 명령 원문은 담기지 않는다.
-- Claude에게 가는 샘플 프롬프트는 토큰, 이메일, 경로를 마스킹한 뒤 보낸다. 문구도 render 단계에서 한 번 더 마스킹한다.
-- 결과를 저장하지 않는다. 링크를 잃으면 다시 돌리면 된다.
+- 유형은 스크립트가 정한다. 같은 로그면 항상 같은 결과다. Claude는 디스 문구만 쓴다.
+- 서버가 없다. 결과는 링크 안에만 있고 어디에도 저장되지 않는다.
+- 원본 로그는 기기 밖으로 나가지 않는다. 읽는 건 `~/.claude` 로그와 셸 히스토리이고, 셸 히스토리는 읽기 전에 묻는다.
 
 ## 명령
 
-| 명령                                              | 동작                                                                                                    |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `llmbti` (=`run`)                                 | 라이트 모드: analyze, 템플릿 문구, render                                                               |
-| `llmbti install [--force]`                        | `skill/`을 `~/.claude/skills/llmbti/`로 복사. 이미 있으면 덮어쓸지 묻는다. `CLAUDE_CONFIG_DIR`를 따른다 |
-| `llmbti analyze [--json] [--days N] [--no-shell]` | 로그 집계 결과 출력                                                                                     |
-| `llmbti render --analysis F --copy F [--no-open]` | 문구 검증, 터미널 출력, 결과 URL 출력, 브라우저 열기                                                    |
+| 명령                                      | 동작                   |
+| ----------------------------------------- | ---------------------- |
+| `npx llmbti`                              | 라이트 모드 실행       |
+| `npx llmbti install`                      | Claude Code 스킬 설치  |
+| `npx llmbti analyze --json`               | 집계 결과만 JSON으로   |
+| `npx llmbti render --analysis F --copy F` | 문구 검증 후 결과 출력 |
 
-공통 옵션: `--days N`(기본 30), `--no-shell`, `--yes`(셸 질문 생략), `--no-open`, `--base URL`(기본 `https://llmbti.vercel.app`, 환경변수 `LLMBTI_BASE_URL`), `--no-color`(캐릭터 생략).
+옵션: `--days N` (기본 30), `--no-shell`, `--yes`, `--no-open`
 
-## 4축
-
-점수는 축마다 -100에서 100이고 양수면 앞 글자다. E/I는 대화형과 독백형으로, 세션당 턴 수와 물음표 비율이 높으면 E, 프롬프트가 길면 I다. S/N은 구체와 추상으로, 경로나 스택트레이스를 붙이면 S, "구조", "설계", "refactor" 같은 말이 많으면 N이다. T/F는 건조와 다정으로, 20자 이하 명령형이 많으면 T, "고마워"와 "ㅠ"가 많으면 F다. J/P는 계획형과 즉흥형으로, plan 모드와 테스트 실행이 많으면 J, `--force`와 `rm -rf`와 "아니 그게 아니라"가 많으면 P다. 같은 입력이면 항상 같은 결과가 나온다. LLM은 점수에 손대지 않고 문구만 쓴다.
-
-## 로컬 개발
-
-pnpm 모노레포다. `packages/core`(타입, codec, 캐릭터 데이터), `packages/cli`(npm 패키지 `llmbti`), `apps/web`(결과 페이지), `skill/`(Claude Code 스킬).
+## 개발
 
 ```sh
-pnpm install
-pnpm build        # core, cli(tsup), web
-pnpm test         # vitest, fixtures/ 의 가짜 로그로 돈다
-pnpm typecheck
-pnpm lint
+pnpm install && pnpm build && pnpm test
+pnpm pixel:compose   # 캐릭터 레이어 조립
+pnpm deploy:web      # Vercel 배포
 ```
-
-- `pnpm pixel:compose` 픽셀 캐릭터 데이터 조립. `pnpm pixel:validate`, `pnpm pixel:preview`도 있다.
-- `pnpm deploy:web` 웹을 로컬 prebuilt로 Vercel 프로덕션에 배포한다.
-- `packages/cli`에서 `pnpm preview`로 터미널 레이아웃만 따로 본다.
-
-실제 로그 파일은 레포에 커밋하지 않는다. `fixtures/` 아래의 가짜 로그만 쓴다.
 
 ## 라이선스
 
-MIT. `LICENSE` 참고.
-
-캐릭터는 Anthropic의 Claude 마스코트 실루엣을 바탕으로 그렸습니다. 비공식 팬 프로젝트입니다.
+MIT. 캐릭터는 Anthropic의 Claude 마스코트 실루엣을 바탕으로 그린 비공식 팬 프로젝트다.
