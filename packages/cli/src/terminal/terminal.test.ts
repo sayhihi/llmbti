@@ -19,9 +19,22 @@ describe("detectColorMode", () => {
     ],
     ["TERM=xterm-256color", { ...tty, env: { TERM: "xterm-256color" } }, "256"],
     ["TERM=screen-256color", { ...tty, env: { TERM: "screen-256color" } }, "256"],
-    ["TERM=xterm (no 256color)", { ...tty, env: { TERM: "xterm" } }, "none"],
+    ["TERM=xterm (no 256color)", { ...tty, env: { TERM: "xterm" } }, "256"],
+    ["TERM=xterm-color", { ...tty, env: { TERM: "xterm-color" } }, "256"],
+    ["TERM=screen", { ...tty, env: { TERM: "screen" } }, "256"],
+    ["TERM=tmux", { ...tty, env: { TERM: "tmux" } }, "256"],
+    ["TERM=rxvt-unicode", { ...tty, env: { TERM: "rxvt-unicode" } }, "256"],
+    ["TERM=vt100", { ...tty, env: { TERM: "vt100" } }, "256"],
+    ["TERM=linux", { ...tty, env: { TERM: "linux" } }, "256"],
     ["TERM=dumb", { ...tty, env: { TERM: "dumb" } }, "none"],
-    ["empty env", { ...tty, env: {} }, "none"],
+    ["TERM empty string", { ...tty, env: { TERM: "" } }, "none"],
+    ["no TERM, no COLORTERM", { ...tty, env: {} }, "none"],
+    ["TERM=unknown-thing", { ...tty, env: { TERM: "cygwin" } }, "none"],
+    [
+      "TERM=dumb but NO_COLOR rules still first",
+      { ...tty, env: { TERM: "xterm", NO_COLOR: "1" } },
+      "none",
+    ],
     [
       "NO_COLOR=1 wins over truecolor",
       { ...tty, env: { NO_COLOR: "1", COLORTERM: "truecolor" } },
@@ -122,6 +135,18 @@ describe("renderCharacterAnsi", () => {
     expect(f1).not.toEqual(f0);
     expect(renderCharacterAnsi(c, { mode: "truecolor", frame: 99 })).toEqual(f0);
     expect(renderCharacterAnsi(c, { mode: "truecolor", palette: PALETTE })).toEqual(f0);
+  });
+});
+
+describe("renderCharacterAnsi with anims", () => {
+  it("defaults to the first idle frame when anims is present, else frame 0", () => {
+    const base = getCharacter("INTJ")!;
+    const withAnims = { ...base, anims: { idle: [1, 1, 0], wave: [0, 1] } };
+    const f0 = renderCharacterAnsi(base, { mode: "truecolor", frame: 0 });
+    const f1 = renderCharacterAnsi(base, { mode: "truecolor", frame: 1 });
+    expect(renderCharacterAnsi(base, { mode: "truecolor" })).toEqual(f0);
+    expect(renderCharacterAnsi(withAnims, { mode: "truecolor" })).toEqual(f1);
+    expect(renderCharacterAnsi(withAnims, { mode: "truecolor", frame: 0 })).toEqual(f0);
   });
 });
 

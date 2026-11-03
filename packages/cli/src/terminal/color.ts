@@ -27,8 +27,8 @@ export interface DetectColorModeOptions {
  * 색 모드 판정. 순서가 중요하다.
  * 1. `--no-color` 인자, `NO_COLOR` 환경변수(비어있지 않을 때, no-color.org), TTY 아님 → none
  * 2. COLORTERM이 truecolor 또는 24bit → truecolor
- * 3. TERM에 256color가 들어가면 → 256
- * 4. 그 외 → none (16색 터미널은 캐릭터를 생략한다)
+ * 3. TERM에 256color가 들어가거나, xterm·screen·tmux·rxvt로 시작하거나 vt100·linux면 → 256
+ * 4. TERM이 dumb이거나 없으면 → none
  */
 export function detectColorMode(opts: DetectColorModeOptions = {}): ColorMode {
   const env = opts.env ?? process.env;
@@ -44,9 +44,13 @@ export function detectColorMode(opts: DetectColorModeOptions = {}): ColorMode {
 
   const term = (env.TERM ?? "").toLowerCase();
   if (term.includes("256color")) return "256";
+  if (TERM_256_RE.test(term)) return "256";
 
   return "none";
 }
+
+/** 256색을 기대해도 되는 TERM 계열. `dumb`이나 빈 TERM은 여기 안 걸린다. */
+const TERM_256_RE = /^(xterm|screen|tmux|rxvt|vt100|linux)/;
 
 // ---------- 256색 양자화 ----------
 

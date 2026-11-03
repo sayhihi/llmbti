@@ -13,6 +13,7 @@ function fail(msg: string): never {
  * - size 32, fps 양수, frames 1개 이상
  * - 프레임마다 32줄, 줄마다 32글자
  * - 글자는 `.` 또는 `1`~`f` (`0`은 투명이므로 `.`을 써야 한다)
+ * - anims가 있으면 이름마다 비어있지 않은 정수 배열, 모든 인덱스 < frames.length
  */
 export function validateCharacter(c: unknown): asserts c is PixelCharacter {
   if (typeof c !== "object" || c === null) fail("character must be an object");
@@ -44,4 +45,20 @@ export function validateCharacter(c: unknown): asserts c is PixelCharacter {
       }
     });
   });
+
+  if (o.anims !== undefined) {
+    if (typeof o.anims !== "object" || o.anims === null || Array.isArray(o.anims))
+      fail(`${label}: anims must be an object of name -> frame index array`);
+    const frameCount = o.frames.length;
+    for (const [name, seq] of Object.entries(o.anims as Record<string, unknown>)) {
+      if (!Array.isArray(seq) || seq.length === 0)
+        fail(`${label}: anims.${name} must be a non-empty array`);
+      seq.forEach((idx: unknown, i: number) => {
+        if (!Number.isInteger(idx) || (idx as number) < 0 || (idx as number) >= frameCount)
+          fail(
+            `${label}: anims.${name}[${i}] = ${String(idx)} is not a frame index (0..${frameCount - 1})`,
+          );
+      });
+    }
+  }
 }

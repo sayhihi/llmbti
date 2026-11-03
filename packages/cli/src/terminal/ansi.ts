@@ -9,6 +9,7 @@
 import {
   PALETTE,
   TRANSPARENT_CHAR,
+  getAnim,
   type Palette,
   type PixelCharacter,
   type PixelFrame,
@@ -21,7 +22,7 @@ export const LOWER_HALF = "▄";
 
 export interface RenderOptions {
   mode: ColorMode;
-  /** 프레임 인덱스. 기본 0. 범위를 벗어나면 0. */
+  /** 프레임 인덱스. 기본은 idle 첫 프레임(없으면 0). 범위를 벗어나면 0. */
   frame?: number;
   /** 기본 PALETTE */
   palette?: Palette;
@@ -90,10 +91,11 @@ export function renderFrameAnsi(frame: PixelFrame, palette: Palette, mode: Color
 /**
  * 캐릭터 한 프레임을 16줄 ANSI 문자열로. none 모드면 `[]`.
  * 호출자가 `[]`를 받으면 캐릭터 자리를 생략하고 텍스트만 찍는다.
+ * frame을 안 주면 `idle` 애니메이션의 첫 프레임(anims가 없으면 0번).
  */
 export function renderCharacterAnsi(character: PixelCharacter, options: RenderOptions): string[] {
   if (options.mode === "none") return [];
-  const idx = options.frame ?? 0;
+  const idx = options.frame ?? getAnim(character, "idle")[0] ?? 0;
   const frame = character.frames[idx] ?? character.frames[0];
   if (!frame) return [];
   return renderFrameAnsi(frame, options.palette ?? PALETTE, options.mode);

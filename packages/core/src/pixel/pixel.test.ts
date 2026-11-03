@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { MBTI_TYPES, TEMPERAMENT_OF, TEMPERAMENT_PALETTE } from "../types";
 import { TYPE_META, getTypeMeta } from "../typeMeta";
-import { DRAWN_TYPES, getCharacter, hasCharacter } from "./characters";
+import { DRAWN_TYPES, getAnim, getCharacter, hasCharacter } from "./characters";
 import { drawFrame, frameSize, type DrawContext } from "./draw";
 import { PALETTE, PALETTE_NAMES, hexToRgb } from "./palette";
 import { PALETTE_SIZE, PIXEL_SIZE, type PixelCharacter } from "./types";
@@ -64,6 +64,33 @@ describe("validateCharacter", () => {
     }
   });
 
+  it("accepts anims whose indices point at existing frames", () => {
+    const c: PixelCharacter = { ...goodCharacter(), frames: [blankFrame(), blankFrame()] };
+    c.anims = { idle: [0, 0, 1], wave: [1, 0] };
+    expect(() => validateCharacter(c)).not.toThrow();
+  });
+
+  it("rejects anims with empty arrays, out-of-range or non-integer indices", () => {
+    const two = () => ({ ...goodCharacter(), frames: [blankFrame(), blankFrame()] });
+    expect(() => validateCharacter({ ...two(), anims: { idle: [] } })).toThrow(
+      /anims\.idle must be a non-empty array/,
+    );
+    expect(() => validateCharacter({ ...two(), anims: { walk: [0, 2] } })).toThrow(
+      /anims\.walk\[1\] = 2 is not a frame index \(0\.\.1\)/,
+    );
+    expect(() => validateCharacter({ ...two(), anims: { walk: [-1] } })).toThrow(
+      /anims\.walk\[0\]/,
+    );
+    expect(() => validateCharacter({ ...two(), anims: { walk: [0.5] } })).toThrow(
+      /anims\.walk\[0\]/,
+    );
+    expect(() => validateCharacter({ ...two(), anims: { walk: ["0"] } })).toThrow(
+      /anims\.walk\[0\]/,
+    );
+    expect(() => validateCharacter({ ...two(), anims: [0] })).toThrow(/anims must be an object/);
+    expect(() => validateCharacter({ ...two(), anims: null })).toThrow(/anims must be an object/);
+  });
+
   it("rejects bad size, fps, frames and non-objects", () => {
     expect(() => validateCharacter(null)).toThrow(PixelCharacterError);
     expect(() => validateCharacter({ ...goodCharacter(), size: 16 })).toThrow(/size must be 32/);
@@ -101,6 +128,32 @@ describe("getCharacter", () => {
       const used = new Set(getCharacter(t)!.frames[0]!.join("").replace(/\./g, ""));
       expect(used.has(base.toString(16))).toBe(true);
     }
+  });
+});
+
+describe("getAnim", () => {
+  const frames = [blankFrame(), blankFrame(), blankFrame()];
+
+  it("returns the named sequence as a copy", () => {
+    const c: PixelCharacter = {
+      id: "T",
+      size: 32,
+      fps: 6,
+      frames,
+      anims: { idle: [0, 0, 1], wave: [2, 1, 2, 0] },
+    };
+    const idle = getAnim(c, "idle");
+    expect(idle).toEqual([0, 0, 1]);
+    idle.push(99);
+    expect(c.anims!.idle).toEqual([0, 0, 1]);
+    expect(getAnim(c, "wave")).toEqual([2, 1, 2, 0]);
+  });
+
+  it("falls back to all frame indices when the name or anims is missing", () => {
+    const withAnims: PixelCharacter = { id: "T", size: 32, fps: 4, frames, anims: { idle: [1] } };
+    expect(getAnim(withAnims, "walk")).toEqual([0, 1, 2]);
+    expect(getAnim({ id: "T", size: 32, fps: 4, frames }, "idle")).toEqual([0, 1, 2]);
+    expect(getAnim(getCharacter("INTJ")!, "idle")).toEqual([0, 1]);
   });
 });
 
