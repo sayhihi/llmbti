@@ -1,6 +1,6 @@
 {
   "name": "llmbti",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "LLM에게 일을 시키는 패턴과 셸 히스토리로 보는 개발자 MBTI. 픽셀 캐릭터와 개발 유머 디스로 보여준다.",
   "license": "MIT",
   "type": "module",
