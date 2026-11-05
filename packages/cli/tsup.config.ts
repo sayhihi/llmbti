@@ -29,7 +29,7 @@ export default defineConfig({
   target: "node18",
   platform: "node",
   // @llmbti/core를 번들에 포함한다. 런타임 의존성 0.
-  noExternal: ["@llmbti/core"],
+  noExternal: ["@llmbti/core", "fflate"],
   banner: { js: "#!/usr/bin/env node" },
   define: { __LLMBTI_VERSION__: JSON.stringify(pkg.version) },
   sourcemap: false,

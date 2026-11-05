@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { fromBase64Url, toBase64Url } from "./base64url";
 import {
+  buildLegacyResultUrl,
   buildResultUrl,
   decodePayload,
   decodeResultFromHash,
@@ -109,14 +110,14 @@ describe("codec", () => {
 });
 
 describe("result URL", () => {
-  it("builds `${base}/t/${TYPE}#r=${encoded}` and strips trailing slashes", async () => {
-    const url = await buildResultUrl("https://llmbti.vercel.app/", samplePayload);
+  it("legacy: builds `${base}/t/${TYPE}#r=${encoded}` and strips trailing slashes", async () => {
+    const url = await buildLegacyResultUrl("https://llmbti.vercel.app/", samplePayload);
     const encoded = await encodePayload(samplePayload);
     expect(url).toBe(`https://llmbti.vercel.app/t/ENFP#r=${encoded}`);
   });
 
-  it("extracts the encoded result from a hash", async () => {
-    const url = await buildResultUrl("https://llmbti.vercel.app", samplePayload);
+  it("legacy: extracts the encoded result from a hash", async () => {
+    const url = await buildLegacyResultUrl("https://llmbti.vercel.app", samplePayload);
     const hash = new URL(url).hash;
     expect(extractEncodedResult(hash)).toBe(await encodePayload(samplePayload));
     expect(extractEncodedResult("#")).toBeNull();
@@ -125,8 +126,8 @@ describe("result URL", () => {
     expect(extractEncodedResult("x=1&r=abc")).toBe("abc");
   });
 
-  it("decodes straight from location.hash", async () => {
-    const url = await buildResultUrl("https://llmbti.vercel.app", samplePayload);
+  it("legacy: decodes straight from location.hash", async () => {
+    const url = await buildLegacyResultUrl("https://llmbti.vercel.app", samplePayload);
     expect(await decodeResultFromHash(new URL(url).hash)).toEqual(samplePayload);
     expect(await decodeResultFromHash("#r=garbage")).toBeNull();
   });

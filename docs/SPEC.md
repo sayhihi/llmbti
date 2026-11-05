@@ -188,8 +188,11 @@ type ResultPayload = {
   sampleSize: { prompts: number; shell: number };
 };
 ```
-- 인코딩: `JSON → deflate-raw → base64url`. Node는 `zlib`, 브라우저는 `DecompressionStream('deflate-raw')`를 써서 의존성 없이 처리한다.
-- **URL 형식:** `https://llmbti.vercel.app/t/{TYPE}#r={payload}`
+- 인코딩 (compact, 2026-11-05부터): payload를 키 없는 배열로 접고(`core/src/wire.ts`), 고정 사전(`core/src/dict.ts`)을 쓰는 deflate-raw로 압축해 base64url. 양쪽 다 fflate. 같은 결과가 legacy의 절반 이하(1,064자 → 450자 안팎)가 된다.
+- 인코딩 (legacy, 해독만 유지): `JSON → deflate-raw → base64url`. Node는 `zlib`, 브라우저는 `DecompressionStream('deflate-raw')`.
+- **URL 형식:** `https://llmbti.vercel.app/t/{TYPE}#z={compact}`. legacy는 `#r={payload}`이고 웹이 둘 다 푼다.
+  - 사전과 배열 모양은 고정이다. 바꾸면 공유된 링크가 깨지니 wire 버전을 올리고 옛 것은 해독용으로 남긴다.
+  - CLI는 링크를 클립보드와 `/tmp/llmbti-url.txt`에도 남긴다. Claude Code 스킬은 `--no-url`로 터미널에 링크를 찍지 않는다. LLM이 긴 링크를 옮겨 적다 자르는 일을 막기 위해서다.
   - path의 `/t/ENFP`는 크롤러가 읽는 유형별 정적 페이지라서, 유형별 OG 이미지가 뜬다.
   - hash에는 개인 결과가 담기고 서버로 전송되지 않는다.
 - 디코딩에 실패하거나 버전이 다르면 해당 유형의 일반 소개 페이지로 fallback한다.

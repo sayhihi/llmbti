@@ -52,7 +52,7 @@ describe("selectPayloadStats", () => {
 });
 
 describe("buildPayload + buildUrl", () => {
-  it("payload v1, 배지 ≤ 6, URL은 /t/TYPE#r= 이고 디코드하면 같은 내용", async () => {
+  it("payload v1, 배지 ≤ 6, URL은 /t/TYPE#z= 이고 디코드하면 같은 내용", async () => {
     const payload = buildPayload(analysisP, copy, "lite");
     expect(payload.v).toBe(1);
     expect(payload.type).toBe("ENFP");
@@ -65,7 +65,7 @@ describe("buildPayload + buildUrl", () => {
     }
 
     const { url, tooLong } = await buildUrl("https://example.test/", payload);
-    expect(url.startsWith("https://example.test/t/ENFP#r=")).toBe(true);
+    expect(url.startsWith("https://example.test/t/ENFP#z=")).toBe(true);
     expect(tooLong).toBe(false);
     expect(url.length).toBeLessThan(URL_WARN_LENGTH);
     const decoded = await decodeResultFromHash(url.slice(url.indexOf("#")));

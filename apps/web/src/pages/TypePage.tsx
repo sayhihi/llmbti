@@ -8,7 +8,7 @@ import { TypeIntro } from "./TypeIntro";
 
 /**
  * /t/:type
- * hash 에 r= 이 있고 읽히면 개인 결과, 없거나 깨졌거나 버전이 다르면 유형 소개 (SPEC 9장 fallback).
+ * hash 에 z= (compact) 나 r= (legacy) 이 있고 읽히면 개인 결과, 없거나 깨졌거나 버전이 다르면 유형 소개 (SPEC 9장 fallback).
  */
 export function TypePage({ param }: { param: string }) {
   const type = parseType(param);

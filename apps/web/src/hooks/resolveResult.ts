@@ -1,4 +1,4 @@
-import { decodeResultFromHash, extractEncodedResult } from "@llmbti/core";
+import { decodeResultFromHash, hasResultInHash } from "@llmbti/core";
 import type { MbtiType, ResultPayload } from "@llmbti/core";
 
 export type ResultState =
@@ -7,9 +7,9 @@ export type ResultState =
   /** hash 가 없거나(none) 있는데 못 읽었다(invalid). 둘 다 유형 소개로 fallback 한다. */
   | { status: "none" | "invalid" };
 
-/** hash 에 `r=` 이 실려 있는지. 디코딩 전에 "읽는 중" 상태를 보여 줄지 정한다. */
+/** hash 에 결과(`z=` compact 또는 `r=` legacy)가 실려 있는지. 디코딩 전에 "읽는 중" 상태를 보여 줄지 정한다. */
 export function hasEncodedResult(hash: string): boolean {
-  return extractEncodedResult(hash) !== null;
+  return hasResultInHash(hash);
 }
 
 /**

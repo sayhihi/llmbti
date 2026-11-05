@@ -2,7 +2,8 @@
  * `llmbti render --analysis F --copy F [--no-open] [--base URL]` (SPEC 12장).
  *
  * 검증 → redact → payload → URL → 터미널 출력 → 브라우저. run(라이트 모드)도 같은 renderResult를 쓴다.
- * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지. 그 아래 URL 한 줄.
+ * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지.
+ * 그 아래 클립보드/파일 안내 한 줄과 URL 한 줄. `--no-url` 이면 URL 줄은 생략한다 (Claude Code 용).
  */
 
 import { readFileSync } from "node:fs";
@@ -43,12 +44,18 @@ export interface RenderIo {
   columns?: number;
   env?: Record<string, string | undefined>;
   openBrowser?: (url: string) => Promise<boolean>;
+  /** 링크를 클립보드에. 없으면 건너뛴다. 기본 clipboard.ts */
+  copyToClipboard?: (url: string) => Promise<boolean>;
+  /** 링크를 파일에. 쓴 경로 또는 null. 없으면 건너뛴다. 기본 clipboard.ts */
+  writeUrlFile?: (url: string) => string | null;
 }
 
 export interface RenderOptions {
   mode: ResultMode;
   base?: string | boolean;
   open: boolean;
+  /** --no-url: URL 줄을 찍지 않는다. 클립보드와 파일이 둘 다 실패하면 그래도 찍는다. 기본 true */
+  showUrl?: boolean;
   /** 숨은 옵션: 색 모드 강제 (truecolor|256|none) */
   color?: string | boolean;
   /** 숨은 옵션: 터미널 폭 강제 */
@@ -139,7 +146,14 @@ export async function renderResult(
   const colorMode = resolveColorMode(opts, io);
   const width = opts.width ?? io.columns ?? process.stdout.columns ?? DEFAULT_WIDTH;
   const lines = layoutLines(analysis, safeCopy, colorMode, width);
-  io.stdout(lines.join("\n") + "\n\n🔗 " + url + "\n");
+  const copied = io.copyToClipboard ? await io.copyToClipboard(url) : false;
+  const filePath = io.writeUrlFile ? io.writeUrlFile(url) : null;
+  const tail: string[] = [""];
+  if (copied && filePath) tail.push(`📋 링크를 클립보드에 복사했다. 파일: ${filePath}`);
+  else if (copied) tail.push("📋 링크를 클립보드에 복사했다");
+  else if (filePath) tail.push(`📄 링크를 파일에 써 뒀다: ${filePath}`);
+  if (opts.showUrl !== false || (!copied && !filePath)) tail.push("🔗 " + url);
+  io.stdout(lines.join("\n") + "\n" + tail.join("\n") + "\n");
 
   const isTTY = io.isTTY ?? Boolean(process.stdout.isTTY);
   if (opts.open && isTTY && io.openBrowser) {
