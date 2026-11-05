@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_BADGES } from "@llmbti/core";
+import { MAX_BADGES, TYPE_META } from "@llmbti/core";
 import { FIXTURE_NOW, FIXTURE_TZ, fixtureHome } from "../testUtils";
 import { MAX_SAMPLES, MIN_PROMPTS, MIN_SHELL, SAMPLE_MAX_LENGTH } from "../scoring.constants";
 import { analyze, formatAnalysis, mergePrompts } from "./analyze";
@@ -207,5 +207,13 @@ describe("formatAnalysis", () => {
     const out = formatAnalysis(analyze(opts("home-tiny")));
     expect(out).toContain("아직 덜 컴파일됨");
     expect(out).not.toContain("유형  ");
+  });
+});
+
+describe("clashWith", () => {
+  it("유형의 상극을 typeMeta 에서 채운다", () => {
+    const r = analyze(opts("home-j"));
+    expect(r.clashWith).toBe(TYPE_META[r.type].clashWith.type);
+    expect(r.clashWith).not.toBe(r.type);
   });
 });

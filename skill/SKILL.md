@@ -26,7 +26,7 @@ LLM에게 일을 시키는 패턴과 셸 히스토리로 개발자 MBTI를 뽑�
 
 ## analyze 출력에서 쓸 것
 
-- `type`, `scores` (EI, SN, TF, JP: -100..100, 양수면 앞 글자), `borderline` (경계 축)
+- `type`, `scores` (EI, SN, TF, JP: -100..100, 양수면 앞 글자), `borderline` (경계 축), `clashWith` (상극 유형)
 - `sampleSize.prompts`, `sampleSize.shell`, `periodDays`
 - `stats`: `promptCount`, `shellCount`, `sessionCount`, `avgTurns`, `longestSession`, `peakHour`, `nightRatio`(%), `forceCount`, `rmrfCount`, `sudoBangCount`, `redoCount`, `thanksCount`, `interruptCount`, `topCommand`, `topCommands`, `shortestPrompt`, `mostRepeatedPrompt`, `topTool`
 - `signals`: 비율 0..1 (`questionRatio`, `shortImperativeRatio`, `emotionRatio`, `planRatio`, `testRatio`, `redirectRatio` 등). 퍼센트로 바꿔 쓴다.
@@ -47,7 +47,7 @@ LLM에게 일을 시키는 패턴과 셸 히스토리로 개발자 MBTI를 뽑�
 
 - `evidence`는 정확히 3개. 각 항목에 숫자가 하나는 있어야 한다.
 - 문장 수는 `.`, `!`, `?` 뒤에 공백이나 끝이 오는 자리로 센다. `2.1자` 같은 소수점은 안 센다.
-- `pairWith.type`은 16개 유형 중 하나. 본인 유형과 달라야 재밌다.
+- `pairWith.type`은 16개 유형 중 하나. 본인 유형과 달라야 재밌다. analyze 출력의 `clashWith`와도 달라야 한다. 공유 페이지가 상극 카드를 `clashWith`로 그리니, 같으면 페어와 상극이 같은 유형으로 나온다.
 
 ## 문구 톤 규칙
 
@@ -107,3 +107,4 @@ roast만 하나 더: "세션당 평균 31턴, 최장 세션 112턴. 버그 하�
 2. roast에 숫자가 최소 하나 있고, 그 숫자가 analyze 출력에 실제로 있는가
 3. 가운뎃점, 줄표, 이모지, 경로, 이름이 없는가
 4. 읽고 나서 웃긴가, 아니면 기분 나쁜가. 기분 나쁘면 다시 쓴다
+5. `pairWith.type`이 본인 유형이나 `clashWith`와 겹치지 않는가

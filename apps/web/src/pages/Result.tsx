@@ -7,7 +7,7 @@ import { PixelCharacter } from "../components/PixelCharacter";
 import { ShareRow } from "../components/ShareRow";
 import { RelationCard } from "../components/TypeCard";
 import { TryItCta } from "../components/TryItCta";
-import { TEMPERAMENT_LABEL, getTypeMeta, temperamentOf } from "../data/typeMeta";
+import { TEMPERAMENT_LABEL, getTypeMeta, resolvePairWith, temperamentOf } from "../data/typeMeta";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { Link } from "../router";
 import { temperamentVar } from "../theme";
@@ -20,6 +20,7 @@ import { temperamentVar } from "../theme";
 export function Result({ payload }: { payload: ResultPayload }) {
   const { type, copy, scores, badges, stats, mode, periodDays, sampleSize } = payload;
   const meta = getTypeMeta(type);
+  const pairWith = resolvePairWith(type, copy.pairWith);
   const t = temperamentOf(type);
   const borderline = AXES.filter((a) => isBorderline(scores[a]));
   useDocumentTitle(`${type} ${copy.nickname}`);
@@ -89,7 +90,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
 
       <section className="section">
         <div className="grid grid-2">
-          <RelationCard kind="pair" type={copy.pairWith.type} reason={copy.pairWith.reason} />
+          <RelationCard kind="pair" type={pairWith.type} reason={pairWith.reason} />
           <RelationCard kind="clash" type={meta.clashWith.type} reason={meta.clashWith.reason} />
         </div>
       </section>
