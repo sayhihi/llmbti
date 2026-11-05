@@ -383,3 +383,21 @@ describe("링크 전달 (클립보드, 파일, --no-url)", () => {
     expect(neither.out).not.toContain("📋");
   });
 });
+
+describe("--open (TTY 가 아니어도 브라우저)", () => {
+  const argv = ["run", ...fixtureP, "--yes"];
+
+  it("기본은 TTY 가 아니면 안 열고, --open 이면 연다", async () => {
+    const plain = await run(argv, { isTTY: false });
+    expect(plain.opened).toEqual([]);
+
+    const forced = await run([...argv, "--open"], { isTTY: false });
+    expect(forced.opened).toHaveLength(1);
+    expect(forced.opened[0]).toBe(lastLine(forced.out));
+  });
+
+  it("--open 과 --no-open 이 같이 오면 --no-open 이 이긴다", async () => {
+    const r = await run([...argv, "--open", "--no-open"], { isTTY: true });
+    expect(r.opened).toEqual([]);
+  });
+});

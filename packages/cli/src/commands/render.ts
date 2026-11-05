@@ -54,6 +54,8 @@ export interface RenderOptions {
   mode: ResultMode;
   base?: string | boolean;
   open: boolean;
+  /** --open: stdout 이 TTY 가 아니어도(Claude Code 안) 브라우저를 연다. 기본은 TTY 일 때만 */
+  forceOpen?: boolean;
   /** --no-url: URL 줄을 찍지 않는다. 클립보드와 파일이 둘 다 실패하면 그래도 찍는다. 기본 true */
   showUrl?: boolean;
   /** 숨은 옵션: 색 모드 강제 (truecolor|256|none) */
@@ -156,7 +158,7 @@ export async function renderResult(
   io.stdout(lines.join("\n") + "\n" + tail.join("\n") + "\n");
 
   const isTTY = io.isTTY ?? Boolean(process.stdout.isTTY);
-  if (opts.open && isTTY && io.openBrowser) {
+  if (opts.open && (isTTY || opts.forceOpen === true) && io.openBrowser) {
     const ok = await io.openBrowser(url);
     if (!ok) io.stderr("⚠️  브라우저를 열지 못했다. 위 URL을 직접 열면 된다.\n");
   }

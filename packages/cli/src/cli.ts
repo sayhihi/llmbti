@@ -17,19 +17,20 @@ type Command = (typeof COMMANDS)[number];
 const USAGE = `llmbti - LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI
 
 사용법:
-  llmbti [run] [--days N] [--no-shell] [--yes] [--no-open] [--no-url] [--base URL]
+  llmbti [run] [--days N] [--no-shell] [--yes] [--open|--no-open] [--no-url] [--base URL]
                                라이트 모드: analyze -> 템플릿 문구 -> render
   llmbti install [--force]     skill/ 을 ~/.claude/skills/llmbti/ 로 복사 (CLAUDE_CONFIG_DIR 존중)
                 [--sync]      묻지 않고 최신 스킬로 맞춤 (같으면 아무것도 안 함)
   llmbti analyze [--json] [--days N] [--no-shell] [--home DIR]
                                로그 집계 결과 출력. --home은 테스트용 가짜 홈
-  llmbti render --analysis F --copy F [--no-open] [--no-url] [--base URL]
+  llmbti render --analysis F --copy F [--open|--no-open] [--no-url] [--base URL]
                                검증 -> 터미널 출력 -> 결과 URL(클립보드, 파일) -> 브라우저 열기
 
 옵션:
   --days N                     분석 기간 (기본 30일)
   --no-shell                   셸 히스토리 제외
   --yes                        셸 히스토리 질문을 건너뛰고 포함
+  --open                       터미널이 아니어도(Claude Code 안) 브라우저를 엶
   --no-open                    브라우저를 열지 않음
   --no-url                     URL 줄을 찍지 않음. 링크는 클립보드와 /tmp/llmbti-url.txt 에 남는다
   --base URL                   결과 페이지 주소 (기본 https://llmbti.vercel.app, env LLMBTI_BASE_URL)
@@ -135,6 +136,7 @@ export async function main(argv: string[], io: CliIo = processIo): Promise<numbe
           copyPath,
           base: flags.base,
           open: flags["no-open"] !== true,
+          forceOpen: flags.open === true,
           showUrl: flags["no-url"] !== true,
           color: flags.color,
           width: numberFlag(flags.width),
@@ -153,6 +155,7 @@ export async function main(argv: string[], io: CliIo = processIo): Promise<numbe
           yes: flags.yes === true,
           base: flags.base,
           open: flags["no-open"] !== true,
+          forceOpen: flags.open === true,
           showUrl: flags["no-url"] !== true,
           color: flags.color,
           width: numberFlag(flags.width),

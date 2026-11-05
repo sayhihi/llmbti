@@ -16,9 +16,9 @@ LLM에게 일을 시키는 패턴과 셸 히스토리로 개발자 MBTI를 뽑�
 3. `npx -y llmbti@latest analyze --json > /tmp/llmbti-analysis.json` 을 실행한다. 셸을 빼기로 했으면 `--no-shell`을 붙인다.
 4. `/tmp/llmbti-analysis.json`을 읽는다. `insufficient`가 `true`면 "아직 덜 컴파일됨. 프롬프트 N개, 셸 명령 M개로는 유형이 안 나온다"라고 알리고 끝낸다. N, M은 `sampleSize.prompts`, `sampleSize.shell`이다.
 5. 아래 스키마와 톤 규칙대로 CopyJson을 써서 `/tmp/llmbti-copy.json`에 저장한다. 숫자는 `stats`, `signals`, `sampleSize`, `scores`에서만 가져온다. `samples`는 웃긴 포인트를 잡는 참고용이고, 인용은 짧게 한 번까지만 한다. `type`은 바꾸지 않는다.
-6. `npx -y llmbti@latest render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json --no-color --no-url` 을 실행한다. `--no-color`는 Claude Code 안에서는 색이 안 나와 캐릭터가 뭉개지므로 캐릭터를 빼고 글만 찍는 옵션이다. `--no-url`은 결과 링크를 터미널에 찍지 않고 클립보드와 `/tmp/llmbti-url.txt`에만 남기는 옵션이다. 검증 에러가 번호 목록으로 나오면 해당 항목만 고쳐서 다시 실행한다. 최대 2회.
-7. render 가 찍은 출력(유형과 별명, roast, 4축 바, evidence, 커밋 메시지, 클립보드 안내 줄)을 코드 블록 안에 그대로 붙여서 보여 준다. 줄을 빼거나 고쳐 쓰지 않는다. 그 아래에 "결과 링크는 클립보드에 복사돼 있다. 붙여넣기 하면 캐릭터와 공유 페이지가 열린다. 클립보드가 비어 있으면 `/tmp/llmbti-url.txt`에 있다"고 한 줄 덧붙인다. 그 외 요약이나 해설은 붙이지 않는다.
-   - 결과 링크를 답변에 직접 적지 않는다. 링크는 400자가 넘는 문자열이라 옮겨 적다가 중간에서 끊기면 받은 사람이 결과를 못 본다. render 출력에 URL 줄이 찍혀 있어도(클립보드와 파일이 둘 다 실패한 경우) 그 줄만은 코드 블록에 그대로 두고 따로 다시 쓰지 않는다.
+6. `npx -y llmbti@latest render --analysis /tmp/llmbti-analysis.json --copy /tmp/llmbti-copy.json --no-color --open` 을 실행한다. `--no-color`는 Claude Code 안에서는 색이 안 나와 캐릭터가 뭉개지므로 캐릭터를 빼고 글만 찍는 옵션이다. `--open`은 터미널이 아니어도 브라우저에 결과 페이지를 바로 여는 옵션이다. render 는 결과 링크를 클립보드와 `/tmp/llmbti-url.txt`에도 남긴다. 검증 에러가 번호 목록으로 나오면 해당 항목만 고쳐서 다시 실행한다. 최대 2회.
+7. render 가 찍은 출력(유형과 별명, roast, 4축 바, evidence, 커밋 메시지, 클립보드 안내 줄, URL 줄)을 코드 블록 안에 그대로 붙여서 보여 준다. 줄을 빼거나 고쳐 쓰지 않는다. 그 아래에 결과 링크를 한 줄 더 적고, "브라우저에 결과 페이지가 열렸다. 링크는 클립보드에도 복사돼 있으니 메신저에 보낼 땐 붙여넣기 하면 된다"고 한 줄 덧붙인다. 그 외 요약이나 해설은 붙이지 않는다.
+   - 링크는 render 출력의 URL 줄에서 그대로 복사한다. 한 글자도 고치거나 줄이지 않는다. 450자 안팎의 긴 문자열이라 중간에서 끊기면 받은 사람이 결과를 못 본다. 자신 없으면 링크 줄은 빼고 "클립보드에 있다"고만 안내한다.
 
 ## 금지
 
