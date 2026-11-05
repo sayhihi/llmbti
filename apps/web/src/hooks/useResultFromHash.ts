@@ -7,7 +7,7 @@ import type { ResultState } from "./resolveResult";
 
 /**
  * /t/:type 에서 location.hash 를 읽어 개인 결과를 꺼낸다. hash 가 바뀌면 다시 읽는다.
- * hash 에 r= 이 없으면 비동기 디코딩을 기다리지 않고 바로 none 을 돌려줘서 소개 페이지가 깜빡이지 않게 한다.
+ * hash 에 z= 도 r= 도 없으면 비동기 디코딩을 기다리지 않고 바로 none 을 돌려줘서 소개 페이지가 깜빡이지 않게 한다.
  */
 export function useResultFromHash(type: MbtiType): ResultState {
   const { hash } = useRouter();

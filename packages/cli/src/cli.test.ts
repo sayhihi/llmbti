@@ -118,7 +118,7 @@ describe("llmbti run (라이트 모드)", () => {
     expect(r.code).toBe(0);
     expect(r.err).toBe("");
     const url = lastLine(r.out);
-    expect(url.startsWith("https://llmbti.vercel.app/t/ENFP#r=")).toBe(true);
+    expect(url.startsWith("https://llmbti.vercel.app/t/ENFP#z=")).toBe(true);
     const payload = await decodeResultFromHash(url.slice(url.indexOf("#")));
     expect(payload).not.toBeNull();
     expect(payload!.mode).toBe("lite");
@@ -146,11 +146,11 @@ describe("llmbti run (라이트 모드)", () => {
 
   it("명령 없이 실행해도 run 이고, --base 와 LLMBTI_BASE_URL 을 따른다", async () => {
     const flag = await run([...fixtureP, "--no-open", "--yes", "--base", "http://localhost:4173/"]);
-    expect(lastLine(flag.out).startsWith("http://localhost:4173/t/ENFP#r=")).toBe(true);
+    expect(lastLine(flag.out).startsWith("http://localhost:4173/t/ENFP#z=")).toBe(true);
     const env = await run([...fixtureP, "--no-open", "--yes"], {
       env: { LLMBTI_BASE_URL: "http://x.test" },
     });
-    expect(lastLine(env.out).startsWith("http://x.test/t/ENFP#r=")).toBe(true);
+    expect(lastLine(env.out).startsWith("http://x.test/t/ENFP#z=")).toBe(true);
   });
 
   it("TTY 면 셸 질문을 한 번 하고, 브라우저를 연다. --no-shell/--yes 면 안 묻는다", async () => {
@@ -194,7 +194,7 @@ describe("llmbti run (라이트 모드)", () => {
     expect(r.code).toBe(0);
     expect(r.out).toContain("아직 덜 컴파일됨");
     expect(r.out).toContain("다시");
-    expect(r.out).not.toContain("#r=");
+    expect(r.out).not.toContain("#z=");
   });
 
   it("truecolor + 폭 100 이면 캐릭터 16줄 옆에 텍스트, 폭 60 이면 세로 스택", async () => {
@@ -216,7 +216,7 @@ describe("llmbti run (라이트 모드)", () => {
     const urlIdx = lines.length - 1;
     expect(urlIdx).toBeGreaterThanOrEqual(17);
     expect(lines[urlIdx - 1]).toBe("");
-    expect(lines[urlIdx]).toMatch(/^🔗 https:\/\/llmbti\.vercel\.app\/t\/ENFP#r=/);
+    expect(lines[urlIdx]).toMatch(/^🔗 https:\/\/llmbti\.vercel\.app\/t\/ENFP#z=/);
     // 별명 다음 줄은 빈 칸, 그 다음부터 roast 가 캐릭터 옆 66칸 안에서 접힌다
     expect(stripAnsi(lines[1]!).slice(34).trim()).toBe("");
     expect(stripAnsi(lines[2]!)).toMatch(/^.{32} {2}\S/);
@@ -336,5 +336,50 @@ describe("llmbti render", () => {
     const r = await run(["render", "--analysis", analysisPath, "--copy", copyPath]);
     expect(r.code).toBe(2);
     expect(r.err).toContain("analyze --json");
+  });
+});
+
+describe("링크 전달 (클립보드, 파일, --no-url)", () => {
+  const argv = ["run", ...fixtureP, "--no-open", "--yes"];
+
+  it("클립보드와 파일이 되면 안내 줄 다음에 URL 줄", async () => {
+    const copied: string[] = [];
+    const r = await run(argv, {
+      copyToClipboard: async (u) => (copied.push(u), true),
+      writeUrlFile: () => "/tmp/llmbti-url.txt",
+    });
+    const lines = r.out.trimEnd().split("\n");
+    const url = lastLine(r.out);
+    expect(url.startsWith("https://llmbti.vercel.app/t/ENFP#z=")).toBe(true);
+    expect(lines[lines.length - 2]).toBe(
+      "📋 링크를 클립보드에 복사했다. 파일: /tmp/llmbti-url.txt",
+    );
+    expect(lines[lines.length - 3]).toBe("");
+    expect(copied).toEqual([url]);
+  });
+
+  it("--no-url 이면 URL 줄을 숨기고 안내만 남긴다", async () => {
+    const r = await run([...argv, "--no-url"], {
+      copyToClipboard: async () => true,
+      writeUrlFile: () => "/tmp/llmbti-url.txt",
+    });
+    expect(r.out).not.toContain("#z=");
+    expect(lastLine(r.out)).toBe("📋 링크를 클립보드에 복사했다. 파일: /tmp/llmbti-url.txt");
+  });
+
+  it("클립보드만 실패하면 파일 안내, 둘 다 실패하면 --no-url 이어도 URL 을 찍는다", async () => {
+    const fileOnly = await run([...argv, "--no-url"], {
+      copyToClipboard: async () => false,
+      writeUrlFile: () => "/tmp/llmbti-url.txt",
+    });
+    expect(lastLine(fileOnly.out)).toBe("📄 링크를 파일에 써 뒀다: /tmp/llmbti-url.txt");
+    expect(fileOnly.out).not.toContain("#z=");
+
+    const neither = await run([...argv, "--no-url"], {
+      copyToClipboard: async () => false,
+      writeUrlFile: () => null,
+    });
+    expect(lastLine(neither.out).startsWith("https://llmbti.vercel.app/t/ENFP#z=")).toBe(true);
+    expect(neither.out).not.toContain("📋");
   });
 });

@@ -177,6 +177,27 @@ export interface Signals {
 
 export type SignalKey = keyof Signals;
 
+/**
+ * 시그널 키의 고정 순서. compact 코덱이 키 대신 이 배열의 번호를 싣는다.
+ * 순서를 바꾸거나 중간에 끼워 넣지 않는다. 새 시그널은 끝에만 붙인다.
+ */
+export const SIGNAL_KEYS: readonly SignalKey[] = [
+  "avgTurns",
+  "questionRatio",
+  "avgPromptLength",
+  "interruptRatio",
+  "concreteRatio",
+  "abstractRatio",
+  "errorPasteRatio",
+  "emotionRatio",
+  "shortImperativeRatio",
+  "planRatio",
+  "testRatio",
+  "forceRatio",
+  "redirectRatio",
+  "lowQualityCommitRatio",
+];
+
 /** 통계 배지 키 (SPEC 9장 `badges`). 선정 기준은 cli/src/scoring.constants.ts BADGE_RULES. */
 export const BADGE_KEYS = [
   "nightOwl",
@@ -191,6 +212,23 @@ export const BADGE_KEYS = [
 ] as const;
 
 export type BadgeKey = (typeof BADGE_KEYS)[number];
+
+/**
+ * 배지가 칩에 같이 보여 주는 숫자 통계 키. payload.stats 에는 이 키들과 promptCount, shellCount 만 싣는다.
+ * 웹의 badgeLabels.ts 와 1:1. compact 코덱은 배지 순서대로 이 값만 싣고 키는 생략한다.
+ * BADGE_KEYS 처럼 순서를 바꾸지 않는다.
+ */
+export const BADGE_STAT_KEYS: Readonly<Record<BadgeKey, keyof Stats | null>> = {
+  nightOwl: "nightRatio",
+  forcePusher: "forceCount",
+  rmrfSurvivor: "rmrfCount",
+  sudoBanger: "sudoBangCount",
+  thankYouBot: "thanksCount",
+  redoLoop: "redoCount",
+  marathonSession: "longestSession",
+  oneWordWonder: null,
+  lowSample: "promptCount",
+};
 
 /** 어떤 데이터 소스를 읽었는지. 셸 히스토리가 없으면 해당 시그널 가중치를 재정규화한다. */
 export interface SourceAvailability {

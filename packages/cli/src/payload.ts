@@ -1,8 +1,8 @@
 /**
  * AnalysisOutput + CopyJson → ResultPayload → 결과 URL (SPEC 9장).
  *
- * stats에는 배지 표시에 필요한 숫자만 싣는다: 고른 배지가 가리키는 키 + promptCount, shellCount.
- * 배지 → 통계 키 대응은 apps/web/src/data/badgeLabels.ts와 같다.
+ * stats에는 배지 표시에 필요한 숫자만 싣는다: 고른 배지가 가리키는 키(core BADGE_STAT_KEYS) + promptCount, shellCount.
+ * compact 코덱(#z=)은 이 중 배지 순서대로 값만 싣고 promptCount, shellCount 는 sampleSize 로 복원한다.
  */
 
 import { AXES } from "@llmbti/core";
@@ -10,12 +10,12 @@ import type { SignalKey, Signals } from "@llmbti/core";
 import { normalizeSignal } from "./scoring";
 import { SIGNALS } from "./scoring.constants";
 import {
+  BADGE_STAT_KEYS,
   MAX_BADGES,
   PAYLOAD_VERSION,
   URL_WARN_LENGTH,
   buildResultUrl,
   type AnalysisOutput,
-  type BadgeKey,
   type CopyJson,
   type ResultMode,
   type ResultPayload,
@@ -24,18 +24,7 @@ import {
 
 export const DEFAULT_BASE_URL = "https://llmbti.vercel.app";
 
-/** 배지가 보여 주는 숫자 통계 키. 문자열 통계(shortestPrompt)는 URL에 싣지 않는다. */
-export const BADGE_STAT_KEYS: Readonly<Record<BadgeKey, ReadonlyArray<keyof Stats>>> = {
-  nightOwl: ["nightRatio"],
-  forcePusher: ["forceCount"],
-  rmrfSurvivor: ["rmrfCount"],
-  sudoBanger: ["sudoBangCount"],
-  thankYouBot: ["thanksCount"],
-  redoLoop: ["redoCount"],
-  marathonSession: ["longestSession"],
-  oneWordWonder: [],
-  lowSample: ["promptCount"],
-};
+export { BADGE_STAT_KEYS };
 
 const ALWAYS_KEYS: ReadonlyArray<keyof Stats> = ["promptCount", "shellCount"];
 
@@ -45,8 +34,8 @@ export function selectPayloadStats(
 ): Record<string, number> {
   const keys = new Set<keyof Stats>(ALWAYS_KEYS);
   for (const b of badges) {
-    const mapped = (BADGE_STAT_KEYS as Record<string, ReadonlyArray<keyof Stats> | undefined>)[b];
-    for (const k of mapped ?? []) keys.add(k);
+    const mapped = (BADGE_STAT_KEYS as Record<string, keyof Stats | null | undefined>)[b];
+    if (mapped) keys.add(mapped);
   }
   const out: Record<string, number> = {};
   for (const k of keys) {
@@ -68,7 +57,9 @@ export function selectWhy(signals: Signals): NonNullable<ResultPayload["why"]> {
       rows.push({ key, value, weight: Math.abs(spec.weight * normalizeSignal(key, value)) });
     }
     rows.sort((a, b) => b.weight - a.weight);
-    const top = rows.slice(0, 2).map((r): [SignalKey, number] => [r.key, Math.round(r.value * 1000) / 1000]);
+    const top = rows
+      .slice(0, 2)
+      .map((r): [SignalKey, number] => [r.key, Math.round(r.value * 1000) / 1000]);
     if (top.length > 0) out[axis] = top;
   }
   return out;

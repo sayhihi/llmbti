@@ -23,7 +23,8 @@ export function TypeIntro({ type, fallbackNotice = false }: Props) {
     <div className="result" style={{ ["--accent" as string]: temperamentVar(t) }}>
       {fallbackNotice && (
         <p className="notice" role="status">
-          결과 링크를 읽지 못했다. 링크가 잘렸거나 옛 버전일 수 있다. 대신 {type} 소개를 보여 준다.
+          결과 링크를 읽지 못했다. 보내는 중에 링크가 잘린 것 같다. 보낸 사람에게 링크를 다시 받으면
+          된다. 대신 {type} 소개를 보여 준다.
         </p>
       )}
       <section className="result-head">
