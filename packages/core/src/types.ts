@@ -215,6 +215,8 @@ export interface AnalysisOutput {
   type: MbtiType;
   /** |점수| < 5 인 경계형 축 */
   borderline: Axis[];
+  /** 유형의 상극 (typeMeta.clashWith.type). 문구의 pairWith.type 으로 고르면 안 된다. 공유 페이지가 상극 카드를 이 유형으로 그린다. */
+  clashWith: MbtiType;
   badges: BadgeKey[];
   stats: Stats;
   /** 점수 계산에 들어간 시그널 (디버그·문구용). 계산 불가한 건 생략 */

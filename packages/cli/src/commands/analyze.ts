@@ -5,7 +5,7 @@
  * (세션 로그 보관 기간이 짧아서 history.jsonl이 더 길게 남는다). 같은 프롬프트는 ts ±2초로 중복 제거한다.
  */
 
-import { AXES } from "@llmbti/core";
+import { AXES, TYPE_META } from "@llmbti/core";
 import type { AnalysisOutput, Axis, Stats } from "@llmbti/core";
 import { isLowSample, pickBadges } from "../badges";
 import { computeMetrics } from "../metrics";
@@ -125,6 +125,7 @@ export function analyze(opts: AnalyzeOptions = {}): AnalysisOutput {
     scores: scoring.scores,
     type: scoring.type,
     borderline: scoring.borderline,
+    clashWith: TYPE_META[scoring.type].clashWith.type,
     badges,
     stats,
     signals: metrics.signals,

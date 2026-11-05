@@ -30,6 +30,17 @@ export function getTypeMeta(type: MbtiType): TypeMeta {
   return TYPE_META[type];
 }
 
+/**
+ * 결과 페이지의 페어 카드에 쓸 궁합. payload 의 pairWith 를 쓰되,
+ * 본인 유형이거나 상극(typeMeta.clashWith)과 같으면 정적 typeMeta.pairWith 로 바꾼다.
+ * 상극 카드는 항상 typeMeta.clashWith 로 그리므로, LLM 이 상극을 페어로 고르면 두 카드가 같은 유형이 된다.
+ */
+export function resolvePairWith(type: MbtiType, pair: TypeRelation): TypeRelation {
+  const meta = getTypeMeta(type);
+  if (pair.type === type || pair.type === meta.clashWith.type) return meta.pairWith;
+  return pair;
+}
+
 /** 대소문자 섞인 라우트 파라미터를 유형으로. 아니면 null. */
 export function parseType(value: string | undefined): MbtiType | null {
   if (!value) return null;
