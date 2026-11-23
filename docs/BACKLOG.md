@@ -27,7 +27,7 @@
 
 ## 미결 결정
 
-- [ ] `/start` 페이지 두 갈래 안내를 하나로 합칠지.
+- [x] `/start` 페이지 두 갈래 안내를 하나로 합칠지. 탭 두 개(CLI 버전, 채팅 버전)로 정리. 채팅 버전은 `/start#chat`.
 - [ ] 공유 페이지에 Claude 마스코트 크레딧 문구를 넣을지.
 - [ ] 영어 지원 시점. Cursor, Codex 로그 지원 여부. M6 이후로 미뤄둠.
 - [ ] 코드 안 `TODO(decision)` 4개: 웹 typeMeta를 core로 이전, 경로와 payload 유형 불일치 처리, 라우터 교체 시점, codec async 확정.

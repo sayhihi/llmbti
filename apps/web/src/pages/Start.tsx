@@ -1,10 +1,24 @@
-import { CommandLine } from "../components/CopyButton";
+import { CommandLine, CopyButton } from "../components/CopyButton";
 import { INSTALL_COMMAND, LITE_COMMAND } from "../components/TryItCta";
+import { CHAT_PROMPT } from "../data/chatPrompt";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
-import { Link } from "../router";
+import { Link, useRouter } from "../router";
+
+type Tab = "code" | "chat";
+
+/** 채팅 탭 주소. 결과 페이지의 "나도 해보기"가 여기로 바로 보낸다. */
+export const CHAT_TAB_PATH = "/start#chat";
+
+const TABS: readonly { id: Tab; label: string; to: string }[] = [
+  { id: "code", label: "CLI 버전", to: "/start" },
+  { id: "chat", label: "채팅 버전", to: CHAT_TAB_PATH },
+];
 
 export function Start() {
   useDocumentTitle("테스트 방법");
+  const { hash, navigate } = useRouter();
+  const tab: Tab = hash === "#chat" ? "chat" : "code";
+
   return (
     <>
       <section className="hero hero-small">
@@ -13,10 +27,49 @@ export function Start() {
         </p>
         <h1 className="page-title">테스트 방법</h1>
         <p className="hero-sub">
-          Claude Code를 쓰고 있다면 4단계. 터미널 한 줄, 슬래시 명령 한 줄, 동의 한 번, 링크 한 번.
+          Claude Code를 쓰면 CLI 버전으로 터미널에서 3단계. 아니라면 채팅 버전으로 프롬프트 하나만
+          붙여 넣으면 된다.
         </p>
       </section>
 
+      <div className="tabs" role="tablist" aria-label="테스트 방법 고르기">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            id={`tab-${t.id}`}
+            aria-selected={tab === t.id}
+            aria-controls={`panel-${t.id}`}
+            className={tab === t.id ? "tab active" : "tab"}
+            onClick={() => navigate(t.to, { replace: true })}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div
+        className="tab-panel"
+        role="tabpanel"
+        id={`panel-${tab}`}
+        aria-labelledby={`tab-${tab}`}
+      >
+        {tab === "code" ? <CodeGuide /> : <ChatGuide />}
+      </div>
+
+      <p className="center">
+        <Link to="/types" className="link">
+          16종 도감 먼저 구경하기
+        </Link>
+      </p>
+    </>
+  );
+}
+
+function CodeGuide() {
+  return (
+    <>
       <ol className="steps">
         <li className="step card">
           <span className="px step-no">1</span>
@@ -38,21 +91,14 @@ export function Start() {
               analyze 스크립트가 로그를 집계하고 점수와 유형을 정한다. Claude는 그 숫자를 보고
               디스를 쓴다.
             </p>
-          </div>
-        </li>
-        <li className="step card">
-          <span className="px step-no">3</span>
-          <div className="step-body">
-            <h2 className="step-title">셸 히스토리 읽기 동의</h2>
-            <p className="dim">
-              <code>~/.zsh_history</code> 나 <code>~/.bash_history</code> 를 읽어도 되는지 물어본다.
-              --force 횟수, rm -rf 횟수 같은 재미 통계가 여기서 나온다. 거절하면 Claude Code
-              로그만으로 계산한다.
+            <p className="dim small">
+              도중에 셸 히스토리를 읽어도 되는지 한 번 물어본다. 거절해도 Claude Code 로그만으로
+              계산한다.
             </p>
           </div>
         </li>
         <li className="step card">
-          <span className="px step-no">4</span>
+          <span className="px step-no">3</span>
           <div className="step-body">
             <h2 className="step-title">결과 URL 열기</h2>
             <p className="dim">
@@ -61,7 +107,7 @@ export function Start() {
             </p>
             <pre className="code-block">
               <span className="dim">https://llmbti.vercel.app</span>/t/ENFP
-              <span className="dim">#r=...</span>
+              <span className="dim">#z=...</span>
             </pre>
           </div>
         </li>
@@ -81,12 +127,48 @@ export function Start() {
           Claude가 쓴 버전은 더 맵다. 라이트 결과 페이지에서도 다시 안내한다.
         </p>
       </section>
-
-      <p className="center">
-        <Link to="/types" className="link">
-          16종 도감 먼저 구경하기
-        </Link>
-      </p>
     </>
+  );
+}
+
+function ChatGuide() {
+  return (
+    <ol className="steps">
+      <li className="step card">
+        <span className="px step-no">1</span>
+        <div className="step-body">
+          <h2 className="step-title">프롬프트 복사</h2>
+          <p className="dim">버튼을 누르면 판정용 프롬프트가 복사된다. 설치할 건 없다.</p>
+          <CopyButton
+            text={CHAT_PROMPT}
+            label="프롬프트 복사하기"
+            className="btn-primary btn-wide copy-prompt"
+          />
+        </div>
+      </li>
+      <li className="step card">
+        <span className="px step-no">2</span>
+        <div className="step-body">
+          <h2 className="step-title">채팅창에 붙여 넣기</h2>
+          <p className="dim">
+            ChatGPT나 Claude처럼 평소 쓰는 채팅 AI에 그대로 붙여 넣고 보낸다. AI가 나에 대해
+            기억하는 내용으로 바로 결과를 낸다. 기억이 하나도 없을 때만 12문항을 물어본다.
+          </p>
+        </div>
+      </li>
+      <li className="step card">
+        <span className="px step-no">3</span>
+        <div className="step-body">
+          <h2 className="step-title">결과 받기</h2>
+          <p className="dim">
+            유형 4글자와 축 점수, 별명, 한 줄 평이 채팅으로 나온다. 마지막 줄의 링크를 누르면 내
+            유형 캐릭터를 볼 수 있다.
+          </p>
+          <p className="dim small">
+            채팅 결과에는 게이지와 문구가 담긴 개인 링크가 없다. 유형 소개 페이지로 연결된다.
+          </p>
+        </div>
+      </li>
+    </ol>
   );
 }

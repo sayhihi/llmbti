@@ -13,6 +13,11 @@ export function TryItCta({ title = "나도 해보기" }: { title?: string }) {
       <Link to="/start" className="btn btn-primary btn-wide">
         테스트 방법 보기
       </Link>
+      <p className="center small">
+        <Link to="/start#chat" className="link">
+          개발자가 아니라면 채팅 버전으로 해보기
+        </Link>
+      </p>
     </section>
   );
 }
