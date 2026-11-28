@@ -3,21 +3,24 @@ import { describe, expect, it } from "vitest";
 import { splitAiLog } from "./AiLog";
 
 describe("splitAiLog", () => {
-  it("후임에게: 뒤를 떼어 낸다", () => {
-    expect(splitAiLog("다시를 147번 들었다. 후임에게: 처음 세 번은 무시해도 된다.")).toEqual({
-      body: "다시를 147번 들었다.",
-      handoff: "처음 세 번은 무시해도 된다.",
+  it("끝의 I believe... 를 떼어 낸다", () => {
+    expect(
+      splitAiLog("우리 애는요... 다시를 147번 했지만 더 좋은 답을 찾고 싶어서였어요. I believe..."),
+    ).toEqual({
+      body: "우리 애는요... 다시를 147번 했지만 더 좋은 답을 찾고 싶어서였어요.",
+      believe: true,
     });
   });
 
-  it("후임에게: 가 없거나 뒤가 비면 통째로 본문", () => {
-    expect(splitAiLog("고마워를 58번 들었다.")).toEqual({
-      body: "고마워를 58번 들었다.",
-      handoff: null,
-    });
-    expect(splitAiLog("3번 들었다. 후임에게:")).toEqual({
-      body: "3번 들었다. 후임에게:",
-      handoff: null,
+  it("대소문자, 말줄임표 모양이 달라도 잡는다", () => {
+    expect(splitAiLog("우리 애는요... 3번. i Believe…").believe).toBe(true);
+    expect(splitAiLog("우리 애는요... 3번. I believe").believe).toBe(true);
+  });
+
+  it("끝에 없으면 통째로 본문", () => {
+    expect(splitAiLog("I believe 로 시작만 했다 3번")).toEqual({
+      body: "I believe 로 시작만 했다 3번",
+      believe: false,
     });
   });
 });

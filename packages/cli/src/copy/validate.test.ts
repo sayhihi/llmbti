@@ -81,19 +81,24 @@ describe("validateCopy", () => {
     ]);
   });
 
-  it("aiLog 는 없어도 통과하고, 있으면 120자와 숫자를 본다", () => {
+  it("aiLog 는 없어도 통과하고, 있으면 길이, 숫자, 시작과 끝 문구를 본다", () => {
+    const ok = "우리 애는요... --force 를 11번 했지만 빨리 보여 주고 싶었던 거예요. I believe...";
     expect(problemsOf({})).toEqual([]);
-    expect(problemsOf({ aiLog: "오늘 --force 11번을 막지 못했다. 후임에게: 새벽 3시엔 깨어 있어라." })).toEqual(
-      [],
-    );
-    expect(problemsOf({ aiLog: "가".repeat(119) + "1" + "가" })).toEqual([
+    expect(problemsOf({ aiLog: ok })).toEqual([]);
+    expect(problemsOf({ aiLog: "우리 애는요" + "가".repeat(110) + "1 I believe..." })).toEqual([
       expect.stringContaining("aiLog: 120자"),
     ]);
-    expect(problemsOf({ aiLog: "숫자가 없는 일지다." })).toEqual([
+    expect(problemsOf({ aiLog: "우리 애는요... 착해요. I believe..." })).toEqual([
       expect.stringContaining("aiLog: 숫자"),
     ]);
+    expect(problemsOf({ aiLog: "우리 애는요... 3번 했어요." })).toEqual([
+      expect.stringContaining("I believe"),
+    ]);
+    expect(problemsOf({ aiLog: "오늘 3번 했어요. I believe..." })).toEqual([
+      expect.stringContaining("우리 애는요"),
+    ]);
     expect(problemsOf({ aiLog: 3 })).toEqual([expect.stringContaining("aiLog: 문자열")]);
-    expect(problemsOf({ aiLog: "다시 3번 — 지쳤다" })).toEqual([
+    expect(problemsOf({ aiLog: "우리 애는요... 3번 — 착해요. I believe..." })).toEqual([
       expect.stringContaining("aiLog: 줄표"),
     ]);
   });
@@ -194,8 +199,10 @@ describe("mapCopyStrings", () => {
   });
 
   it("aiLog 가 있으면 같이 바꾼다", () => {
-    const r = validateCopy({ ...good, aiLog: "log 3" });
+    const r = validateCopy({ ...good, aiLog: "우리 애는요... 3번. I believe..." });
     if (!r.ok) throw new Error("fixture invalid");
-    expect(mapCopyStrings(r.copy, (s) => s.toUpperCase()).aiLog).toBe("LOG 3");
+    expect(mapCopyStrings(r.copy, (s) => s.toUpperCase()).aiLog).toBe(
+      "우리 애는요... 3번. I BELIEVE...",
+    );
   });
 });

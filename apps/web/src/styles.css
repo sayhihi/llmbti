@@ -1011,23 +1011,20 @@ h3 {
   text-align: center;
 }
 
-/* ---------- 담당 AI 업무 일지 ---------- */
+/* ---------- 담당 AI는 믿어요 ---------- */
 
 .ai-log-body {
   margin: 0;
   line-height: 1.8;
 }
 
-.ai-log-handoff {
-  margin: 0;
-  padding: 10px 14px;
-  background: var(--p-black);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-}
-
-.ai-log-label {
+.ai-log-believe {
+  margin: 4px 0 0;
+  text-align: right;
+  font-style: italic;
+  font-size: 17px;
   color: var(--accent);
+  letter-spacing: 0.04em;
 }
 
 /* ---------- 결과 붙여넣기 ---------- */

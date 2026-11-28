@@ -48,9 +48,10 @@ describe("chatPrompt", () => {
     }
   });
 
-  it("asks for the AI work log and a status line", () => {
-    expect(CHAT_PROMPT).toContain("담당 AI의 업무 일지");
-    expect(CHAT_PROMPT).toContain("후임에게:");
+  it("asks for the AI's I-believe line and a status line", () => {
+    expect(CHAT_PROMPT).toContain("담당 AI는 믿어요");
+    expect(CHAT_PROMPT).toContain("우리 애는요...");
+    expect(CHAT_PROMPT).toContain("I believe...");
     expect(CHAT_PROMPT).toContain("오늘의 상태메시지");
   });
 

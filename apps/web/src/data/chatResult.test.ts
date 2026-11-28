@@ -15,7 +15,7 @@ const CODE = `{
   "evidence": ["답변 도중 자주 끼어든다", "고마워를 거의 매번 붙인다", "처음부터 다시를 자주 한다"],
   "status": "오늘도 방향 수정 중",
   "pair": { "type": "ISTJ", "reason": "순서는 저쪽이 정해 줌" },
-  "aiLog": "오늘 방향이 4번 바뀌었다. 후임에게: 첫 요청은 초안이라고 생각해라."
+  "aiLog": "우리 애는요... 방향을 4번 바꿨지만 그만큼 진심인 거예요. I believe..."
 }`;
 
 /** ChatGPT 답변 전체를 복사한 모양: 결과 설명 + 코드 펜스 + 마지막 안내 */
@@ -72,7 +72,7 @@ describe("parseChatResult", () => {
     expect(p.chat).toEqual({ method: "record", confidence: "mid" });
     expect(p.copy.commitMessage).toBe("오늘도 방향 수정 중");
     expect(p.copy.pairWith).toEqual({ type: "ISTJ", reason: "순서는 저쪽이 정해 줌" });
-    expect(p.copy.aiLog).toContain("후임에게:");
+    expect(p.copy.aiLog).toContain("I believe...");
     expect(p.badges).toEqual([]);
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });

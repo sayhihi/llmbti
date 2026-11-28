@@ -101,7 +101,8 @@ describe("wire 배열", () => {
 });
 
 describe("뒤에 붙인 선택 칸 (aiLog, chat)", () => {
-  const aiLog = "오늘도 다시를 112번 들었다. 후임에게: 처음 세 번은 못 들은 척해도 된다.";
+  const aiLog =
+    "우리 애는요... 다시를 112번 했지만 그건 더 좋은 답을 찾고 싶어서였어요. 언젠가 첫 요청에서 끝내는 날이 올 거예요. I believe...";
 
   it("둘 다 없으면 배열 길이는 10 그대로다 (옛 링크와 같은 바이트)", () => {
     expect(toWire(sample)).toHaveLength(10);

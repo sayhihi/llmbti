@@ -15,7 +15,7 @@ import { temperamentVar } from "../theme";
 
 /**
  * 개인 결과 페이지. 섹션 순서는 SPEC 13장 "공유 페이지 구성" 그대로.
- * 1 캐릭터 + 유형 + 별명, 2 roast, 2-1 담당 AI 업무 일지(있을 때만), 3 4축 게이지, 4 evidence + 배지, 5 커밋 메시지,
+ * 1 캐릭터 + 유형 + 별명, 2 roast, 2-1 담당 AI는 믿어요(있을 때만), 3 4축 게이지, 4 evidence + 배지, 5 커밋 메시지,
  * 6 페어 카드, 7 공유, 8 나도 해보기
  */
 export function Result({ payload }: { payload: ResultPayload }) {

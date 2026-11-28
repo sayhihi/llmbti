@@ -3,7 +3,7 @@
  *
  * 검증 → redact → payload → URL → 터미널 출력 → 브라우저. run(라이트 모드)도 같은 renderResult를 쓴다.
  * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지,
- * 업무 일지(있을 때만).
+ * 담당 AI 한마디(있을 때만).
  * 그 아래 클립보드/파일 안내 한 줄과 URL 한 줄. `--no-url` 이면 URL 줄은 생략한다 (Claude Code 용).
  */
 
@@ -89,7 +89,7 @@ export function rightColumn(analysis: AnalysisOutput, copy: CopyJson): string[] 
     ...copy.evidence.map((e) => `- ${e}`),
     "",
     `$ git commit -m "${copy.commitMessage}"`,
-    ...(copy.aiLog ? ["", "[담당 AI 업무 일지]", copy.aiLog] : []),
+    ...(copy.aiLog ? ["", "[담당 AI는 믿어요]", copy.aiLog] : []),
   ];
 }
 

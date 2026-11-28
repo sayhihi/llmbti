@@ -23,6 +23,10 @@ export const FORBIDDEN_CHARS: ReadonlyArray<{ char: string; name: string }> = [
 const EMOJI_RE = /\p{Extended_Pictographic}/u;
 const EMOJI_ALL_RE = /\p{Extended_Pictographic}/gu;
 
+/** aiLog 형식: "우리 애는요..."로 시작, "I believe..."로 끝 (skill/TONE.md) */
+export const AI_LOG_START_RE = /^\s*우리 애는요/;
+export const AI_LOG_END_RE = /I\s*believe\s*[.…]*\s*$/i;
+
 export const ROAST_SENTENCES: readonly [number, number] = [2, 3];
 
 export function charLength(s: string): number {
@@ -111,8 +115,10 @@ export function validateCopy(value: unknown): CopyValidation {
   // aiLog 는 선택이다. 스킬은 --sync 다음 실행부터 갱신되므로, 옛 스킬이 새 CLI 를 부르는 첫 실행에는 없을 수 있다.
   if (value.aiLog !== undefined) {
     const aiLog = str("aiLog", value.aiLog, COPY_LIMITS.aiLog, "aiLog");
-    if (aiLog !== undefined && aiLog.trim() !== "" && !hasDigit(aiLog)) {
-      problems.push("aiLog: 숫자가 하나는 있어야 한다.");
+    if (aiLog !== undefined && aiLog.trim() !== "") {
+      if (!hasDigit(aiLog)) problems.push("aiLog: 숫자가 하나는 있어야 한다.");
+      if (!AI_LOG_START_RE.test(aiLog)) problems.push(`aiLog: "우리 애는요..."로 시작해야 한다.`);
+      if (!AI_LOG_END_RE.test(aiLog)) problems.push(`aiLog: "I believe..."로 끝나야 한다.`);
     }
   }
 
