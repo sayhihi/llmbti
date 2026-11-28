@@ -89,6 +89,32 @@ describe("parseChatResult", () => {
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });
 
+  it("audience 가 개발이면 chat.audience dev, 일반이나 없으면 생략", () => {
+    const dev = parseChatResult(
+      CODE.replace('"method": "기록",', '"method": "기록", "audience": "개발",'),
+    );
+    expect(dev.ok && dev.payload.chat).toEqual({
+      method: "record",
+      confidence: "mid",
+      audience: "dev",
+    });
+    const general = parseChatResult(
+      CODE.replace('"method": "기록",', '"method": "기록", "audience": "일반",'),
+    );
+    expect(general.ok && general.payload.chat).toEqual({ method: "record", confidence: "mid" });
+    expect(
+      parseChatResult(CODE).ok &&
+        "audience" in (parseChatResult(CODE) as { payload: { chat: object } }).payload.chat,
+    ).toBe(false);
+  });
+
+  it("설문 판정이면 audience 가 개발이어도 일반으로 본다", () => {
+    const r = parseChatResult(
+      CODE.replace('"method": "기록",', '"method": "설문", "audience": "개발",'),
+    );
+    expect(r.ok && r.payload.chat).toEqual({ method: "survey" });
+  });
+
   it("설문 판정이면 신뢰도는 버린다", () => {
     const r = parseChatResult(CODE.replace('"기록"', '"설문"'));
     expect(r.ok && r.payload.chat).toEqual({ method: "survey" });
@@ -207,6 +233,19 @@ describe("채팅 링크 (/c#j=)", () => {
     expect(parseChatLinkHash(`#j=${encodeChatLink({ not: "array" })}`)).toEqual({
       ok: false,
       reason: "badLink",
+    });
+  });
+
+  it("링크 배열 끝의 audience 를 읽고, 옛 링크(칸 없음)는 일반으로 본다", () => {
+    const old = parseChatLinkHash(`#j=${PYTHON_LINK}`);
+    expect(old.ok && old.payload.chat?.audience).toBeUndefined();
+    const dev = parseChatLinkHash(
+      `#j=${encodeChatLink([1, "ISTP", [-10, 20, 30, -5], "기록", "높음", "n", "r", [], "fix: 다시", "ENFJ", "이유", ["a 1", "", "", ""], "개발"])}`,
+    );
+    expect(dev.ok && dev.payload.chat).toEqual({
+      method: "record",
+      confidence: "high",
+      audience: "dev",
     });
   });
 

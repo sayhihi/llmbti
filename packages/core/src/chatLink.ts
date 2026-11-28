@@ -5,7 +5,8 @@
  * 사전을 쓰는 `#z=` 와 달리 파이썬 표준 라이브러리만으로 만들 수 있어야 해서 사전을 안 쓴다.
  * 배열 모양 (chat link v1):
  *   [1, type, [EI, SN, TF, JP], method, confidence, nickname, roast, [evidence...], status,
- *    pairType, pairReason, [style, likes, dislikes, soothe]]
+ *    pairType, pairReason, [style, likes, dislikes, soothe], audience]
+ * audience("개발" 또는 "일반")는 2026-11-28 에 끝에 붙였다. 없으면 일반으로 본다.
  * 값 검증과 정리는 웹 chatResult.ts 가 결과 코드 JSON 과 같은 규칙으로 한다. 여기서는 풀기만 한다.
  */
 

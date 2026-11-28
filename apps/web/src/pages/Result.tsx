@@ -28,8 +28,10 @@ export function Result({ payload }: { payload: ResultPayload }) {
   const { type, copy, scores, badges, stats, mode, periodDays, sampleSize } = payload;
   const meta = getTypeMeta(type);
   const isChat = mode === "chat";
+  // 채팅 판정이라도 대화 기록이 개발 이야기 위주면 CLI 와 같은 개발자 문구를 쓴다
+  const plain = isChat && payload.chat?.audience !== "dev";
   // 채팅 결과는 궁합 카드 두 장 모두 비개발자 문구를 쓴다
-  const relations = isChat
+  const relations = plain
     ? chatRelations(type, copy.pairWith)
     : { pair: resolvePairWith(type, copy.pairWith), clash: meta.clashWith };
   const pairWith = relations.pair;
@@ -49,7 +51,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
           </p>
           <h1 className="px result-type">{type}</h1>
           <p className="result-nick">{nickname}</p>
-          <p className="result-tagline dim">{isChat ? meta.chatTagline : meta.tagline}</p>
+          <p className="result-tagline dim">{plain ? meta.chatTagline : meta.tagline}</p>
           <p className="result-meta dim small">
             {isChat
               ? chatMetaLine(payload.chat)
@@ -101,7 +103,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
       )}
 
       {copy.commitMessage &&
-        (isChat ? (
+        (plain ? (
           <section className="section card">
             <h2 className="section-title">
               <span className="px section-eyebrow">// status</span>
@@ -128,13 +130,13 @@ export function Result({ payload }: { payload: ResultPayload }) {
             kind="pair"
             type={pairWith.type}
             reason={pairWith.reason}
-            label={isChat ? "같이 하면 편한 사이" : undefined}
+            label={plain ? "같이 하면 편한 사이" : undefined}
           />
           <RelationCard
             kind="clash"
             type={relations.clash.type}
             reason={relations.clash.reason}
-            label={isChat ? "같이 하면 속 터지는 사이" : undefined}
+            label={plain ? "같이 하면 속 터지는 사이" : undefined}
           />
         </div>
       </section>
@@ -184,6 +186,9 @@ const CONFIDENCE_LABEL: Record<NonNullable<ChatInfo["confidence"]>, string> = {
 /** chat 모드 헤더 아래 한 줄. 기간과 표본 대신 판정 방식과 신뢰도를 보여 준다. */
 export function chatMetaLine(chat: ChatInfo | undefined): string {
   if (chat?.method === "survey") return "채팅 AI, 12문항 설문 판정";
-  if (chat?.confidence) return `채팅 AI, 기록 판정, 신뢰도 ${CONFIDENCE_LABEL[chat.confidence]}`;
-  return "채팅 AI, 기록 판정";
+  const who = chat?.audience === "dev" ? "개발자 " : "";
+  if (chat?.confidence) {
+    return `채팅 AI, ${who}기록 판정, 신뢰도 ${CONFIDENCE_LABEL[chat.confidence]}`;
+  }
+  return `채팅 AI, ${who}기록 판정`;
 }

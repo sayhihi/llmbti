@@ -113,7 +113,7 @@ r = json.loads(r'''여기에 결과 코드 JSON 을 그대로''')
 s, p, h = r["scores"], r["pair"], r["handover"]
 a = [1, r["type"], [s["EI"], s["SN"], s["TF"], s["JP"]], r["method"], r.get("confidence", ""),
      r["nickname"], r["roast"], r["evidence"], r["status"], p["type"], p["reason"],
-     [h["style"], h["likes"], h["dislikes"], h["soothe"]]]
+     [h["style"], h["likes"], h["dislikes"], h["soothe"]], r.get("audience", "일반")]
 z = zlib.compressobj(9, zlib.DEFLATED, -15)
 d = z.compress(json.dumps(a, ensure_ascii=False, separators=(",", ":")).encode()) + z.flush()
 print("${origin}/c#j=" + base64.urlsafe_b64encode(d).decode().rstrip("="))`;
@@ -124,6 +124,7 @@ export const RESULT_CODE_EXAMPLE = `{
   "llmbti": 1,
   "method": "기록",
   "confidence": "보통",
+  "audience": "일반",
   "type": "ENFP",
   "scores": { "EI": 34, "SN": -12, "TF": -50, "JP": -8 },
   "nickname": "별명",
@@ -178,6 +179,9 @@ export function buildChatPrompt(origin: string = SITE_ORIGIN): string {
 
 [결과 출력 형식]
 - 판정 방식: 기록 판정 또는 설문 판정. 기록 판정이면 신뢰도도 같이.
+- 판정 대상: 개발 또는 일반. 기록 판정에서 지난 대화의 절반 이상이 코드, 에러 로그, git, 배포, API 같은 개발 이야기면 개발, 아니면 일반.
+  애매하면 일반. 설문 판정은 늘 일반.
+  개발이면 한 줄 평과 인수인계 편지에 git, PR, 배포, 테스트 같은 개발 밈을 써도 되고, 일반이면 개발 용어를 쓰지 마.
 - 유형: 4글자. 어떤 축 점수의 절댓값이 5 미만이면 그 축은 경계형이라고 덧붙여.
 - 축 점수: 네 축을 각각 한 줄씩, 예) E ████░░ I  +34
 - 별명: 20자 이내 한 줄
@@ -185,7 +189,8 @@ export function buildChatPrompt(origin: string = SITE_ORIGIN): string {
 - 근거 3개: 각 60자 이내.
   기록 판정이면 네가 실제로 본 내 습관이나 장면을 쓰고, 세지 못한 숫자는 지어내지 마.
   설문 판정이면 내가 고른 답을 근거로 써.
-- 오늘의 상태메시지: 메신저 상태메시지처럼 50자 이내 한 줄
+- 오늘의 상태메시지: 50자 이내 한 줄. 일반이면 메신저 상태메시지처럼.
+  개발이면 결과 페이지가 "오늘의 커밋 메시지"로 보여 주니 git 커밋 메시지처럼 써. 예) fix: 완료라고 했는데 또 수정
 - 잘 맞는 유형: 유형 1개와 40자 이내 이유
 - 나를 이을 후임 AI에게: 나를 맡았던 네가, 다음에 나를 맡을 후임 AI에게 남기는 인수인계 편지야. 네 항목, 각 45자 이내.
   결과 페이지가 "이 사용자는 {스타일} {좋아하는 것} {질색하는 것} {달래는 법} 부탁한다. 전임 AI 올림" 순서로 편지를 만들어.
@@ -201,7 +206,7 @@ export function buildChatPrompt(origin: string = SITE_ORIGIN): string {
       질색하는 것: 완료했습니다로 끝내면 의견 세 개가 바로 온다.
       달래는 법: 역시 보는 눈이 있으시네요 한마디면 풀린다.
 - 결과 코드: 위 내용을 아래 JSON 모양 그대로 코드 블록 하나에 담아. 키 이름과 모양은 바꾸지 마.
-  scores는 축 점수 숫자, method는 "기록" 또는 "설문", confidence는 "높음", "보통", "낮음" 중 하나야.
+  scores는 축 점수 숫자, method는 "기록" 또는 "설문", confidence는 "높음", "보통", "낮음" 중 하나, audience는 "개발" 또는 "일반"이야.
 \`\`\`json
 ${RESULT_CODE_EXAMPLE}
 \`\`\`

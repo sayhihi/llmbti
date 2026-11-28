@@ -188,7 +188,7 @@ type ResultPayload = {
   mode: "claude" | "lite" | "chat"; // lite 는 없앤 모드, 옛 링크 해독만
   periodDays: number;
   sampleSize: { prompts: number; shell: number };
-  chat?: { method: "record" | "survey"; confidence?: "high" | "mid" | "low" }; // mode chat 일 때만
+  chat?: { method: "record" | "survey"; confidence?: "high" | "mid" | "low"; audience?: "general" | "dev" }; // mode chat 일 때만
 };
 ```
 - `mode: "chat"`은 채팅 AI 판정 결과를 `/paste`에 붙여넣어 만든 결과다(13장 채팅 버전). badges, stats, why가 비어 있고 periodDays, sampleSize는 0이다.
@@ -370,7 +370,7 @@ type ResultPayload = {
 5. 오늘의 커밋 메시지(코드 블록 스타일)
 6. 페어 궁합 카드 → 해당 유형 페이지로 링크
 
-chat 모드는 비개발자용으로 바꿔 보여 준다: 태그라인은 `typeMeta.chatTagline`, 기간과 표본 대신 판정 방식과 신뢰도, 커밋 메시지 대신 "오늘의 상태메시지", 상극 카드(개발 농담)와 배지는 숨김, 아래에 Claude Code 버전 안내.
+chat 모드는 `chat.audience`가 dev가 아니면 비개발자용으로 바꿔 보여 준다(dev면 CLI와 같은 개발자 문구). audience는 채팅 AI가 기록 판정에서 "지난 대화 절반 이상이 개발 이야기면 개발, 애매하면 일반"으로 정하고, 설문 판정은 늘 일반이다. 비개발자용 화면: 태그라인은 `typeMeta.chatTagline`, 기간과 표본 대신 판정 방식과 신뢰도, 커밋 메시지 대신 "오늘의 상태메시지", 상극 카드(개발 농담)와 배지는 숨김, 아래에 Claude Code 버전 안내.
 7. 공유: 링크 복사, Web Share API, 카드 PNG 다운로드(canvas 1200×630, 클라이언트에서 생성)
 8. "나도 해보기": `/start` 링크 + `npx llmbti install` 복사
 

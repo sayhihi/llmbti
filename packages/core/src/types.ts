@@ -113,8 +113,15 @@ export const CHAT_METHODS: readonly ChatMethod[] = ["record", "survey"];
 export type ChatConfidence = "high" | "mid" | "low";
 export const CHAT_CONFIDENCES: readonly ChatConfidence[] = ["high", "mid", "low"];
 
-/** mode 가 chat 일 때만 있는 판정 정보 */
-export type ChatInfo = { method: ChatMethod; confidence?: ChatConfidence };
+/**
+ * 채팅 판정 대상. dev: 대화 기록의 절반 이상이 개발 이야기, general: 그 밖. 애매하거나 설문이면 general.
+ * dev 면 결과 페이지가 CLI 와 같은 개발자 문구(태그라인, 커밋 메시지, 개발 궁합)를 쓴다.
+ */
+export type ChatAudience = "general" | "dev";
+export const CHAT_AUDIENCES: readonly ChatAudience[] = ["general", "dev"];
+
+/** mode 가 chat 일 때만 있는 판정 정보. audience 가 없으면 general 로 본다. */
+export type ChatInfo = { method: ChatMethod; confidence?: ChatConfidence; audience?: ChatAudience };
 
 /** SPEC 9장 ResultPayload. URL hash에 실려 가는 유일한 데이터. */
 export type ResultPayload = {

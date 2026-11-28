@@ -46,6 +46,13 @@ describe("chatPrompt", () => {
     expect(linkCode("https://x.test")).toContain('print("https://x.test/c#j="');
   });
 
+  it("asks for developer or general audience and puts it in the link", () => {
+    expect(CHAT_PROMPT).toContain("판정 대상: 개발 또는 일반");
+    expect(CHAT_PROMPT).toContain("애매하면 일반. 설문 판정은 늘 일반.");
+    expect(RESULT_CODE_EXAMPLE).toContain('"audience": "일반"');
+    expect(linkCode("https://x.test")).toContain('r.get("audience", "일반")');
+  });
+
   it("uses the given origin for the link and paste page", () => {
     const local = buildChatPrompt("http://localhost:5173/");
     expect(local).toContain("http://localhost:5173/paste");

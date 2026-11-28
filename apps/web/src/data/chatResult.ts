@@ -24,6 +24,7 @@ import {
 } from "@llmbti/core";
 import type {
   Axis,
+  ChatAudience,
   ChatConfidence,
   ChatMethod,
   Handover,
@@ -90,6 +91,7 @@ export function chatLinkToObject(value: unknown): Json | null {
     pairType,
     pairReason,
     handover,
+    audience,
   ] = value as unknown[];
   const h = Array.isArray(handover) ? handover : [];
   return {
@@ -104,6 +106,7 @@ export function chatLinkToObject(value: unknown): Json | null {
     status,
     pair: { type: pairType, reason: pairReason },
     handover: { style: h[0], likes: h[1], dislikes: h[2], soothe: h[3] },
+    audience,
   };
 }
 
@@ -260,6 +263,11 @@ function readMethod(value: unknown): ChatMethod {
   return "record";
 }
 
+/** "개발", "개발자", "dev" 면 dev. 그 밖은 전부 general (애매하면 비개발자 문구가 안전하다). */
+function readAudience(value: unknown): ChatAudience {
+  return typeof value === "string" && /개발|dev/i.test(value) ? "dev" : "general";
+}
+
 function readConfidence(value: unknown): ChatConfidence | undefined {
   if (typeof value !== "string") return undefined;
   if (/높|high/i.test(value)) return "high";
@@ -282,6 +290,8 @@ function toPayload(obj: Json): ResultPayload | null {
 
   const method = readMethod(obj.method);
   const confidence = method === "record" ? readConfidence(obj.confidence) : undefined;
+  // 설문 판정은 대화 기록을 안 보므로 늘 general
+  const audience = method === "record" ? readAudience(obj.audience) : "general";
   const handover = readHandover(obj.handover);
 
   const payload: ResultPayload = {
@@ -301,7 +311,11 @@ function toPayload(obj: Json): ResultPayload | null {
     mode: "chat",
     periodDays: 0,
     sampleSize: { prompts: 0, shell: 0 },
-    chat: confidence ? { method, confidence } : { method },
+    chat: {
+      method,
+      ...(confidence ? { confidence } : {}),
+      ...(audience === "dev" ? { audience } : {}),
+    },
   };
   if (handover) payload.copy.handover = handover;
   return payload;

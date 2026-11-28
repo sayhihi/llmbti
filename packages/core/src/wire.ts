@@ -10,7 +10,7 @@
  *   [badge...], [badgeStat...],
  *   [nickname, roast, [e1, e2, e3], commitMessage, pairTypeIdx, pairReason],
  *   [[[sigIdx, value], ...] x 4축],
- *   handover?, [chatMethod, chatConfidence]? ]
+ *   handover?, [chatMethod, chatConfidence, chatAudience?]? ]
  *
  * - typeIdx: MBTI_TYPES 번호. badge: BADGE_KEYS 번호, 모르는 키면 문자열 그대로. sigIdx: SIGNAL_KEYS 번호.
  *   세 목록 모두 끝에만 추가하고 순서를 바꾸지 않는다.
@@ -18,6 +18,7 @@
  * - 끝의 두 칸은 2026-11-28 에 붙인 선택 항목이다. 없으면 배열 길이가 10 그대로라 옛 링크와 똑같이 인코딩된다.
  *   handover 는 [style, likes, dislikes, soothe] 문자열 4개. 없고 chat 만 있으면 그 자리에 null 을 둔다.
  *   chatMethod: 0 record, 1 survey. chatConfidence: 0 high, 1 mid, 2 low, 없으면 null.
+ *   chatAudience: 0 general, 1 dev. general 이면 생략해서 칸 2개로 둔다.
  *   옛 디코더는 길이가 10 이상인지만 보므로 뒤에 붙인 칸은 무시한다. 새 칸도 끝에만 붙인다.
  * - badgeStat: 배지 순서대로 BADGE_STAT_KEYS 의 값. 없으면 null. promptCount, shellCount 는 sampleSize 로 복원한다.
  * - why 가 없던 축은 빈 배열.
@@ -32,6 +33,7 @@ import {
   AXES,
   BADGE_KEYS,
   BADGE_STAT_KEYS,
+  CHAT_AUDIENCES,
   CHAT_CONFIDENCES,
   CHAT_METHODS,
   HANDOVER_KEYS,
@@ -54,7 +56,7 @@ import type {
 export const WIRE_VERSION = 1 as const;
 
 type WireWhy = [number, number][];
-type WireChat = [method: number, confidence: number | null];
+type WireChat = [method: number, confidence: number | null, audience?: number];
 type Wire = [
   version: 1,
   typeIdx: number,
@@ -108,7 +110,9 @@ export function toWire(p: ResultPayload): Wire {
   if (handover || p.chat) wire.push(handover);
   if (p.chat) {
     const conf = p.chat.confidence ? CHAT_CONFIDENCES.indexOf(p.chat.confidence) : -1;
-    wire.push([CHAT_METHODS.indexOf(p.chat.method), conf >= 0 ? conf : null]);
+    const chat: WireChat = [CHAT_METHODS.indexOf(p.chat.method), conf >= 0 ? conf : null];
+    if (p.chat.audience === "dev") chat.push(CHAT_AUDIENCES.indexOf("dev"));
+    wire.push(chat);
   }
   return wire;
 }
@@ -198,7 +202,7 @@ export function fromWire(w: unknown): ResultPayload | null {
 
   let chatInfo: ChatInfo | undefined;
   if (chat !== undefined) {
-    if (!Array.isArray(chat) || chat.length !== 2) return null;
+    if (!Array.isArray(chat) || (chat.length !== 2 && chat.length !== 3)) return null;
     const method = CHAT_METHODS[num(chat[0]) ?? -1];
     if (!method) return null;
     chatInfo = { method };
@@ -206,6 +210,11 @@ export function fromWire(w: unknown): ResultPayload | null {
       const confidence = CHAT_CONFIDENCES[num(chat[1]) ?? -1];
       if (!confidence) return null;
       chatInfo.confidence = confidence;
+    }
+    if (chat.length === 3) {
+      const audience = CHAT_AUDIENCES[num(chat[2]) ?? -1];
+      if (!audience) return null;
+      if (audience === "dev") chatInfo.audience = audience;
     }
   }
 

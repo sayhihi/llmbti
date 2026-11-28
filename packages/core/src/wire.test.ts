@@ -149,6 +149,21 @@ describe("뒤에 붙인 선택 칸 (handover, chat)", () => {
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });
 
+  it("chat audience: dev 면 세 번째 칸 1, general 이나 없으면 칸 2개", () => {
+    const base: ResultPayload = { ...sample, mode: "chat", chat: { method: "record", confidence: "mid" } };
+    const dev: ResultPayload = { ...base, chat: { ...base.chat!, audience: "dev" } };
+    expect(toWire(dev)[11]).toEqual([0, 1, 1]);
+    expect(decodeCompact(encodeCompact(dev))).toEqual(dev);
+    const general: ResultPayload = { ...base, chat: { ...base.chat!, audience: "general" } };
+    expect(toWire(general)[11]).toEqual([0, 1]);
+    expect(fromWire(toWire(general))).toEqual(base);
+    expect(fromWire([...toWire(sample), null, [0, 1, 0]])!.chat).toEqual({
+      method: "record",
+      confidence: "mid",
+    });
+    expect(fromWire([...toWire(sample), null, [0, 1, 5]])).toBeNull();
+  });
+
   it("handover 를 실어도 링크는 700자 아래", () => {
     const p: ResultPayload = { ...sample, copy: { ...sample.copy, handover } };
     expect(encodeCompact(p).length).toBeLessThan(700);
