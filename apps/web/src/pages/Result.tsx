@@ -8,7 +8,13 @@ import { PixelCharacter } from "../components/PixelCharacter";
 import { ShareRow } from "../components/ShareRow";
 import { RelationCard } from "../components/TypeCard";
 import { TryItCta } from "../components/TryItCta";
-import { TEMPERAMENT_LABEL, getTypeMeta, resolvePairWith, temperamentOf } from "../data/typeMeta";
+import {
+  TEMPERAMENT_LABEL,
+  chatRelations,
+  getTypeMeta,
+  resolvePairWith,
+  temperamentOf,
+} from "../data/typeMeta";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { Link } from "../router";
 import { temperamentVar } from "../theme";
@@ -22,12 +28,11 @@ export function Result({ payload }: { payload: ResultPayload }) {
   const { type, copy, scores, badges, stats, mode, periodDays, sampleSize } = payload;
   const meta = getTypeMeta(type);
   const isChat = mode === "chat";
-  // 채팅 결과는 상극 카드(개발 농담)를 안 그리므로, AI가 고른 페어를 본인 유형일 때만 바꾼다
-  const pairWith = isChat
-    ? copy.pairWith.type === type || copy.pairWith.reason === ""
-      ? meta.pairWith
-      : copy.pairWith
-    : resolvePairWith(type, copy.pairWith);
+  // 채팅 결과는 궁합 카드 두 장 모두 비개발자 문구를 쓴다
+  const relations = isChat
+    ? chatRelations(type, copy.pairWith)
+    : { pair: resolvePairWith(type, copy.pairWith), clash: meta.clashWith };
+  const pairWith = relations.pair;
   const t = temperamentOf(type);
   const borderline = AXES.filter((a) => isBorderline(scores[a]));
   const nickname = copy.nickname || meta.nickname;
@@ -118,11 +123,19 @@ export function Result({ payload }: { payload: ResultPayload }) {
         ))}
 
       <section className="section">
-        <div className={isChat ? "grid" : "grid grid-2"}>
-          <RelationCard kind="pair" type={pairWith.type} reason={pairWith.reason} />
-          {!isChat && (
-            <RelationCard kind="clash" type={meta.clashWith.type} reason={meta.clashWith.reason} />
-          )}
+        <div className="grid grid-2">
+          <RelationCard
+            kind="pair"
+            type={pairWith.type}
+            reason={pairWith.reason}
+            label={isChat ? "같이 하면 편한 사이" : undefined}
+          />
+          <RelationCard
+            kind="clash"
+            type={relations.clash.type}
+            reason={relations.clash.reason}
+            label={isChat ? "같이 하면 속 터지는 사이" : undefined}
+          />
         </div>
       </section>
 
