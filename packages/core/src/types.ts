@@ -91,7 +91,7 @@ export const COPY_LIMITS = {
 /**
  * 인수인계 네 항목. 순서는 화면과 wire 배열 순서다. 바꾸지 않는다.
  * style: 이 사용자는 어떤 스타일인가, likes: 이렇게 해 주면 좋아한다,
- * dislikes: 이렇게 하면 기분 나빠한다, soothe: 삐지면 이렇게 달래라(우쭈쭈)
+ * dislikes: 이렇게 하면 기분 나빠한다, soothe: 삐지면 이렇게 달래라
  */
 export const HANDOVER_KEYS = ["style", "likes", "dislikes", "soothe"] as const;
 export type HandoverKey = (typeof HANDOVER_KEYS)[number];

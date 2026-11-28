@@ -65,7 +65,7 @@ const fixtureCopy = {
     style: "새벽 3시에 force push를 11번 하는 스타일이다.",
     likes: "말리지 말고 일단 같이 밀어 주면 좋아한다.",
     dislikes: "테스트부터 돌리자고 하면 대답이 짧아진다.",
-    soothe: "터지면 prd가 약했던 거라고 해 줘라. 우쭈쭈.",
+    soothe: "터지면 prd가 약했던 거라고 같이 편들어 줘라.",
   },
 };
 let fixtureReady: Promise<void> | null = null;

@@ -166,7 +166,7 @@ type CopyJson = {
   handover?: { style: string; likes: string; dislikes: string; soothe: string }; // 후임 AI에게 남기는 인수인계, 각 ≤ 45자. 2026-11-28 추가
 };
 ```
-- `handover`는 이 사용자를 맡았던 AI가 후임 AI에게 남기는 인수인계다. style(어떤 스타일인가, 숫자 근거), likes(이렇게 해 주면 좋아한다), dislikes(이렇게 하면 기분 나빠한다), soothe(삐지면 이렇게 달래라, 우쭈쭈) 네 항목. 결과 페이지와 터미널에서는 core `handoverLetterLines`가 "나를 이을 후임 AI에게. 이 사용자는 {style} {likes} {dislikes} {soothe} 부탁한다. 전임 AI 올림" 편지로 잇는다. style에는 주어를 쓰지 않는다.
+- `handover`는 이 사용자를 맡았던 AI가 후임 AI에게 남기는 인수인계다. style(어떤 스타일인가, 숫자 근거), likes(이렇게 해 주면 좋아한다), dislikes(이렇게 하면 기분 나빠한다), soothe(삐지면 이렇게 달래라. 칭찬, 맞장구, 대신해 주기, 딴청, 우쭈쭈 중 사용자에게 맞는 결 하나) 네 항목. 결과 페이지와 터미널에서는 core `handoverLetterLines`가 "나를 이을 후임 AI에게. 이 사용자는 {style} {likes} {dislikes} {soothe} 부탁한다. 전임 AI 올림" 편지로 잇는다. style에는 주어를 쓰지 않는다.
   render 검증에서는 선택이다(옛 스킬이 새 CLI를 부르는 첫 실행을 위해). 없으면 결과 페이지는 이 섹션을 숨긴다.
 - render는 스키마와 길이를 검증하고, 실패하면 에러 메시지를 출력한다. 스킬은 그 에러를 보고 Claude가 다시 쓰게 한다(최대 2회).
 - 톤 규칙(SKILL.md에 포함): 근거 숫자 필수, 개발 밈 활용, 비하가 아니라 놀리는 수준, 외모·성별·나이 같은 개인 속성은 언급 금지, 회사명·프로젝트 경로 노출 금지.

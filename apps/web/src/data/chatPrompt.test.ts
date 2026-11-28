@@ -51,7 +51,9 @@ describe("chatPrompt", () => {
 
   it("asks for the handover memo to the next AI and a status line", () => {
     expect(CHAT_PROMPT).toContain("나를 이을 후임 AI에게");
-    expect(CHAT_PROMPT).toContain("우쭈쭈");
+    // 우쭈쭈는 달래기 결 중 하나로만 안내하고, 예시 문장에는 넣지 않는다
+    expect(CHAT_PROMPT).toContain("우쭈쭈는 그 결을 고를 때만 써");
+    expect(CHAT_PROMPT).not.toMatch(/달래는 법: [^\n]*우쭈쭈\./);
     expect(CHAT_PROMPT).toContain("오늘의 상태메시지");
   });
 
