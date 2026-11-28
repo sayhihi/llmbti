@@ -14,7 +14,7 @@
  *
  * - typeIdx: MBTI_TYPES 번호. badge: BADGE_KEYS 번호, 모르는 키면 문자열 그대로. sigIdx: SIGNAL_KEYS 번호.
  *   세 목록 모두 끝에만 추가하고 순서를 바꾸지 않는다.
- * - modeFlag: 0 claude, 1 lite, 2 chat
+ * - modeFlag: 0 claude, 1 lite(없앤 모드, 해독만), 2 chat
  * - 끝의 두 칸은 2026-11-28 에 붙인 선택 항목이다. 없으면 배열 길이가 10 그대로라 옛 링크와 똑같이 인코딩된다.
  *   aiLog 가 없고 chat 만 있으면 aiLog 자리에 "" 를 둔다.
  *   chatMethod: 0 record, 1 survey. chatConfidence: 0 high, 1 mid, 2 low, 없으면 null.

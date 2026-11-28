@@ -40,7 +40,6 @@ export function Result({ payload }: { payload: ResultPayload }) {
         <div className="result-head-text">
           <p className="eyebrow dim">
             <span className="px">{t}</span> {TEMPERAMENT_LABEL[t]}
-            {mode === "lite" && <span className="tag">라이트</span>}
             {isChat && <span className="tag">채팅</span>}
           </p>
           <h1 className="px result-type">{type}</h1>
@@ -135,21 +134,8 @@ export function Result({ payload }: { payload: ResultPayload }) {
         <ShareRow type={type} nickname={nickname} roast={copy.roast} scores={scores} />
       </section>
 
-      {mode === "lite" && (
-        <section className="section card lite-cta">
-          <h2 className="section-title">Claude가 쓴 버전은 더 맵다</h2>
-          <p className="dim">
-            이 결과는 템플릿 문구다. Claude Code에서 <code>/llmbti</code> 을 돌리면 실제 프롬프트를
-            보고 디스를 새로 쓰고, 담당 AI의 업무 일지도 붙는다.
-          </p>
-          <Link to="/start" className="btn btn-primary">
-            Claude 버전 받는 법
-          </Link>
-        </section>
-      )}
-
       {isChat && (
-        <section className="section card lite-cta">
+        <section className="section card upsell-cta">
           <h2 className="section-title">진짜 기록으로 보면 더 맵다</h2>
           <p className="dim">
             이 결과는 채팅 AI가 기억과 대화로 추정한 것이다. Claude Code를 쓰면 실제 프롬프트 로그를

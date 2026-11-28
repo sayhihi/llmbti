@@ -19,11 +19,7 @@ npx llmbti install   # Claude Code 스킬 설치
 
 Claude Code에서 `/llmbti` 를 치면 끝. 터미널에 픽셀 캐릭터와 결과 링크가 뜬다.
 
-Claude Code가 없으면 라이트 모드. 셸 히스토리만으로 유형이 나오고 문구는 템플릿을 쓴다.
-
-```sh
-npx llmbti
-```
+Claude Code가 없으면 채팅 버전. ChatGPT나 Claude 채팅창에 프롬프트 하나를 붙여 넣으면 결과가 나오고, 답변 끝의 결과 코드를 [llmbti.vercel.app/paste](https://llmbti.vercel.app/paste) 에 붙여 넣으면 결과 페이지가 열린다. 프롬프트는 [테스트 방법](https://llmbti.vercel.app/start#chat) 페이지에서 복사한다.
 
 ## 16종 도감
 
@@ -66,12 +62,12 @@ npx llmbti
 
 | 명령                                      | 동작                   |
 | ----------------------------------------- | ---------------------- |
-| `npx llmbti`                              | 라이트 모드 실행       |
+| `npx llmbti`                              | 시작 안내              |
 | `npx llmbti install`                      | Claude Code 스킬 설치  |
 | `npx llmbti analyze --json`               | 집계 결과만 JSON으로   |
 | `npx llmbti render --analysis F --copy F` | 문구 검증 후 결과 출력 |
 
-옵션: `--days N` (기본 30), `--no-shell`, `--yes`, `--no-open`
+옵션: `--days N` (기본 30), `--no-shell`, `--open`, `--no-open`, `--no-url`
 
 ## 개발
 

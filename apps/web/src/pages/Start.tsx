@@ -1,5 +1,5 @@
 import { CommandLine, CopyButton } from "../components/CopyButton";
-import { INSTALL_COMMAND, LITE_COMMAND } from "../components/TryItCta";
+import { INSTALL_COMMAND } from "../components/TryItCta";
 import { CHAT_PROMPT } from "../data/chatPrompt";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { Link, useRouter } from "../router";
@@ -113,20 +113,6 @@ function CodeGuide() {
         </li>
       </ol>
 
-      <section className="section card">
-        <h2 className="section-title">
-          <span className="px section-eyebrow">// lite</span>
-          Claude 없이 라이트 모드
-        </h2>
-        <p className="dim">
-          Claude Code를 안 쓰면 이것만 치면 된다. 셸 히스토리로 점수를 내고 문구는 유형별 템플릿에서
-          고른다. 결과 페이지는 똑같이 나온다.
-        </p>
-        <CommandLine command={LITE_COMMAND} />
-        <p className="dim small">
-          Claude가 쓴 버전은 더 맵다. 라이트 결과 페이지에서도 다시 안내한다.
-        </p>
-      </section>
     </>
   );
 }

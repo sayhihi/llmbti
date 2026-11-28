@@ -44,7 +44,7 @@ LLM(Claude Code)에게 일을 시키는 패턴과 셸 명령 히스토리를 분
  8. 친구가 링크 열기 → "나도 해보기" → /start → 1번으로
 ```
 
-**라이트 모드 (스킬 없이):** `npx llmbti`만 실행하면 Claude 없이 3 → 템플릿 문구 → 5로 진행한다. Claude Code를 안 쓰는 사람도 셸 히스토리만으로 결과를 받을 수 있다. 결과 페이지에는 "Claude가 쓴 버전은 더 맵다" CTA를 노출한다.
+**라이트 모드는 2026-11-28에 없앴다.** 템플릿 문구가 심심하다는 피드백 때문이다. Claude Code를 안 쓰는 사람은 채팅 버전(`/start#chat` 프롬프트 → `/paste`)을 쓴다. `npx llmbti`만 치면 시작 안내만 찍는다. 이미 공유된 `mode: "lite"` 링크는 계속 열린다.
 
 ## 4. 레포 구조
 
@@ -67,7 +67,6 @@ llmbti/
 │     ├─ src/scoring.ts      # 4축 점수 + 유형 판정
 │     ├─ src/scoring.constants.ts
 │     ├─ src/redact.ts       # 시크릿 마스킹
-│     ├─ src/templates/      # 라이트 모드용 템플릿 문구
 │     └─ src/terminal/       # ANSI 픽셀 렌더러
 ├─ skill/
 │  └─ SKILL.md            # install 시 ~/.claude/skills/llmbti/ 로 복사
@@ -168,13 +167,13 @@ type CopyJson = {
 };
 ```
 - `aiLog`는 담당 AI가 학부모 상담 톤으로 이 사람을 감싸는 한마디다. "우리 애는요..."로 시작해 숫자 근거 하나를 애틋하게 좋게 해석하고 "I believe..."로 끝난다. render 검증이 시작과 끝 문구를 본다. 결과 페이지에서 roast 바로 아래에 나온다.
-  render 검증에서는 선택이다(옛 스킬이 새 CLI를 부르는 첫 실행을 위해). 라이트 모드 템플릿에는 없고, 라이트 결과 페이지는 이 섹션을 숨긴다.
+  render 검증에서는 선택이다(옛 스킬이 새 CLI를 부르는 첫 실행을 위해). 없으면 결과 페이지는 이 섹션을 숨긴다.
 - render는 스키마와 길이를 검증하고, 실패하면 에러 메시지를 출력한다. 스킬은 그 에러를 보고 Claude가 다시 쓰게 한다(최대 2회).
 - 톤 규칙(SKILL.md에 포함): 근거 숫자 필수, 개발 밈 활용, 비하가 아니라 놀리는 수준, 외모·성별·나이 같은 개인 속성은 언급 금지, 회사명·프로젝트 경로 노출 금지.
 - 한글 문구 공통 규칙: 담백한 구어체, 괄호 최소, 가운뎃점과 줄표 같은 특수문자 금지, 버즈워드 금지. 프로덕션은 "prd"로 쓴다.
 
-### 라이트 모드 템플릿
-`templates/{type}.ko.json`에 유형별로 nickname, roast 템플릿 3개, commitMessage 5개를 둔다. evidence는 통계에서 규칙 기반으로 상위 3개를 뽑아 `"{count}번 --force push"` 같은 슬롯 문장으로 채운다. 시드는 통계 해시로 정해서 결과가 결정적으로 나오게 한다.
+### 라이트 모드 템플릿 (없앰)
+2026-11-28에 라이트 모드와 함께 `templates/`를 지웠다.
 
 ## 9. 결과 페이로드와 URL
 
@@ -186,7 +185,7 @@ type ResultPayload = {
   badges: string[];       // 통계 배지 키, 최대 6개. 예: "nightOwl", "forcePusher"
   stats: Record<string, number>; // 배지 표시에 필요한 숫자만
   copy: CopyJson;
-  mode: "claude" | "lite" | "chat";
+  mode: "claude" | "lite" | "chat"; // lite 는 없앤 모드, 옛 링크 해독만
   periodDays: number;
   sampleSize: { prompts: number; shell: number };
   chat?: { method: "record" | "survey"; confidence?: "high" | "mid" | "low" }; // mode chat 일 때만
@@ -344,7 +343,7 @@ type ResultPayload = {
 
 | 명령 | 동작 |
 |---|---|
-| `llmbti` (=`run`) | 라이트 모드: analyze → 템플릿 문구 → render |
+| `llmbti` | 시작 안내만 찍는다 (install, /llmbti, 채팅 버전 주소). 라이트 모드는 없앴다 |
 | `llmbti install` | `skill/`을 `~/.claude/skills/llmbti/`로 복사. 이미 있으면 덮어쓸지 물어봄. `--force` 옵션 지원 |
 | `llmbti analyze [--json] [--days N] [--no-shell]` | 집계 결과 출력 |
 | `llmbti render --analysis F --copy F [--no-open]` | 검증 → 터미널 출력 → URL 출력 → 브라우저 열기 |
@@ -357,7 +356,7 @@ type ResultPayload = {
 | 경로 | 역할 | 내용 |
 |---|---|---|
 | `/` | 나의 LLM MBTI는 무엇일까? | 훅 한 줄, `$ npx llmbti` 타이핑 애니메이션, 예시 결과 3개, "테스트 시작" 버튼 → `/start` |
-| `/start` | 테스트 방법 | 순서대로 안내. 1. `npx llmbti install` 복사 2. Claude Code에서 `/llmbti` 3. 셸 히스토리 동의 4. 결과 URL 열기. 아래에 Claude 없이 `npx llmbti`만 돌리는 라이트 모드 안내와 "서버 없음" 프라이버시 설명 |
+| `/start` | 테스트 방법 | 탭 두 개. CLI 버전: 1. `npx llmbti install` 복사 2. Claude Code에서 `/llmbti` 3. 결과 URL 열기. 채팅 버전(`#chat`): 1. 프롬프트 복사 2. 채팅 AI에 붙여 넣기 3. 결과 코드를 `/paste`에 붙여넣기 |
 | `/paste` | 채팅 결과 붙여넣기 | 채팅 AI 답변의 결과 코드(`"llmbti": 1` 이 든 JSON)를 읽어 `mode: "chat"` payload를 만들고 `/t/{TYPE}#z=`로 보낸다. 답변 전체를 붙여넣어도 된다. 브라우저 안에서만 읽는다 (2026-11-28) |
 | `/t/{TYPE}` | 공유 페이지 | hash가 있으면 개인 결과와 공유 버튼, 없으면 유형 소개. "나도 해보기"는 `/start`로 연결 |
 | `/types` | 16종 도감 | 그리드. 랜딩과 공유 페이지 하단에서 링크 |

@@ -1,7 +1,7 @@
 /**
  * `llmbti render --analysis F --copy F [--no-open] [--base URL]` (SPEC 12장).
  *
- * 검증 → redact → payload → URL → 터미널 출력 → 브라우저. run(라이트 모드)도 같은 renderResult를 쓴다.
+ * 검증 → redact → payload → URL → 터미널 출력 → 브라우저.
  * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지,
  * 담당 AI 한마디(있을 때만).
  * 그 아래 클립보드/파일 안내 한 줄과 URL 한 줄. `--no-url` 이면 URL 줄은 생략한다 (Claude Code 용).

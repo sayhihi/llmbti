@@ -868,11 +868,11 @@ h3 {
   border-color: var(--accent-2);
 }
 
-.lite-cta {
+.upsell-cta {
   border-color: var(--p-sp-base);
 }
 
-.lite-cta .section-title {
+.upsell-cta .section-title {
   color: var(--p-sp-base);
 }
 

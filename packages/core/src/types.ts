@@ -88,7 +88,10 @@ export const COPY_LIMITS = {
   aiLog: 120,
 } as const;
 
-/** claude: Claude Code 스킬, lite: 템플릿 문구, chat: 채팅 AI 판정을 /paste 로 옮겨 온 결과 */
+/**
+ * claude: Claude Code 스킬, chat: 채팅 AI 판정을 /paste 로 옮겨 온 결과.
+ * lite: 2026-11-28 에 없앤 라이트 모드(템플릿 문구). 이미 공유된 링크를 열려고 해독만 남긴다. wire 번호(1)도 그대로 둔다.
+ */
 export type ResultMode = "claude" | "lite" | "chat";
 
 export const RESULT_MODES: readonly ResultMode[] = ["claude", "lite", "chat"];
@@ -130,9 +133,6 @@ export const MAX_BADGES = 6;
  * analyze가 집계하는 재미용 통계 (SPEC 6장 "재미용 통계").
  * 축 점수 계산에는 쓰지 않고 문구와 배지에만 쓴다.
  *
- * 키 이름은 `cli/src/templates/evidence.ko.json`의 슬롯 키와 1:1이다
- * (forceCount, rmrfCount, nightRatio, redoCount, thanksCount, topCommand, shortestPrompt,
- * avgTurns, longestSession, promptCount, shellCount). 바꾸려면 템플릿도 같이 바꾼다.
  * 모든 필드는 집계값이며, 문자열 필드(shortestPrompt, topCommand, mostRepeatedPrompt)는 redact를 통과한 값이다.
  */
 export interface Stats {
