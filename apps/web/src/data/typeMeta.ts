@@ -18,6 +18,12 @@ export interface TypeRelation {
 export interface TypeMeta {
   nickname: string;
   tagline: string;
+  /** 비개발자용 캐치프레이즈. chat 모드 결과 페이지가 tagline 대신 쓴다 */
+  chatTagline: string;
+  /** 비개발자용 페어 이유. chat 모드에서 AI 페어를 못 쓸 때 정적 페어와 같이 쓴다 */
+  chatPairReason: string;
+  /** 비개발자용 상극 이유. chat 모드 상극 카드 */
+  chatClashReason: string;
   description: string;
   prop: string;
   pairWith: TypeRelation;
@@ -39,6 +45,23 @@ export function resolvePairWith(type: MbtiType, pair: TypeRelation): TypeRelatio
   const meta = getTypeMeta(type);
   if (pair.type === type || pair.type === meta.clashWith.type) return meta.pairWith;
   return pair;
+}
+
+/**
+ * chat 모드 궁합 카드 두 장. 상극은 정적 표(clashWith)에 비개발자 문구를 붙이고,
+ * 페어는 AI가 고른 걸 쓰되 본인, 상극과 같거나 이유가 비면 정적 페어에 비개발자 문구를 붙인다.
+ */
+export function chatRelations(
+  type: MbtiType,
+  pair: TypeRelation,
+): { pair: TypeRelation; clash: TypeRelation } {
+  const meta = getTypeMeta(type);
+  const usable =
+    pair.type !== type && pair.type !== meta.clashWith.type && pair.reason.trim() !== "";
+  return {
+    pair: usable ? pair : { type: meta.pairWith.type, reason: meta.chatPairReason },
+    clash: { type: meta.clashWith.type, reason: meta.chatClashReason },
+  };
 }
 
 /** 대소문자 섞인 라우트 파라미터를 유형으로. 아니면 null. */

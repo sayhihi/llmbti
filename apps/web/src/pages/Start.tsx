@@ -1,6 +1,6 @@
 import { CommandLine, CopyButton } from "../components/CopyButton";
-import { INSTALL_COMMAND, LITE_COMMAND } from "../components/TryItCta";
-import { CHAT_PROMPT } from "../data/chatPrompt";
+import { INSTALL_COMMAND } from "../components/TryItCta";
+import { buildChatPrompt } from "../data/chatPrompt";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { Link, useRouter } from "../router";
 
@@ -113,20 +113,6 @@ function CodeGuide() {
         </li>
       </ol>
 
-      <section className="section card">
-        <h2 className="section-title">
-          <span className="px section-eyebrow">// lite</span>
-          Claude 없이 라이트 모드
-        </h2>
-        <p className="dim">
-          Claude Code를 안 쓰면 이것만 치면 된다. 셸 히스토리로 점수를 내고 문구는 유형별 템플릿에서
-          고른다. 결과 페이지는 똑같이 나온다.
-        </p>
-        <CommandLine command={LITE_COMMAND} />
-        <p className="dim small">
-          Claude가 쓴 버전은 더 맵다. 라이트 결과 페이지에서도 다시 안내한다.
-        </p>
-      </section>
     </>
   );
 }
@@ -140,7 +126,7 @@ function ChatGuide() {
           <h2 className="step-title">프롬프트 복사</h2>
           <p className="dim">버튼을 누르면 판정용 프롬프트가 복사된다. 설치할 건 없다.</p>
           <CopyButton
-            text={CHAT_PROMPT}
+            text={buildChatPrompt(window.location.origin)}
             label="프롬프트 복사하기"
             className="btn-primary btn-wide copy-prompt"
           />
@@ -159,13 +145,17 @@ function ChatGuide() {
       <li className="step card">
         <span className="px step-no">3</span>
         <div className="step-body">
-          <h2 className="step-title">결과 받기</h2>
+          <h2 className="step-title">결과 붙여넣기</h2>
           <p className="dim">
-            유형 4글자와 축 점수, 별명, 한 줄 평이 채팅으로 나온다. 마지막 줄의 링크를 누르면 내
-            유형 캐릭터를 볼 수 있다.
+            채팅으로 유형과 별명, 한 줄 평, 후임 AI에게 남기는 인수인계가 먼저 나온다. 답변 끝의 결과 코드를
+            복사해서 붙여넣기 페이지에 넣으면 캐릭터와 공유 카드가 담긴 내 결과 페이지가 나온다.
           </p>
+          <Link to="/paste" className="btn btn-primary btn-wide">
+            결과 붙여넣기
+          </Link>
           <p className="dim small">
-            채팅 결과에는 게이지와 문구가 담긴 개인 링크가 없다. 유형 소개 페이지로 연결된다.
+            결과 코드만 고르기 어려우면 답변 전체를 복사해도 된다. 휴대폰 앱에서는 답변을 길게 눌러
+            복사하면 된다.
           </p>
         </div>
       </li>

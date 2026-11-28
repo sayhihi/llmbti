@@ -53,10 +53,10 @@ describe("selectPayloadStats", () => {
 
 describe("buildPayload + buildUrl", () => {
   it("payload v1, 배지 ≤ 6, URL은 /t/TYPE#z= 이고 디코드하면 같은 내용", async () => {
-    const payload = buildPayload(analysisP, copy, "lite");
+    const payload = buildPayload(analysisP, copy, "claude");
     expect(payload.v).toBe(1);
     expect(payload.type).toBe("ENFP");
-    expect(payload.mode).toBe("lite");
+    expect(payload.mode).toBe("claude");
     expect(payload.badges.length).toBeLessThanOrEqual(6);
     expect(payload.sampleSize).toEqual(analysisP.sampleSize);
     for (const b of payload.badges) {

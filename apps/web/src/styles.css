@@ -868,11 +868,11 @@ h3 {
   border-color: var(--accent-2);
 }
 
-.lite-cta {
+.upsell-cta {
   border-color: var(--p-sp-base);
 }
 
-.lite-cta .section-title {
+.upsell-cta .section-title {
   color: var(--p-sp-base);
 }
 
@@ -1009,4 +1009,68 @@ h3 {
   grid-column: 1 / -1;
   margin: 2px 0 0;
   text-align: center;
+}
+
+/* ---------- 나를 이을 후임 AI에게 (편지) ---------- */
+
+.letter {
+  background: var(--p-black);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.letter-to {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.letter-body p {
+  margin: 0;
+  line-height: 1.9;
+}
+
+.letter-sign {
+  margin: 4px 0 0;
+  text-align: right;
+  color: var(--dim);
+  font-style: italic;
+}
+
+/* ---------- 결과 붙여넣기 ---------- */
+
+.paste-input {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  background: var(--p-black);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.paste-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.paste-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-msg {
+  margin: 0;
+  font-size: 16px;
+  color: var(--p-nf-base);
 }

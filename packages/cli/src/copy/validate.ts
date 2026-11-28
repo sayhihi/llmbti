@@ -5,7 +5,14 @@
  * 길이는 글자 수(코드 포인트) 기준이고 공백과 문장부호도 센다.
  */
 
-import { COPY_LIMITS, MBTI_TYPES, isMbtiType, type CopyJson } from "@llmbti/core";
+import {
+  COPY_LIMITS,
+  HANDOVER_KEYS,
+  MBTI_TYPES,
+  isMbtiType,
+  type CopyJson,
+  type Handover,
+} from "@llmbti/core";
 
 export type CopyValidation = { ok: true; copy: CopyJson } | { ok: false; problems: string[] };
 
@@ -108,6 +115,20 @@ export function validateCopy(value: unknown): CopyValidation {
 
   str("commitMessage", value.commitMessage, COPY_LIMITS.commitMessage, "commitMessage");
 
+  // handover 는 선택이다. 스킬은 --sync 다음 실행부터 갱신되므로, 옛 스킬이 새 CLI 를 부르는 첫 실행에는 없을 수 있다.
+  if (value.handover !== undefined) {
+    const h = value.handover;
+    if (!isRecord(h)) {
+      problems.push(`handover: { ${HANDOVER_KEYS.join(", ")} } 객체여야 한다.`);
+    } else {
+      for (const k of HANDOVER_KEYS) {
+        str(`handover.${k}`, h[k], COPY_LIMITS.handoverEach, `handover.${k}`);
+      }
+      const all = HANDOVER_KEYS.map((k) => (typeof h[k] === "string" ? h[k] : "")).join(" ");
+      if (!hasDigit(all)) problems.push("handover: 네 항목 중 하나에는 숫자가 있어야 한다.");
+    }
+  }
+
   const pair = value.pairWith;
   if (!isRecord(pair)) {
     problems.push("pairWith: { type, reason } 객체여야 한다.");
@@ -146,6 +167,12 @@ function stringFields(v: Record<string, unknown>): Array<[string, string]> {
   if (isRecord(v.pairWith) && typeof v.pairWith.reason === "string") {
     out.push(["pairWith.reason", v.pairWith.reason]);
   }
+  if (isRecord(v.handover)) {
+    for (const k of HANDOVER_KEYS) {
+      const t = v.handover[k];
+      if (typeof t === "string") out.push([`handover.${k}`, t]);
+    }
+  }
   return out;
 }
 
@@ -156,7 +183,7 @@ export function formatProblems(problems: readonly string[]): string {
 
 /** 문구 전체를 redact에 한 번 더 통과시킨다 (SPEC 7장). */
 export function mapCopyStrings(copy: CopyJson, fn: (s: string) => string): CopyJson {
-  return {
+  const out: CopyJson = {
     lang: copy.lang,
     nickname: fn(copy.nickname),
     roast: fn(copy.roast),
@@ -164,4 +191,9 @@ export function mapCopyStrings(copy: CopyJson, fn: (s: string) => string): CopyJ
     commitMessage: fn(copy.commitMessage),
     pairWith: { type: copy.pairWith.type, reason: fn(copy.pairWith.reason) },
   };
+  if (copy.handover) {
+    const h = copy.handover;
+    out.handover = Object.fromEntries(HANDOVER_KEYS.map((k) => [k, fn(h[k])])) as Handover;
+  }
+  return out;
 }

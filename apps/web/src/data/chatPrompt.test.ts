@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import { AXES } from "@llmbti/core";
 
-import { CHAT_PROMPT, CHAT_QUESTIONS } from "./chatPrompt";
+import {
+  CHAT_PROMPT,
+  CHAT_QUESTIONS,
+  PASTE_URL,
+  RESULT_CODE_EXAMPLE,
+  buildChatPrompt,
+  linkCode,
+} from "./chatPrompt";
+import { parseChatResult } from "./chatResult";
 
 describe("chatPrompt", () => {
   it("has 12 questions, 3 per axis", () => {
@@ -32,8 +40,48 @@ describe("chatPrompt", () => {
     });
   });
 
-  it("ends with the type page link rule", () => {
-    expect(CHAT_PROMPT).toContain("https://llmbti.vercel.app/t/");
+  it("asks for a code-made link and forbids hand-made links", () => {
+    expect(CHAT_PROMPT).toContain("```python\n" + linkCode("https://llmbti.vercel.app") + "\n```");
+    expect(CHAT_PROMPT).toContain("링크를 손으로 만들거나 지어내지 마");
+    expect(linkCode("https://x.test")).toContain('print("https://x.test/c#j="');
+  });
+
+  it("asks for developer or general audience and puts it in the link", () => {
+    expect(CHAT_PROMPT).toContain("판정 대상: 개발 또는 일반");
+    expect(CHAT_PROMPT).toContain("애매하면 일반. 설문 판정은 늘 일반.");
+    expect(RESULT_CODE_EXAMPLE).toContain('"audience": "일반"');
+    expect(linkCode("https://x.test")).toContain('r.get("audience", "일반")');
+  });
+
+  it("uses the given origin for the link and paste page", () => {
+    const local = buildChatPrompt("http://localhost:5173/");
+    expect(local).toContain("http://localhost:5173/paste");
+    expect(local).toContain('print("http://localhost:5173/c#j="');
+    expect(local).not.toContain("llmbti.vercel.app");
+  });
+
+  it("sends people to the paste page instead of the type page", () => {
+    expect(CHAT_PROMPT).toContain(PASTE_URL);
+    expect(CHAT_PROMPT).not.toContain("https://llmbti.vercel.app/t/");
+  });
+
+  it("shows a result code example that the paste parser reads", () => {
+    expect(CHAT_PROMPT).toContain("```json\n" + RESULT_CODE_EXAMPLE + "\n```");
+    const r = parseChatResult(CHAT_PROMPT);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.payload.type).toBe("ENFP");
+      expect(r.payload.chat).toEqual({ method: "record", confidence: "mid" });
+      expect(r.payload.copy.handover?.style).toBe("스타일");
+    }
+  });
+
+  it("asks for the handover memo to the next AI and a status line", () => {
+    expect(CHAT_PROMPT).toContain("나를 이을 후임 AI에게");
+    // 우쭈쭈는 달래기 결 중 하나로만 안내하고, 예시 문장에는 넣지 않는다
+    expect(CHAT_PROMPT).toContain("우쭈쭈는 그 결을 고를 때만 써");
+    expect(CHAT_PROMPT).not.toMatch(/달래는 법: [^\n]*우쭈쭈\./);
+    expect(CHAT_PROMPT).toContain("오늘의 상태메시지");
   });
 
   it("answers with a result first and keeps the questionnaire as a follow-up", () => {
@@ -41,5 +89,10 @@ describe("chatPrompt", () => {
     expect(CHAT_PROMPT).toContain("질문이나 설문으로 답하지 마");
     expect(CHAT_PROMPT.indexOf("[부록: 12문항]")).toBeGreaterThan(CHAT_PROMPT.indexOf("[말투 규칙]"));
     expect(CHAT_PROMPT).toContain("세지 못한 숫자는 지어내지 마");
+    // 로그아웃 ChatGPT 가 프롬프트 자체를 내 습관으로 판정한 일이 있었다 (2026-11-28)
+    expect(CHAT_PROMPT).toContain("이 프롬프트의 길이, 규칙, 형식은 근거로 쓰지 마");
+    // 아는 게 없을 때 12문항으로 가는 예외는 맨 위 규칙 안에 있어야 이긴다 (빈 결과를 낸 적이 있다)
+    const top = CHAT_PROMPT.slice(0, CHAT_PROMPT.indexOf("[4축 정의]"));
+    expect(top).toContain("12문항을 바로 보여줘");
   });
 });

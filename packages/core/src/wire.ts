@@ -9,11 +9,17 @@
  * [ 1, typeIdx, [EI, SN, TF, JP], modeFlag, periodDays, [prompts, shell],
  *   [badge...], [badgeStat...],
  *   [nickname, roast, [e1, e2, e3], commitMessage, pairTypeIdx, pairReason],
- *   [[[sigIdx, value], ...] x 4축] ]
+ *   [[[sigIdx, value], ...] x 4축],
+ *   handover?, [chatMethod, chatConfidence, chatAudience?]? ]
  *
  * - typeIdx: MBTI_TYPES 번호. badge: BADGE_KEYS 번호, 모르는 키면 문자열 그대로. sigIdx: SIGNAL_KEYS 번호.
  *   세 목록 모두 끝에만 추가하고 순서를 바꾸지 않는다.
- * - modeFlag: 0 claude, 1 lite
+ * - modeFlag: 0 claude, 1 lite(없앤 모드, 해독만), 2 chat
+ * - 끝의 두 칸은 2026-11-28 에 붙인 선택 항목이다. 없으면 배열 길이가 10 그대로라 옛 링크와 똑같이 인코딩된다.
+ *   handover 는 [style, likes, dislikes, soothe] 문자열 4개. 없고 chat 만 있으면 그 자리에 null 을 둔다.
+ *   chatMethod: 0 record, 1 survey. chatConfidence: 0 high, 1 mid, 2 low, 없으면 null.
+ *   chatAudience: 0 general, 1 dev. general 이면 생략해서 칸 2개로 둔다.
+ *   옛 디코더는 길이가 10 이상인지만 보므로 뒤에 붙인 칸은 무시한다. 새 칸도 끝에만 붙인다.
  * - badgeStat: 배지 순서대로 BADGE_STAT_KEYS 의 값. 없으면 null. promptCount, shellCount 는 sampleSize 로 복원한다.
  * - why 가 없던 축은 빈 배열.
  * 사전(DICT_WIRE_V1)과 이 배열 모양은 고정이다. 바꾸려면 wire v2 를 새로 만든다.
@@ -27,27 +33,43 @@ import {
   AXES,
   BADGE_KEYS,
   BADGE_STAT_KEYS,
+  CHAT_AUDIENCES,
+  CHAT_CONFIDENCES,
+  CHAT_METHODS,
+  HANDOVER_KEYS,
   MBTI_TYPES,
   PAYLOAD_VERSION,
+  RESULT_MODES,
   SIGNAL_KEYS,
   isMbtiType,
 } from "./types";
-import type { Axis, BadgeKey, CopyJson, ResultPayload, SignalKey } from "./types";
+import type {
+  Axis,
+  BadgeKey,
+  ChatInfo,
+  CopyJson,
+  Handover,
+  ResultPayload,
+  SignalKey,
+} from "./types";
 
 export const WIRE_VERSION = 1 as const;
 
 type WireWhy = [number, number][];
+type WireChat = [method: number, confidence: number | null, audience?: number];
 type Wire = [
   version: 1,
   typeIdx: number,
   scores: [number, number, number, number],
-  modeFlag: 0 | 1,
+  modeFlag: number,
   periodDays: number,
   sampleSize: [number, number],
   badges: (number | string)[],
   badgeStats: (number | null)[],
   copy: [string, string, [string, string, string], string, number, string],
   why: [WireWhy, WireWhy, WireWhy, WireWhy],
+  handover?: [string, string, string, string] | null,
+  chat?: WireChat,
 ];
 
 export function toWire(p: ResultPayload): Wire {
@@ -64,11 +86,11 @@ export function toWire(p: ResultPayload): Wire {
     (p.why?.[axis] ?? []).map(([k, v]) => [SIGNAL_KEYS.indexOf(k), v]),
   ) as Wire[9];
   const e = p.copy.evidence;
-  return [
+  const wire: Wire = [
     WIRE_VERSION,
     MBTI_TYPES.indexOf(p.type),
     [p.scores.EI, p.scores.SN, p.scores.TF, p.scores.JP],
-    p.mode === "lite" ? 1 : 0,
+    Math.max(0, RESULT_MODES.indexOf(p.mode)),
     p.periodDays,
     [p.sampleSize.prompts, p.sampleSize.shell],
     badges,
@@ -83,18 +105,41 @@ export function toWire(p: ResultPayload): Wire {
     ],
     why,
   ];
+  const h = p.copy.handover;
+  const handover = h ? (HANDOVER_KEYS.map((k) => h[k] ?? "") as [string, string, string, string]) : null;
+  if (handover || p.chat) wire.push(handover);
+  if (p.chat) {
+    const conf = p.chat.confidence ? CHAT_CONFIDENCES.indexOf(p.chat.confidence) : -1;
+    const chat: WireChat = [CHAT_METHODS.indexOf(p.chat.method), conf >= 0 ? conf : null];
+    if (p.chat.audience === "dev") chat.push(CHAT_AUDIENCES.indexOf("dev"));
+    wire.push(chat);
+  }
+  return wire;
 }
 
 /** 배열을 ResultPayload 로. 모양이 어긋나면 null. */
 export function fromWire(w: unknown): ResultPayload | null {
   if (!Array.isArray(w) || w.length < 10 || w[0] !== WIRE_VERSION) return null;
-  const [, typeIdx, scores, modeFlag, periodDays, sampleSize, badges, badgeStats, copy, why] =
-    w as unknown[];
+  const [
+    ,
+    typeIdx,
+    scores,
+    modeFlag,
+    periodDays,
+    sampleSize,
+    badges,
+    badgeStats,
+    copy,
+    why,
+    handover,
+    chat,
+  ] = w as unknown[];
 
   const type = MBTI_TYPES[num(typeIdx) ?? -1];
   if (!type) return null;
   if (!Array.isArray(scores) || scores.length !== 4 || !scores.every(isFiniteNumber)) return null;
-  if (modeFlag !== 0 && modeFlag !== 1) return null;
+  const mode = RESULT_MODES[num(modeFlag) ?? -1];
+  if (!mode) return null;
   if (!isFiniteNumber(periodDays)) return null;
   if (!Array.isArray(sampleSize) || sampleSize.length !== 2 || !sampleSize.every(isFiniteNumber)) {
     return null;
@@ -142,6 +187,36 @@ export function fromWire(w: unknown): ResultPayload | null {
     commitMessage,
     pairWith: { type: pairType, reason: pairReason },
   };
+  if (handover !== undefined && handover !== null) {
+    if (
+      !Array.isArray(handover) ||
+      handover.length !== HANDOVER_KEYS.length ||
+      !handover.every((x) => typeof x === "string")
+    ) {
+      return null;
+    }
+    copyJson.handover = Object.fromEntries(
+      HANDOVER_KEYS.map((k, i) => [k, handover[i] as string]),
+    ) as Handover;
+  }
+
+  let chatInfo: ChatInfo | undefined;
+  if (chat !== undefined) {
+    if (!Array.isArray(chat) || (chat.length !== 2 && chat.length !== 3)) return null;
+    const method = CHAT_METHODS[num(chat[0]) ?? -1];
+    if (!method) return null;
+    chatInfo = { method };
+    if (chat[1] !== null) {
+      const confidence = CHAT_CONFIDENCES[num(chat[1]) ?? -1];
+      if (!confidence) return null;
+      chatInfo.confidence = confidence;
+    }
+    if (chat.length === 3) {
+      const audience = CHAT_AUDIENCES[num(chat[2]) ?? -1];
+      if (!audience) return null;
+      if (audience === "dev") chatInfo.audience = audience;
+    }
+  }
 
   if (!Array.isArray(why) || why.length !== 4) return null;
   const whyOut: Partial<Record<Axis, [SignalKey, number][]>> = {};
@@ -165,10 +240,11 @@ export function fromWire(w: unknown): ResultPayload | null {
     badges: badgeKeys,
     stats,
     copy: copyJson,
-    mode: modeFlag === 1 ? "lite" : "claude",
+    mode,
     periodDays,
     sampleSize: { prompts: ss[0], shell: ss[1] },
   };
+  if (chatInfo) payload.chat = chatInfo;
   if (Object.keys(whyOut).length > 0) payload.why = whyOut;
   return payload;
 }

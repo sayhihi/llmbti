@@ -6,9 +6,9 @@
 //
 // 산출물 (dist 기준):
 //   og/{TYPE}.png        16장, 1200×630. 픽셀 데이터가 있으면 캐릭터, 없으면 기질 색 박스에 글자
-//   og/default.png       /, /start, /types 용
+//   og/default.png       /, /start, /paste, /types 용
 //   t/{TYPE}/index.html  index.html 복사본에 title, description, og:*, twitter:card 를 박은 것
-//   start/index.html, types/index.html  자기 제목
+//   start/index.html, paste/index.html, types/index.html  자기 제목
 //   index.html           기본 OG 를 넣어 다시 쓴다 (SPA fallback 도 이걸 받는다)
 //
 // 텍스트는 내장 5×7 픽셀 폰트로 영문 대문자만 찍는다 (한글 tagline 은 og:description 으로).
@@ -361,6 +361,20 @@ export function pageMeta(data, siteUrl = SITE_URL) {
       description: "npx llmbti install 한 줄, Claude Code 에서 /llmbti 한 줄. 로그는 기기 밖으로 안 나간다.",
       image: `${siteUrl}/og/default.png`,
       url: `${siteUrl}/start`,
+    },
+    {
+      path: "paste",
+      title: "결과 붙여넣기 | llmbti",
+      description: "채팅 AI가 준 llmbti 결과 코드를 붙여넣으면 캐릭터와 공유 카드가 담긴 결과 페이지가 나온다.",
+      image: `${siteUrl}/og/default.png`,
+      url: `${siteUrl}/paste`,
+    },
+    {
+      path: "c",
+      title: "결과 여는 중 | llmbti",
+      description: "채팅 AI가 만든 llmbti 결과 링크를 여는 중이다.",
+      image: `${siteUrl}/og/default.png`,
+      url: `${siteUrl}/c`,
     },
     {
       path: "types",

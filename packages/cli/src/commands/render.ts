@@ -1,19 +1,25 @@
 /**
  * `llmbti render --analysis F --copy F [--no-open] [--base URL]` (SPEC 12장).
  *
- * 검증 → redact → payload → URL → 터미널 출력 → 브라우저. run(라이트 모드)도 같은 renderResult를 쓴다.
- * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지.
+ * 검증 → redact → payload → URL → 터미널 출력 → 브라우저.
+ * 터미널 레이아웃: 왼쪽 캐릭터 16줄, 오른쪽에 유형과 별명, roast, 4축 바, evidence 3줄, 커밋 메시지,
+ * 후임 AI에게 남기는 인수인계(있을 때만).
  * 그 아래 클립보드/파일 안내 한 줄과 URL 한 줄. `--no-url` 이면 URL 줄은 생략한다 (Claude Code 용).
  */
 
 import { readFileSync } from "node:fs";
 
 import {
+  HANDOVER_CLOSING,
+  HANDOVER_SIGN,
+  HANDOVER_TITLE,
   getCharacter,
+  handoverLetterLines,
   isMbtiType,
   URL_WARN_LENGTH,
   type AnalysisOutput,
   type CopyJson,
+  type Handover,
   type ResultMode,
 } from "@llmbti/core";
 
@@ -66,6 +72,13 @@ export interface RenderOptions {
   argv?: readonly string[];
 }
 
+/** 인수인계 편지 줄. 웹 Handover.tsx 와 같은 문장이다 (core handoverLetterLines). */
+export function handoverLines(h: Handover): string[] {
+  const body = handoverLetterLines(h);
+  if (body.length === 0) return [];
+  return ["", `${HANDOVER_TITLE}.`, ...body, HANDOVER_CLOSING, `  ${HANDOVER_SIGN}`];
+}
+
 /** 픽셀 데이터가 아직 없는 유형의 자리. 16줄, 32칸, 가운데 `[TYPE]`. */
 export function placeholderCharacter(type: string): string[] {
   const label = `[${type}]`;
@@ -88,6 +101,7 @@ export function rightColumn(analysis: AnalysisOutput, copy: CopyJson): string[] 
     ...copy.evidence.map((e) => `- ${e}`),
     "",
     `$ git commit -m "${copy.commitMessage}"`,
+    ...(copy.handover ? handoverLines(copy.handover) : []),
   ];
 }
 

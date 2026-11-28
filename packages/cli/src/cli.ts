@@ -6,19 +6,27 @@
 import { analyze, formatAnalysis } from "./commands/analyze";
 import { installCommand } from "./commands/install";
 import { renderCommand } from "./commands/render";
-import { runCommand } from "./commands/run";
 import { copyToClipboard, writeUrlFile } from "./clipboard";
 import { openBrowser } from "./open";
-import { askYesNo } from "./prompt";
 
-const COMMANDS = ["run", "install", "analyze", "render"] as const;
-type Command = (typeof COMMANDS)[number];
+const COMMANDS = ["install", "analyze", "render"] as const;
+/** guide: 명령 없이(또는 모르는 명령으로) 실행했을 때. 라이트 모드는 2026-11-28 에 없앴다. */
+type Command = (typeof COMMANDS)[number] | "guide";
+
+/** `npx llmbti` 만 쳤을 때 보여 주는 안내. 예전에는 라이트 모드가 돌았다. */
+export const GUIDE = `llmbti 는 Claude Code 스킬로 돈다.
+
+  1. npx llmbti install
+  2. Claude Code 에서 /llmbti
+
+Claude Code 를 안 쓰면 채팅 버전: https://llmbti.vercel.app/start#chat
+명령 목록은 npx llmbti --help
+`;
 
 const USAGE = `llmbti - LLM에게 일을 시키는 패턴으로 보는 개발자 MBTI
 
 사용법:
-  llmbti [run] [--days N] [--no-shell] [--yes] [--open|--no-open] [--no-url] [--base URL]
-                               라이트 모드: analyze -> 템플릿 문구 -> render
+  llmbti                       시작 안내
   llmbti install [--force]     skill/ 을 ~/.claude/skills/llmbti/ 로 복사 (CLAUDE_CONFIG_DIR 존중)
                 [--sync]      묻지 않고 최신 스킬로 맞춤 (같으면 아무것도 안 함)
   llmbti analyze [--json] [--days N] [--no-shell] [--home DIR]
@@ -29,7 +37,6 @@ const USAGE = `llmbti - LLM에게 일을 시키는 패턴으로 보는 개발자
 옵션:
   --days N                     분석 기간 (기본 30일)
   --no-shell                   셸 히스토리 제외
-  --yes                        셸 히스토리 질문을 건너뛰고 포함
   --open                       터미널이 아니어도(Claude Code 안) 브라우저를 엶
   --no-open                    브라우저를 열지 않음
   --no-url                     URL 줄을 찍지 않음. 링크는 클립보드와 /tmp/llmbti-url.txt 에 남는다
@@ -50,7 +57,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   const isCommand = (v: string | undefined): v is Command =>
     v !== undefined && (COMMANDS as readonly string[]).includes(v);
 
-  const command: Command = isCommand(first) ? first : "run";
+  const command: Command = isCommand(first) ? first : "guide";
   const args = isCommand(first) ? rest : argv;
 
   const flags: Record<string, string | boolean> = {};
@@ -80,14 +87,10 @@ export interface CliIo {
   stderr: (s: string) => void;
   /** 기본 process.stdout.isTTY */
   isTTY?: boolean;
-  /** 기본 process.stdin.isTTY */
-  stdinIsTTY?: boolean;
   /** 기본 process.stdout.columns */
   columns?: number;
   /** 기본 process.env */
   env?: Record<string, string | undefined>;
-  /** y/N 질문. 기본 readline. 테스트는 고정 답을 넣는다 */
-  ask?: (question: string, defaultYes: boolean) => Promise<boolean>;
   /** 브라우저 열기. 기본 open/xdg-open/start */
   openBrowser?: (url: string) => Promise<boolean>;
   /** 링크 클립보드 복사. 기본 pbcopy/clip/wl-copy/xclip */
@@ -99,7 +102,6 @@ export interface CliIo {
 const processIo: CliIo = {
   stdout: (s) => process.stdout.write(s),
   stderr: (s) => process.stderr.write(s),
-  ask: askYesNo,
   openBrowser,
   copyToClipboard: (url) => copyToClipboard(url),
   writeUrlFile: (url) => writeUrlFile(url),
@@ -145,25 +147,9 @@ export async function main(argv: string[], io: CliIo = processIo): Promise<numbe
         io,
       );
     }
-    case "run": {
-      const analyzeOpts = parseAnalyzeFlags(flags, io);
-      if (analyzeOpts === null) return 2;
-      return runCommand(
-        {
-          analyze: analyzeOpts,
-          noShell: flags["no-shell"] === true,
-          yes: flags.yes === true,
-          base: flags.base,
-          open: flags["no-open"] !== true,
-          forceOpen: flags.open === true,
-          showUrl: flags["no-url"] !== true,
-          color: flags.color,
-          width: numberFlag(flags.width),
-          argv,
-        },
-        io,
-      );
-    }
+    case "guide":
+      io.stdout(GUIDE);
+      return 0;
   }
 }
 
@@ -189,7 +175,7 @@ interface AnalyzeFlags {
   tzOffsetMinutes?: number;
 }
 
-/** analyze와 run이 공유하는 옵션. 잘못되면 메시지를 찍고 null. */
+/** analyze 옵션. 잘못되면 메시지를 찍고 null. */
 function parseAnalyzeFlags(flags: ParsedArgs["flags"], io: CliIo): AnalyzeFlags | null {
   const days = numberFlag(flags.days);
   if (flags.days !== undefined && (days === undefined || days <= 0)) {

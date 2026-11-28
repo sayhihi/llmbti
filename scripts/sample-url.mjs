@@ -4,7 +4,7 @@
 //   pnpm --filter @llmbti/core build   # 먼저 core dist 를 만든다
 //   node scripts/sample-url.mjs [--base http://localhost:4173]
 //
-// 샘플: INTJ (claude 모드), ENFP (lite 모드), ISTP (JP 축 경계형)
+// 샘플: INTJ (claude 모드), ENFP (모르는 배지 섞임), ISTP (JP 축 경계형)
 
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -69,9 +69,9 @@ const samples = [
       commitMessage: "feat: started 3 things, finished 0",
       pairWith: { type: "INTJ", reason: "계획 없이 뻗은 브랜치를 누가 합쳐 줘야 함" },
     },
-    mode: "lite",
+    mode: "claude",
     periodDays: 30,
-    sampleSize: { prompts: 0, shell: 940 },
+    sampleSize: { prompts: 120, shell: 940 },
   },
   {
     v: 1,

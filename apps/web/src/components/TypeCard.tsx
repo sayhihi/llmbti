@@ -42,10 +42,13 @@ export function RelationCard({
   kind,
   type,
   reason,
+  label,
 }: {
   kind: "pair" | "clash";
   type: MbtiType;
   reason: string;
+  /** 카드 위 문구. 없으면 개발자용 기본 문구 */
+  label?: string;
 }) {
   const meta = getTypeMeta(type);
   const t = temperamentOf(type);
@@ -56,7 +59,7 @@ export function RelationCard({
       style={{ ["--accent" as string]: temperamentVar(t) }}
     >
       <span className="relation-kind dim">
-        {kind === "pair" ? "같이 하면 좋은 페어" : "같이 하면 PR이 안 닫히는 페어"}
+        {label ?? (kind === "pair" ? "같이 하면 좋은 페어" : "같이 하면 PR이 안 닫히는 페어")}
       </span>
       <div className="relation-main">
         <PixelCharacter type={type} maxScale={4} className="relation-char" intro={false} />

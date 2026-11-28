@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { decodeResultFromHash } from "@llmbti/core";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { main, parseArgs } from "./cli";
 import type { CliIo } from "./cli";
@@ -14,27 +14,23 @@ interface RunResult {
   out: string;
   err: string;
   opened: string[];
-  asked: string[];
 }
 
 async function run(argv: string[], ioOverrides: Partial<CliIo> = {}): Promise<RunResult> {
   let out = "";
   let err = "";
   const opened: string[] = [];
-  const asked: string[] = [];
   const io: CliIo = {
     stdout: (s) => (out += s),
     stderr: (s) => (err += s),
     isTTY: false,
-    stdinIsTTY: false,
     columns: 100,
     env: { LLMBTI_BASE_URL: "" },
     openBrowser: async (u) => (opened.push(u), true),
-    ask: async (q) => (asked.push(q), true),
     ...ioOverrides,
   };
   const code = await main(argv, io);
-  return { code, out, err, opened, asked };
+  return { code, out, err, opened };
 }
 
 /** 마지막 줄. URL 줄 앞의 🔗 표시는 뗀다. */
@@ -53,6 +49,37 @@ const fixtureTiny = [
   "540",
 ];
 
+/** render 테스트가 같이 쓰는 analysis(home-p)와 좋은 copy 파일 */
+const renderDir = mkdtempSync(join(tmpdir(), "llmbti-render-"));
+afterAll(() => rmSync(renderDir, { recursive: true, force: true }));
+const fixtureAnalysisPath = join(renderDir, "fixture-analysis.json");
+const fixtureCopyPath = join(renderDir, "fixture-copy.json");
+const fixtureCopy = {
+  lang: "ko",
+  nickname: "새벽 force push 직배포러",
+  roast: "--force push 11번, 그중 7번이 새벽 3시다. 브랜치를 안 따고 main에서 쏜다.",
+  evidence: ["--force push 11번", "새벽 2시에서 5시 사이 활동 34%", "커밋 메시지 중 fix 48%"],
+  commitMessage: "fix: prod again",
+  pairWith: { type: "INFJ", reason: "쏘고 나면 문서는 저쪽이 써 줌" },
+  handover: {
+    style: "새벽 3시에 force push를 11번 하는 스타일이다.",
+    likes: "말리지 말고 일단 같이 밀어 주면 좋아한다.",
+    dislikes: "테스트부터 돌리자고 하면 대답이 짧아진다.",
+    soothe: "터지면 prd가 약했던 거라고 같이 편들어 줘라.",
+  },
+};
+let fixtureReady: Promise<void> | null = null;
+/** render 인자. analysis 와 copy 파일은 처음 한 번만 만든다. */
+async function renderArgv(...extra: string[]): Promise<string[]> {
+  fixtureReady ??= (async () => {
+    const r = await run(["analyze", "--json", ...fixtureP]);
+    writeFileSync(fixtureAnalysisPath, r.out);
+    writeFileSync(fixtureCopyPath, JSON.stringify(fixtureCopy));
+  })();
+  await fixtureReady;
+  return ["render", "--analysis", fixtureAnalysisPath, "--copy", fixtureCopyPath, ...extra];
+}
+
 describe("parseArgs", () => {
   it("명령과 플래그", () => {
     expect(parseArgs(["analyze", "--json", "--days", "7", "--no-shell", "--home=/x"])).toEqual({
@@ -60,8 +87,8 @@ describe("parseArgs", () => {
       flags: { json: true, days: "7", "no-shell": true, home: "/x" },
       positional: [],
     });
-    expect(parseArgs([]).command).toBe("run");
-    expect(parseArgs(["--yes", "--no-open"]).command).toBe("run");
+    expect(parseArgs([]).command).toBe("guide");
+    expect(parseArgs(["run", "--yes"]).command).toBe("guide");
   });
 });
 
@@ -112,76 +139,49 @@ describe("llmbti analyze (CLI)", () => {
   });
 });
 
-describe("llmbti run (라이트 모드)", () => {
-  it("fixtures/home-p → URL 의 hash 가 mode lite, type ENFP 로 디코드된다", async () => {
-    const r = await run(["run", ...fixtureP, "--no-open", "--yes"]);
-    expect(r.code).toBe(0);
-    expect(r.err).toBe("");
-    const url = lastLine(r.out);
-    expect(url.startsWith("https://llmbti.vercel.app/t/ENFP#z=")).toBe(true);
-    const payload = await decodeResultFromHash(url.slice(url.indexOf("#")));
-    expect(payload).not.toBeNull();
-    expect(payload!.mode).toBe("lite");
-    expect(payload!.type).toBe("ENFP");
-    expect(payload!.copy.lang).toBe("ko");
-    expect(payload!.copy.evidence).toHaveLength(3);
-    expect(payload!.stats.promptCount).toBe(59);
-    expect(payload!.stats.forceCount).toBeDefined(); // forcePusher 배지
-    expect(r.opened).toEqual([]);
-    // 비TTY 라 캐릭터는 생략되고 텍스트만. 오른쪽 열 내용은 있어야 한다.
-    expect(r.out).toContain("ENFP  ");
-    expect(r.out).toMatch(/E [█░]{6} I/);
-    expect(r.out).toContain('$ git commit -m "');
-    // roast 는 별명 아래, 축 바 위에 온다
-    const header = r.out.indexOf("ENFP  ");
-    const bars = r.out.search(/E [█░]{6} I/);
-    expect(r.out.slice(header, bars)).toContain(payload!.copy.roast.slice(0, 10));
+describe("명령 없이 실행 (라이트 모드는 없앴다)", () => {
+  it("인자 없이, 또는 옛 run 명령이면 시작 안내만 찍고 0", async () => {
+    for (const argv of [[], ["run", "--yes"], [...fixtureP]]) {
+      const r = await run(argv);
+      expect(r.code).toBe(0);
+      expect(r.out).toContain("npx llmbti install");
+      expect(r.out).toContain("/start#chat");
+      expect(r.out).not.toContain("#z=");
+      expect(r.opened).toEqual([]);
+    }
   });
+});
 
+describe("render 출력", () => {
   it("같은 입력이면 같은 URL (결정적)", async () => {
-    const a = await run(["run", ...fixtureP, "--no-open", "--yes"]);
-    const b = await run(["run", ...fixtureP, "--no-open", "--yes"]);
-    expect(lastLine(a.out)).toBe(lastLine(b.out));
+    const argv = await renderArgv("--no-open");
+    expect(lastLine((await run(argv)).out)).toBe(lastLine((await run(argv)).out));
   });
 
-  it("명령 없이 실행해도 run 이고, --base 와 LLMBTI_BASE_URL 을 따른다", async () => {
-    const flag = await run([...fixtureP, "--no-open", "--yes", "--base", "http://localhost:4173/"]);
+  it("--base 와 LLMBTI_BASE_URL 을 따른다", async () => {
+    const flag = await run(await renderArgv("--no-open", "--base", "http://localhost:4173/"));
     expect(lastLine(flag.out).startsWith("http://localhost:4173/t/ENFP#z=")).toBe(true);
-    const env = await run([...fixtureP, "--no-open", "--yes"], {
+    const env = await run(await renderArgv("--no-open"), {
       env: { LLMBTI_BASE_URL: "http://x.test" },
     });
     expect(lastLine(env.out).startsWith("http://x.test/t/ENFP#z=")).toBe(true);
   });
 
-  it("TTY 면 셸 질문을 한 번 하고, 브라우저를 연다. --no-shell/--yes 면 안 묻는다", async () => {
-    const tty = { isTTY: true, stdinIsTTY: true, env: { TERM: "dumb" } };
-    const asked = await run(["run", ...fixtureP], tty);
-    expect(asked.asked).toEqual(["셸 히스토리도 분석할까요?"]);
-    expect(asked.opened).toHaveLength(1);
-    expect(asked.opened[0]).toBe(lastLine(asked.out));
-
-    const noShell = await run(["run", ...fixtureP, "--no-shell", "--no-open"], tty);
-    expect(noShell.asked).toEqual([]);
-    expect(noShell.opened).toEqual([]);
-    const yes = await run(["run", ...fixtureP, "--yes", "--no-open"], tty);
-    expect(yes.asked).toEqual([]);
-  });
-
-  it("질문에 n 이면 셸을 빼고 분석한다", async () => {
-    const r = await run(["run", ...fixtureP, "--no-open"], {
-      isTTY: true,
-      stdinIsTTY: true,
-      env: { TERM: "dumb" },
-      ask: async () => false,
-    });
-    const payload = await decodeResultFromHash(lastLine(r.out).slice(lastLine(r.out).indexOf("#")));
-    expect(payload!.sampleSize.shell).toBe(0);
+  it("인수인계 편지를 커밋 메시지 아래에 찍고 URL 에도 싣는다", async () => {
+    const r = await run(await renderArgv("--no-open"));
+    expect(r.out).toContain("나를 이을 후임 AI에게.");
+    expect(r.out).toContain("이 사용자는 새벽 3시에 force push를 11번 하는 스타일이다.");
+    expect(r.out).toContain("부탁한다.");
+    expect(r.out).toContain("전임 AI 올림");
+    expect(r.out.indexOf("$ git commit")).toBeLessThan(r.out.indexOf("나를 이을 후임 AI에게."));
+    const url = lastLine(r.out);
+    const payload = await decodeResultFromHash(url.slice(url.indexOf("#")));
+    expect(payload!.copy.handover).toEqual(fixtureCopy.handover);
   });
 
   it("브라우저 열기에 실패하면 안내만 하고 0", async () => {
-    const r = await run(["run", ...fixtureP, "--yes"], {
+    const r = await run(await renderArgv(), {
       isTTY: true,
-      stdinIsTTY: true,
       env: { TERM: "dumb" },
       openBrowser: async () => false,
     });
@@ -189,25 +189,10 @@ describe("llmbti run (라이트 모드)", () => {
     expect(r.err).toContain("브라우저를 열지 못했다");
   });
 
-  it("표본 부족이면 덜 컴파일됨 메시지와 힌트, exit 0, URL 없음", async () => {
-    const r = await run(["run", ...fixtureTiny, "--no-open", "--yes"]);
-    expect(r.code).toBe(0);
-    expect(r.out).toContain("아직 덜 컴파일됨");
-    expect(r.out).toContain("다시");
-    expect(r.out).not.toContain("#z=");
-  });
-
   it("truecolor + 폭 100 이면 캐릭터 16줄 옆에 텍스트, 폭 60 이면 세로 스택", async () => {
-    const wide = await run([
-      "run",
-      ...fixtureP,
-      "--no-open",
-      "--yes",
-      "--color",
-      "truecolor",
-      "--width",
-      "100",
-    ]);
+    const wide = await run(
+      await renderArgv("--no-open", "--color", "truecolor", "--width", "100"),
+    );
     const lines = wide.out.trimEnd().split("\n");
     expect(lines[0]).toContain("\x1b[");
     expect(stripAnsi(lines[0]!)).toMatch(/^.{32} {2}ENFP {2}/);
@@ -225,22 +210,15 @@ describe("llmbti run (라이트 모드)", () => {
       expect(displayWidth(right)).toBeLessThanOrEqual(66);
     }
 
-    const narrow = await run([
-      "run",
-      ...fixtureP,
-      "--no-open",
-      "--yes",
-      "--color",
-      "truecolor",
-      "--width",
-      "60",
-    ]);
+    const narrow = await run(
+      await renderArgv("--no-open", "--color", "truecolor", "--width", "60"),
+    );
     const nlines = narrow.out.split("\n");
     expect(stripAnsi(nlines[0]!)).not.toContain("ENFP");
     expect(nlines[16]).toBe("");
     expect(nlines[17]).toMatch(/^ENFP {2}/);
     for (const l of nlines.slice(17))
-      if (!/^(🔗 )?http/.test(l)) expect(l.length).toBeLessThanOrEqual(60);
+      if (!/^(🔗 )?http/.test(l)) expect(displayWidth(l)).toBeLessThanOrEqual(60);
   });
 });
 
@@ -269,7 +247,6 @@ describe("llmbti render", () => {
     writeFileSync(copyPath, JSON.stringify(goodCopy));
     const r = await run(["render", "--analysis", analysisPath, "--copy", copyPath], {
       isTTY: true,
-      stdinIsTTY: true,
       env: { TERM: "dumb" },
     });
     expect(r.code).toBe(0);
@@ -340,7 +317,10 @@ describe("llmbti render", () => {
 });
 
 describe("링크 전달 (클립보드, 파일, --no-url)", () => {
-  const argv = ["run", ...fixtureP, "--no-open", "--yes"];
+  let argv: string[] = [];
+  beforeAll(async () => {
+    argv = await renderArgv("--no-open");
+  });
 
   it("클립보드와 파일이 되면 안내 줄 다음에 URL 줄", async () => {
     const copied: string[] = [];
@@ -385,7 +365,10 @@ describe("링크 전달 (클립보드, 파일, --no-url)", () => {
 });
 
 describe("--open (TTY 가 아니어도 브라우저)", () => {
-  const argv = ["run", ...fixtureP, "--yes"];
+  let argv: string[] = [];
+  beforeAll(async () => {
+    argv = await renderArgv();
+  });
 
   it("기본은 TTY 가 아니면 안 열고, --open 이면 연다", async () => {
     const plain = await run(argv, { isTTY: false });

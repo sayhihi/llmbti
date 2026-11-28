@@ -70,6 +70,11 @@ export type CopyJson = {
   commitMessage: string;
   /** 페어 프로그래밍 궁합. reason ≤ 40자 */
   pairWith: { type: MbtiType; reason: string };
+  /**
+   * 후임 AI에게 남기는 인수인계. 담당 AI가 이 사용자를 다루는 법을 네 항목으로 적는다.
+   * 2026-11-28 추가. 옛 링크에는 없다.
+   */
+  handover?: Handover;
 };
 
 /** CopyJson 길이 제한 (SPEC 8장). render 검증과 웹 표시가 같이 쓴다. */
@@ -80,9 +85,43 @@ export const COPY_LIMITS = {
   evidenceEach: 60,
   commitMessage: 50,
   pairReason: 40,
+  handoverEach: 45,
 } as const;
 
-export type ResultMode = "claude" | "lite";
+/**
+ * 인수인계 네 항목. 순서는 화면과 wire 배열 순서다. 바꾸지 않는다.
+ * style: 이 사용자는 어떤 스타일인가, likes: 이렇게 해 주면 좋아한다,
+ * dislikes: 이렇게 하면 기분 나빠한다, soothe: 삐지면 이렇게 달래라
+ */
+export const HANDOVER_KEYS = ["style", "likes", "dislikes", "soothe"] as const;
+export type HandoverKey = (typeof HANDOVER_KEYS)[number];
+export type Handover = Record<HandoverKey, string>;
+
+/**
+ * claude: Claude Code 스킬, chat: 채팅 AI 판정을 /paste 로 옮겨 온 결과.
+ * lite: 2026-11-28 에 없앤 라이트 모드(템플릿 문구). 이미 공유된 링크를 열려고 해독만 남긴다. wire 번호(1)도 그대로 둔다.
+ */
+export type ResultMode = "claude" | "lite" | "chat";
+
+export const RESULT_MODES: readonly ResultMode[] = ["claude", "lite", "chat"];
+
+/** 채팅 판정 방식. record: 대화 기록이나 메모리로 추정, survey: 12문항 설문 */
+export type ChatMethod = "record" | "survey";
+export const CHAT_METHODS: readonly ChatMethod[] = ["record", "survey"];
+
+/** 기록 판정 신뢰도 */
+export type ChatConfidence = "high" | "mid" | "low";
+export const CHAT_CONFIDENCES: readonly ChatConfidence[] = ["high", "mid", "low"];
+
+/**
+ * 채팅 판정 대상. dev: 대화 기록의 절반 이상이 개발 이야기, general: 그 밖. 애매하거나 설문이면 general.
+ * dev 면 결과 페이지가 CLI 와 같은 개발자 문구(태그라인, 커밋 메시지, 개발 궁합)를 쓴다.
+ */
+export type ChatAudience = "general" | "dev";
+export const CHAT_AUDIENCES: readonly ChatAudience[] = ["general", "dev"];
+
+/** mode 가 chat 일 때만 있는 판정 정보. audience 가 없으면 general 로 본다. */
+export type ChatInfo = { method: ChatMethod; confidence?: ChatConfidence; audience?: ChatAudience };
 
 /** SPEC 9장 ResultPayload. URL hash에 실려 가는 유일한 데이터. */
 export type ResultPayload = {
@@ -97,6 +136,8 @@ export type ResultPayload = {
   mode: ResultMode;
   periodDays: number;
   sampleSize: { prompts: number; shell: number };
+  /** mode 가 chat 일 때만. 판정 방식과 신뢰도 */
+  chat?: ChatInfo;
   /** 축마다 판정에 가장 크게 기여한 시그널 최대 2개: [키, 원래 값]. 비율은 0..1. 웹이 "근거"로 보여 준다. */
   why?: Partial<Record<Axis, [SignalKey, number][]>>;
 };
@@ -108,9 +149,6 @@ export const MAX_BADGES = 6;
  * analyze가 집계하는 재미용 통계 (SPEC 6장 "재미용 통계").
  * 축 점수 계산에는 쓰지 않고 문구와 배지에만 쓴다.
  *
- * 키 이름은 `cli/src/templates/evidence.ko.json`의 슬롯 키와 1:1이다
- * (forceCount, rmrfCount, nightRatio, redoCount, thanksCount, topCommand, shortestPrompt,
- * avgTurns, longestSession, promptCount, shellCount). 바꾸려면 템플릿도 같이 바꾼다.
  * 모든 필드는 집계값이며, 문자열 필드(shortestPrompt, topCommand, mostRepeatedPrompt)는 redact를 통과한 값이다.
  */
 export interface Stats {

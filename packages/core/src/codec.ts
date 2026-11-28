@@ -13,7 +13,7 @@
 
 import { fromBase64Url, toBase64Url } from "./base64url";
 import { deflateRaw, inflateRaw } from "./compress";
-import { AXES, isMbtiType, PAYLOAD_VERSION } from "./types";
+import { AXES, isMbtiType, PAYLOAD_VERSION, RESULT_MODES } from "./types";
 import type { CopyJson, ResultPayload, Scores } from "./types";
 import { decodeCompact, encodeCompact } from "./wire";
 
@@ -56,7 +56,7 @@ export function validatePayload(value: unknown): ResultPayload | null {
   if (!isStringArray(value.badges)) return null;
   if (!isNumberRecord(value.stats)) return null;
   if (!isCopyJson(value.copy)) return null;
-  if (value.mode !== "claude" && value.mode !== "lite") return null;
+  if (!(RESULT_MODES as readonly unknown[]).includes(value.mode)) return null;
   if (!isFiniteNumber(value.periodDays)) return null;
   if (
     !isRecord(value.sampleSize) ||

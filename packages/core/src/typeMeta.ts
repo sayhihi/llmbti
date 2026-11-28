@@ -11,6 +11,12 @@ export interface TypeMeta {
   nickname: string;
   /** 한 줄 캐치프레이즈 */
   tagline: string;
+  /** 비개발자용 한 줄 캐치프레이즈. chat 모드 결과 페이지가 tagline 대신 쓴다 */
+  chatTagline: string;
+  /** 비개발자용 pairWith.reason, ≤ 40자. chat 모드에서 AI 페어를 못 쓸 때 */
+  chatPairReason: string;
+  /** 비개발자용 clashWith.reason, ≤ 40자. chat 모드 상극 카드 */
+  chatClashReason: string;
   /** 2~3문장 소개 */
   description: string;
   /** 8×8 소품 이름 */
@@ -24,7 +30,15 @@ export interface TypeMeta {
 function assertTypeMeta(type: MbtiType, raw: unknown): TypeMeta {
   if (typeof raw !== "object" || raw === null) throw new Error(`typeMeta: ${type} missing`);
   const o = raw as Record<string, unknown>;
-  for (const key of ["nickname", "tagline", "description", "prop"] as const) {
+  for (const key of [
+    "nickname",
+    "tagline",
+    "chatTagline",
+    "chatPairReason",
+    "chatClashReason",
+    "description",
+    "prop",
+  ] as const) {
     if (typeof o[key] !== "string" || !o[key]) throw new Error(`typeMeta: ${type}.${key} missing`);
   }
   for (const key of ["pairWith", "clashWith"] as const) {
