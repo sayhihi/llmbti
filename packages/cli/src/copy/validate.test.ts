@@ -81,6 +81,23 @@ describe("validateCopy", () => {
     ]);
   });
 
+  it("aiLog 는 없어도 통과하고, 있으면 120자와 숫자를 본다", () => {
+    expect(problemsOf({})).toEqual([]);
+    expect(problemsOf({ aiLog: "오늘 --force 11번을 막지 못했다. 후임에게: 새벽 3시엔 깨어 있어라." })).toEqual(
+      [],
+    );
+    expect(problemsOf({ aiLog: "가".repeat(119) + "1" + "가" })).toEqual([
+      expect.stringContaining("aiLog: 120자"),
+    ]);
+    expect(problemsOf({ aiLog: "숫자가 없는 일지다." })).toEqual([
+      expect.stringContaining("aiLog: 숫자"),
+    ]);
+    expect(problemsOf({ aiLog: 3 })).toEqual([expect.stringContaining("aiLog: 문자열")]);
+    expect(problemsOf({ aiLog: "다시 3번 — 지쳤다" })).toEqual([
+      expect.stringContaining("aiLog: 줄표"),
+    ]);
+  });
+
   it("pairWith type, reason", () => {
     expect(problemsOf({ pairWith: { type: "ABCD", reason: "x" } })).toEqual([
       expect.stringContaining("pairWith.type"),
@@ -173,5 +190,12 @@ describe("mapCopyStrings", () => {
     expect(mapped.evidence[1]).toBe(good.evidence[1]!.toUpperCase());
     expect(mapped.pairWith).toEqual({ type: "INFJ", reason: good.pairWith.reason.toUpperCase() });
     expect(mapped.lang).toBe("ko");
+    expect("aiLog" in mapped).toBe(false);
+  });
+
+  it("aiLog 가 있으면 같이 바꾼다", () => {
+    const r = validateCopy({ ...good, aiLog: "log 3" });
+    if (!r.ok) throw new Error("fixture invalid");
+    expect(mapCopyStrings(r.copy, (s) => s.toUpperCase()).aiLog).toBe("LOG 3");
   });
 });

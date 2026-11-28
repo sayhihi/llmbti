@@ -164,8 +164,11 @@ type CopyJson = {
   evidence: string[];     // 정확히 3개, 각 ≤ 60자, 반드시 실제 숫자 포함
   commitMessage: string;  // "오늘의 커밋 메시지", ≤ 50자. 예: "fix: fix the fix"
   pairWith: { type: MbtiType; reason: string }; // 페어 프로그래밍 궁합, reason ≤ 40자
+  aiLog?: string;         // 담당 AI의 업무 일지, ≤ 120자, 숫자 필수. 2026-11-28 추가
 };
 ```
+- `aiLog`는 AI 1인칭 일지다. 오늘 겪은 일 한두 문장에 "후임에게:" 한 줄 당부로 끝난다. 결과 페이지에서 roast 바로 아래에 나온다.
+  render 검증에서는 선택이다(옛 스킬이 새 CLI를 부르는 첫 실행을 위해). 라이트 모드 템플릿에는 없고, 라이트 결과 페이지는 이 섹션을 숨긴다.
 - render는 스키마와 길이를 검증하고, 실패하면 에러 메시지를 출력한다. 스킬은 그 에러를 보고 Claude가 다시 쓰게 한다(최대 2회).
 - 톤 규칙(SKILL.md에 포함): 근거 숫자 필수, 개발 밈 활용, 비하가 아니라 놀리는 수준, 외모·성별·나이 같은 개인 속성은 언급 금지, 회사명·프로젝트 경로 노출 금지.
 - 한글 문구 공통 규칙: 담백한 구어체, 괄호 최소, 가운뎃점과 줄표 같은 특수문자 금지, 버즈워드 금지. 프로덕션은 "prd"로 쓴다.
@@ -183,11 +186,14 @@ type ResultPayload = {
   badges: string[];       // 통계 배지 키, 최대 6개. 예: "nightOwl", "forcePusher"
   stats: Record<string, number>; // 배지 표시에 필요한 숫자만
   copy: CopyJson;
-  mode: "claude" | "lite";
+  mode: "claude" | "lite" | "chat";
   periodDays: number;
   sampleSize: { prompts: number; shell: number };
+  chat?: { method: "record" | "survey"; confidence?: "high" | "mid" | "low" }; // mode chat 일 때만
 };
 ```
+- `mode: "chat"`은 채팅 AI 판정 결과를 `/paste`에 붙여넣어 만든 결과다(13장 채팅 버전). badges, stats, why가 비어 있고 periodDays, sampleSize는 0이다.
+- wire v1 배열은 끝에 선택 칸 두 개를 붙일 수 있다: `aiLog`, `[chatMethod, chatConfidence]`. 둘 다 없으면 길이 10 그대로라 옛 링크와 같은 바이트다. 옛 디코더는 길이 10 이상만 보므로 붙인 칸을 무시한다. 새 칸도 끝에만 붙인다.
 - 인코딩 (compact, 2026-11-05부터): payload를 키 없는 배열로 접고(`core/src/wire.ts`), 고정 사전(`core/src/dict.ts`)을 쓰는 deflate-raw로 압축해 base64url. 양쪽 다 fflate. 같은 결과가 legacy의 절반 이하(1,064자 → 450자 안팎)가 된다.
 - 인코딩 (legacy, 해독만 유지): `JSON → deflate-raw → base64url`. Node는 `zlib`, 브라우저는 `DecompressionStream('deflate-raw')`.
 - **URL 형식:** `https://llmbti.vercel.app/t/{TYPE}#z={compact}`. legacy는 `#r={payload}`이고 웹이 둘 다 푼다.

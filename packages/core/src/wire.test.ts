@@ -92,11 +92,69 @@ describe("wire 배열", () => {
     expect(fromWire([2])).toBeNull();
     const w = toWire(sample);
     expect(fromWire([...w.slice(0, 1), 99, ...w.slice(2)])).toBeNull(); // 없는 유형 번호
-    expect(fromWire([...w.slice(0, 3), 2, ...w.slice(4)])).toBeNull(); // 모드 플래그
+    expect(fromWire([...w.slice(0, 3), 3, ...w.slice(4)])).toBeNull(); // 모드 플래그
     expect(fromWire([...w.slice(0, 6), [0], [], ...w.slice(8)])).toBeNull(); // 배지와 통계 길이 불일치
     const badCopy = [...w];
     badCopy[8] = ["a", "b", ["c"], "d", 99, "e"];
     expect(fromWire(badCopy)).toBeNull(); // 없는 페어 유형
+  });
+});
+
+describe("뒤에 붙인 선택 칸 (aiLog, chat)", () => {
+  const aiLog = "오늘도 다시를 112번 들었다. 후임에게: 처음 세 번은 못 들은 척해도 된다.";
+
+  it("둘 다 없으면 배열 길이는 10 그대로다 (옛 링크와 같은 바이트)", () => {
+    expect(toWire(sample)).toHaveLength(10);
+  });
+
+  it("aiLog 만 있으면 11칸, 왕복하면 같다", () => {
+    const p: ResultPayload = { ...sample, copy: { ...sample.copy, aiLog } };
+    const w = toWire(p);
+    expect(w).toHaveLength(11);
+    expect(w[10]).toBe(aiLog);
+    expect(fromWire(w)).toEqual(p);
+    expect(decodeCompact(encodeCompact(p))).toEqual(p);
+  });
+
+  it("chat 모드는 modeFlag 2, chat 만 있으면 aiLog 자리는 빈 문자열", () => {
+    const p: ResultPayload = {
+      ...sample,
+      mode: "chat",
+      badges: [],
+      stats: { promptCount: 0, shellCount: 0 },
+      sampleSize: { prompts: 0, shell: 0 },
+      chat: { method: "survey" },
+    };
+    delete p.why;
+    const w = toWire(p);
+    expect(w[3]).toBe(2);
+    expect(w[10]).toBe("");
+    expect(w[11]).toEqual([1, null]);
+    expect(fromWire(w)).toEqual(p);
+  });
+
+  it("chat 신뢰도와 aiLog 를 같이 실어도 왕복한다", () => {
+    const p: ResultPayload = {
+      ...sample,
+      mode: "chat",
+      copy: { ...sample.copy, aiLog },
+      chat: { method: "record", confidence: "low" },
+    };
+    expect(toWire(p)[11]).toEqual([0, 2]);
+    expect(decodeCompact(encodeCompact(p))).toEqual(p);
+  });
+
+  it("aiLog 를 실어도 링크는 700자 아래", () => {
+    const p: ResultPayload = { ...sample, copy: { ...sample.copy, aiLog } };
+    expect(encodeCompact(p).length).toBeLessThan(700);
+  });
+
+  it("선택 칸 모양이 어긋나면 null", () => {
+    const w = toWire(sample);
+    expect(fromWire([...w, 3])).toBeNull(); // aiLog 가 문자열이 아님
+    expect(fromWire([...w, "", [5, null]])).toBeNull(); // 없는 판정 방식
+    expect(fromWire([...w, "", [0, 7]])).toBeNull(); // 없는 신뢰도
+    expect(fromWire([...w, "", "x"])).toBeNull();
   });
 });
 

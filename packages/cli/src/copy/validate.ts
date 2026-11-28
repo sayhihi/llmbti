@@ -108,6 +108,14 @@ export function validateCopy(value: unknown): CopyValidation {
 
   str("commitMessage", value.commitMessage, COPY_LIMITS.commitMessage, "commitMessage");
 
+  // aiLog 는 선택이다. 스킬은 --sync 다음 실행부터 갱신되므로, 옛 스킬이 새 CLI 를 부르는 첫 실행에는 없을 수 있다.
+  if (value.aiLog !== undefined) {
+    const aiLog = str("aiLog", value.aiLog, COPY_LIMITS.aiLog, "aiLog");
+    if (aiLog !== undefined && aiLog.trim() !== "" && !hasDigit(aiLog)) {
+      problems.push("aiLog: 숫자가 하나는 있어야 한다.");
+    }
+  }
+
   const pair = value.pairWith;
   if (!isRecord(pair)) {
     problems.push("pairWith: { type, reason } 객체여야 한다.");
@@ -135,7 +143,7 @@ export function validateCopy(value: unknown): CopyValidation {
 /** 검증 대상 문자열 필드 [이름, 값]. 타입이 안 맞는 값은 건너뛴다. */
 function stringFields(v: Record<string, unknown>): Array<[string, string]> {
   const out: Array<[string, string]> = [];
-  for (const key of ["nickname", "roast", "commitMessage"] as const) {
+  for (const key of ["nickname", "roast", "commitMessage", "aiLog"] as const) {
     if (typeof v[key] === "string") out.push([key, v[key]]);
   }
   if (Array.isArray(v.evidence)) {
@@ -156,7 +164,7 @@ export function formatProblems(problems: readonly string[]): string {
 
 /** 문구 전체를 redact에 한 번 더 통과시킨다 (SPEC 7장). */
 export function mapCopyStrings(copy: CopyJson, fn: (s: string) => string): CopyJson {
-  return {
+  const out: CopyJson = {
     lang: copy.lang,
     nickname: fn(copy.nickname),
     roast: fn(copy.roast),
@@ -164,4 +172,6 @@ export function mapCopyStrings(copy: CopyJson, fn: (s: string) => string): CopyJ
     commitMessage: fn(copy.commitMessage),
     pairWith: { type: copy.pairWith.type, reason: fn(copy.pairWith.reason) },
   };
+  if (typeof copy.aiLog === "string" && copy.aiLog.trim() !== "") out.aiLog = fn(copy.aiLog);
+  return out;
 }

@@ -70,6 +70,11 @@ export type CopyJson = {
   commitMessage: string;
   /** 페어 프로그래밍 궁합. reason ≤ 40자 */
   pairWith: { type: MbtiType; reason: string };
+  /**
+   * 담당 AI의 업무 일지, ≤ 120자. AI 입장에서 이 사람을 맡은 하루를 적고 후임 AI에게 한 줄 남긴다.
+   * 2026-11-28 추가. 옛 링크와 라이트 모드에는 없다.
+   */
+  aiLog?: string;
 };
 
 /** CopyJson 길이 제한 (SPEC 8장). render 검증과 웹 표시가 같이 쓴다. */
@@ -80,9 +85,24 @@ export const COPY_LIMITS = {
   evidenceEach: 60,
   commitMessage: 50,
   pairReason: 40,
+  aiLog: 120,
 } as const;
 
-export type ResultMode = "claude" | "lite";
+/** claude: Claude Code 스킬, lite: 템플릿 문구, chat: 채팅 AI 판정을 /paste 로 옮겨 온 결과 */
+export type ResultMode = "claude" | "lite" | "chat";
+
+export const RESULT_MODES: readonly ResultMode[] = ["claude", "lite", "chat"];
+
+/** 채팅 판정 방식. record: 대화 기록이나 메모리로 추정, survey: 12문항 설문 */
+export type ChatMethod = "record" | "survey";
+export const CHAT_METHODS: readonly ChatMethod[] = ["record", "survey"];
+
+/** 기록 판정 신뢰도 */
+export type ChatConfidence = "high" | "mid" | "low";
+export const CHAT_CONFIDENCES: readonly ChatConfidence[] = ["high", "mid", "low"];
+
+/** mode 가 chat 일 때만 있는 판정 정보 */
+export type ChatInfo = { method: ChatMethod; confidence?: ChatConfidence };
 
 /** SPEC 9장 ResultPayload. URL hash에 실려 가는 유일한 데이터. */
 export type ResultPayload = {
@@ -97,6 +117,8 @@ export type ResultPayload = {
   mode: ResultMode;
   periodDays: number;
   sampleSize: { prompts: number; shell: number };
+  /** mode 가 chat 일 때만. 판정 방식과 신뢰도 */
+  chat?: ChatInfo;
   /** 축마다 판정에 가장 크게 기여한 시그널 최대 2개: [키, 원래 값]. 비율은 0..1. 웹이 "근거"로 보여 준다. */
   why?: Partial<Record<Axis, [SignalKey, number][]>>;
 };
