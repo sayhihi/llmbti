@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { AXES } from "@llmbti/core";
 
-import { CHAT_PROMPT, CHAT_QUESTIONS } from "./chatPrompt";
+import { CHAT_PROMPT, CHAT_QUESTIONS, PASTE_URL, RESULT_CODE_EXAMPLE } from "./chatPrompt";
+import { parseChatResult } from "./chatResult";
 
 describe("chatPrompt", () => {
   it("has 12 questions, 3 per axis", () => {
@@ -32,8 +33,25 @@ describe("chatPrompt", () => {
     });
   });
 
-  it("ends with the type page link rule", () => {
-    expect(CHAT_PROMPT).toContain("https://llmbti.vercel.app/t/");
+  it("sends people to the paste page instead of the type page", () => {
+    expect(CHAT_PROMPT).toContain(PASTE_URL);
+    expect(CHAT_PROMPT).not.toContain("https://llmbti.vercel.app/t/");
+  });
+
+  it("shows a result code example that the paste parser reads", () => {
+    expect(CHAT_PROMPT).toContain("```json\n" + RESULT_CODE_EXAMPLE + "\n```");
+    const r = parseChatResult(CHAT_PROMPT);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.payload.type).toBe("ENFP");
+      expect(r.payload.chat).toEqual({ method: "record", confidence: "mid" });
+    }
+  });
+
+  it("asks for the AI work log and a status line", () => {
+    expect(CHAT_PROMPT).toContain("담당 AI의 업무 일지");
+    expect(CHAT_PROMPT).toContain("후임에게:");
+    expect(CHAT_PROMPT).toContain("오늘의 상태메시지");
   });
 
   it("answers with a result first and keeps the questionnaire as a follow-up", () => {

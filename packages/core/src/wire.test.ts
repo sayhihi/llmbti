@@ -94,7 +94,7 @@ describe("wire 배열", () => {
     expect(fromWire([...w.slice(0, 1), 99, ...w.slice(2)])).toBeNull(); // 없는 유형 번호
     expect(fromWire([...w.slice(0, 3), 3, ...w.slice(4)])).toBeNull(); // 모드 플래그
     expect(fromWire([...w.slice(0, 6), [0], [], ...w.slice(8)])).toBeNull(); // 배지와 통계 길이 불일치
-    const badCopy = [...w];
+    const badCopy: unknown[] = [...w];
     badCopy[8] = ["a", "b", ["c"], "d", 99, "e"];
     expect(fromWire(badCopy)).toBeNull(); // 없는 페어 유형
   });

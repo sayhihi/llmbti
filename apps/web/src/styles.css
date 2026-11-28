@@ -1010,3 +1010,55 @@ h3 {
   margin: 2px 0 0;
   text-align: center;
 }
+
+/* ---------- 담당 AI 업무 일지 ---------- */
+
+.ai-log-body {
+  margin: 0;
+  line-height: 1.8;
+}
+
+.ai-log-handoff {
+  margin: 0;
+  padding: 10px 14px;
+  background: var(--p-black);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.ai-log-label {
+  color: var(--accent);
+}
+
+/* ---------- 결과 붙여넣기 ---------- */
+
+.paste-input {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  background: var(--p-black);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.paste-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.paste-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-msg {
+  margin: 0;
+  font-size: 16px;
+  color: var(--p-nf-base);
+}

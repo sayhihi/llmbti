@@ -159,13 +159,17 @@ function ChatGuide() {
       <li className="step card">
         <span className="px step-no">3</span>
         <div className="step-body">
-          <h2 className="step-title">결과 받기</h2>
+          <h2 className="step-title">결과 붙여넣기</h2>
           <p className="dim">
-            유형 4글자와 축 점수, 별명, 한 줄 평이 채팅으로 나온다. 마지막 줄의 링크를 누르면 내
-            유형 캐릭터를 볼 수 있다.
+            채팅으로 유형과 별명, 한 줄 평, 담당 AI의 업무 일지가 먼저 나온다. 답변 끝의 결과 코드를
+            복사해서 붙여넣기 페이지에 넣으면 캐릭터와 공유 카드가 담긴 내 결과 페이지가 나온다.
           </p>
+          <Link to="/paste" className="btn btn-primary btn-wide">
+            결과 붙여넣기
+          </Link>
           <p className="dim small">
-            채팅 결과에는 게이지와 문구가 담긴 개인 링크가 없다. 유형 소개 페이지로 연결된다.
+            결과 코드만 고르기 어려우면 답변 전체를 복사해도 된다. 휴대폰 앱에서는 답변을 길게 눌러
+            복사하면 된다.
           </p>
         </div>
       </li>

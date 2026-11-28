@@ -18,6 +18,8 @@ export interface TypeRelation {
 export interface TypeMeta {
   nickname: string;
   tagline: string;
+  /** 비개발자용 캐치프레이즈. chat 모드 결과 페이지가 tagline 대신 쓴다 */
+  chatTagline: string;
   description: string;
   prop: string;
   pairWith: TypeRelation;
