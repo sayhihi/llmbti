@@ -13,7 +13,10 @@
 
 import {
   AXES,
+  CHAT_LINK_HASH_KEY,
+  CHAT_LINK_VERSION,
   COPY_LIMITS,
+  decodeChatLink,
   HANDOVER_KEYS,
   MBTI_TYPES,
   PAYLOAD_VERSION,
@@ -32,13 +35,15 @@ import type {
 export type ChatParseResult =
   { ok: true; payload: ResultPayload } | { ok: false; reason: ChatParseError };
 
-export type ChatParseError = "empty" | "noCode" | "badType";
+export type ChatParseError = "empty" | "noCode" | "badType" | "badLink";
 
 export const CHAT_PARSE_MESSAGES: Record<ChatParseError, string> = {
   empty: "붙여넣은 내용이 없다.",
   noCode:
     '결과 코드를 못 찾았다. 답변 맨 끝의 "llmbti" 가 들어 있는 코드 블록까지 복사됐는지 확인하고, 안 되면 답변 전체를 다시 복사해서 붙여넣으면 된다.',
   badType: "결과 코드에 유형 4글자가 없다. AI에게 결과 코드를 다시 보여 달라고 하면 된다.",
+  badLink:
+    "링크가 중간에 잘렸거나 바뀌어서 못 읽었다. 답변의 결과 코드를 복사해서 붙여넣기 페이지에 넣으면 된다.",
 };
 
 type Json = Record<string, unknown>;
@@ -50,6 +55,55 @@ export function parseChatResult(text: string): ChatParseResult {
   const payload = toPayload(obj);
   if (!payload) return { ok: false, reason: "badType" };
   return { ok: true, payload };
+}
+
+/**
+ * 채팅 링크(`/c#j=...`)의 hash → payload. AI가 파이썬으로 만든 배열(core chatLink.ts 모양)을
+ * 결과 코드 JSON 과 같은 모양으로 펴서 같은 정리 규칙을 탄다.
+ */
+export function parseChatLinkHash(hash: string): ChatParseResult {
+  const body = hash.startsWith("#") ? hash.slice(1) : hash;
+  const part = body.split("&").find((p) => p.startsWith(`${CHAT_LINK_HASH_KEY}=`));
+  const value = part?.slice(CHAT_LINK_HASH_KEY.length + 1) ?? "";
+  if (value === "") return { ok: false, reason: "badLink" };
+  const obj = chatLinkToObject(decodeChatLink(value));
+  if (!obj) return { ok: false, reason: "badLink" };
+  const payload = toPayload(obj);
+  if (!payload) return { ok: false, reason: "badType" };
+  return { ok: true, payload };
+}
+
+/** 채팅 링크 배열 → 결과 코드 JSON 모양. 모양이 어긋나면 null. */
+export function chatLinkToObject(value: unknown): Json | null {
+  if (!Array.isArray(value) || value[0] !== CHAT_LINK_VERSION || value.length < 3) return null;
+  const [
+    ,
+    type,
+    scores,
+    method,
+    confidence,
+    nickname,
+    roast,
+    evidence,
+    status,
+    pairType,
+    pairReason,
+    handover,
+  ] = value as unknown[];
+  const h = Array.isArray(handover) ? handover : [];
+  return {
+    llmbti: 1,
+    type,
+    scores,
+    method,
+    confidence,
+    nickname,
+    roast,
+    evidence,
+    status,
+    pair: { type: pairType, reason: pairReason },
+    handover: { style: h[0], likes: h[1], dislikes: h[2], soothe: h[3] },
+  };
 }
 
 // ---------- JSON 찾기 ----------

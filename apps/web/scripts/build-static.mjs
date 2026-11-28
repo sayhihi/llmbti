@@ -370,6 +370,13 @@ export function pageMeta(data, siteUrl = SITE_URL) {
       url: `${siteUrl}/paste`,
     },
     {
+      path: "c",
+      title: "결과 여는 중 | llmbti",
+      description: "채팅 AI가 만든 llmbti 결과 링크를 여는 중이다.",
+      image: `${siteUrl}/og/default.png`,
+      url: `${siteUrl}/c`,
+    },
+    {
       path: "types",
       title: "16종 도감 | llmbti",
       description: "개발자 MBTI 16종. 몸 색은 기질, 눈은 E/I 와 T/F, 머리 위 소품은 별명.",

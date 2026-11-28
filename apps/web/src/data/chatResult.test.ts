@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { decodeCompact, encodeCompact } from "@llmbti/core";
+import { decodeCompact, encodeChatLink, encodeCompact } from "@llmbti/core";
 
-import { alignScores, cleanText, findResultObject, parseChatResult } from "./chatResult";
+import {
+  alignScores,
+  chatLinkToObject,
+  cleanText,
+  findResultObject,
+  parseChatLinkHash,
+  parseChatResult,
+} from "./chatResult";
 
 const CODE = `{
   "llmbti": 1,
@@ -158,5 +165,50 @@ describe("alignScores", () => {
       TF: -4,
       JP: -20,
     });
+  });
+});
+
+/**
+ * 채팅 프롬프트의 파이썬 링크 코드(chatPrompt.ts linkCode)를 실제로 돌려서 나온 값.
+ * 2026-11-28 사용자 테스트 결과(ESTJ)를 넣었다. 파이썬 zlib 과 웹 fflate 가 같은 걸 읽는지 고정한다.
+ */
+const PYTHON_LINK =
+  "XVPBbtpAFPyVlc9WpURR1GsOPdBre4vyLwYcZAFV04DBJLvIbkwBiYMDhkDl_tC-t__QWTtg2pPXfu_Nzswb3164zqcvXz877u3llXt96V58dK-u71xH7zNKlOM61Hlk1beH4dDc91kVgqcJdYdCrzO9KXT2QN_vUb9pmFCiQ6CFlS9onuh1gUb6lgke5dR94HYgbho68zDrcRBR9qw3MfAC6qUfBOcBhwEr73TKUXYFT3x66dsrq5MF4NCnXjVGfmq_UGtJA2XCnENQnPs8l4KailrSdkEgNOUoeNyTtNqzLCiRgp8fTBjVcngC7J2keCZMFHJPWSl6u-J1znHzOASQOITcCtkBCBBB9M-QBhLPIOJDhOfvhNcRzQphJpKfliBX1uxsLGjn0c63-PbDJDTTAMhP1rEKtmJkx2GUtYUeUx7Dbl-YH9JEPqoltySrmiLabK0BvrQGm04MadZg4NFgdQTGdmunLXLZBLYKEuHZcc8lsymWGHN3-242WDXKuNiAcOr9x17luP546SEmuaBfq8rctuBxBw2iVsWvE71eAKVe0DlmBXNmQlPpQx_e13oEd1PT9kqy-dG107LUXui3Qr9m5VJL3wWSQt0ZVnfKGJK6KDgG6ibn8YpfClpiTT97iFi9Yup7vFv-q7BKoxlZZ8p3P-bR3sYJAPYH2gG7FcGIM5wqrHXsKFua0cwa8-5_baclpPZWrCosfhmfNMIblnj3Fw";
+
+describe("채팅 링크 (/c#j=)", () => {
+  it("파이썬 코드가 만든 링크를 읽어 chat payload 로 만든다", () => {
+    const r = parseChatLinkHash(`#j=${PYTHON_LINK}`);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const p = r.payload;
+    expect(p.type).toBe("ESTJ");
+    expect(p.mode).toBe("chat");
+    expect(p.scores).toEqual({ EI: 24, SN: 62, TF: 18, JP: 46 });
+    expect(p.chat).toEqual({ method: "record", confidence: "high" });
+    expect(p.copy.nickname).toBe("디테일 잡는 결과감독");
+    expect(p.copy.evidence).toHaveLength(3);
+    expect(p.copy.pairWith.type).toBe("ISTJ");
+    expect(p.copy.handover?.soothe).toBe("네가 원하는 방향이 이제 정확히 보인다라고 해 줘라.");
+    expect(decodeCompact(encodeCompact(p))).toEqual(p);
+  });
+
+  it("잘리거나 바뀐 링크, 빈 링크는 badLink", () => {
+    expect(parseChatLinkHash(`#j=${PYTHON_LINK.slice(0, 300)}`)).toEqual({
+      ok: false,
+      reason: "badLink",
+    });
+    expect(parseChatLinkHash("#j=")).toEqual({ ok: false, reason: "badLink" });
+    expect(parseChatLinkHash("")).toEqual({ ok: false, reason: "badLink" });
+    expect(parseChatLinkHash(`#j=${encodeChatLink({ not: "array" })}`)).toEqual({
+      ok: false,
+      reason: "badLink",
+    });
+  });
+
+  it("배열 버전이 다르면 null, 뒤쪽 칸이 없어도 앞쪽만으로 읽는다", () => {
+    expect(chatLinkToObject([2, "ENFP"])).toBeNull();
+    const r = parseChatLinkHash(`#j=${encodeChatLink([1, "INTP", [-10, -20, 30, -5]])}`);
+    expect(r.ok && r.payload.type).toBe("INTP");
+    expect(r.ok && "handover" in r.payload.copy).toBe(false);
   });
 });

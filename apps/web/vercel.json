@@ -4,6 +4,7 @@
   "rewrites": [
     { "source": "/start", "destination": "/index.html" },
     { "source": "/paste", "destination": "/index.html" },
+    { "source": "/c", "destination": "/index.html" },
     { "source": "/types", "destination": "/index.html" },
     { "source": "/t/:type", "destination": "/index.html" }
   ]

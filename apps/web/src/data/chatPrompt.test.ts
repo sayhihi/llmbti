@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import { AXES } from "@llmbti/core";
 
-import { CHAT_PROMPT, CHAT_QUESTIONS, PASTE_URL, RESULT_CODE_EXAMPLE } from "./chatPrompt";
+import {
+  CHAT_PROMPT,
+  CHAT_QUESTIONS,
+  PASTE_URL,
+  RESULT_CODE_EXAMPLE,
+  buildChatPrompt,
+  linkCode,
+} from "./chatPrompt";
 import { parseChatResult } from "./chatResult";
 
 describe("chatPrompt", () => {
@@ -31,6 +38,19 @@ describe("chatPrompt", () => {
     CHAT_QUESTIONS.forEach((q, i) => {
       expect(CHAT_PROMPT).toContain(`${i + 1}. ${q.stem}: A ${q.a.text}(${q.a.letter})`);
     });
+  });
+
+  it("asks for a code-made link and forbids hand-made links", () => {
+    expect(CHAT_PROMPT).toContain("```python\n" + linkCode("https://llmbti.vercel.app") + "\n```");
+    expect(CHAT_PROMPT).toContain("링크를 손으로 만들거나 지어내지 마");
+    expect(linkCode("https://x.test")).toContain('print("https://x.test/c#j="');
+  });
+
+  it("uses the given origin for the link and paste page", () => {
+    const local = buildChatPrompt("http://localhost:5173/");
+    expect(local).toContain("http://localhost:5173/paste");
+    expect(local).toContain('print("http://localhost:5173/c#j="');
+    expect(local).not.toContain("llmbti.vercel.app");
   });
 
   it("sends people to the paste page instead of the type page", () => {

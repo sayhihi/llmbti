@@ -1,6 +1,6 @@
 import { CommandLine, CopyButton } from "../components/CopyButton";
 import { INSTALL_COMMAND } from "../components/TryItCta";
-import { CHAT_PROMPT } from "../data/chatPrompt";
+import { buildChatPrompt } from "../data/chatPrompt";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { Link, useRouter } from "../router";
 
@@ -126,7 +126,7 @@ function ChatGuide() {
           <h2 className="step-title">프롬프트 복사</h2>
           <p className="dim">버튼을 누르면 판정용 프롬프트가 복사된다. 설치할 건 없다.</p>
           <CopyButton
-            text={CHAT_PROMPT}
+            text={buildChatPrompt(window.location.origin)}
             label="프롬프트 복사하기"
             className="btn-primary btn-wide copy-prompt"
           />

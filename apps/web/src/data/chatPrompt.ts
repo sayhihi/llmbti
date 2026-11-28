@@ -97,8 +97,27 @@ const questionLines = CHAT_QUESTIONS.map(
     `${i + 1}. ${q.stem}: A ${q.a.text}(${q.a.letter}) / B ${q.b.text}(${q.b.letter})`,
 ).join("\n");
 
+/** 배포 사이트 주소. 프롬프트 기본값. /start 는 지금 열린 사이트 주소로 프롬프트를 만든다(로컬, 미리보기 배포 테스트용). */
+export const SITE_ORIGIN = "https://llmbti.vercel.app";
+
 /** 채팅 결과를 붙여넣는 페이지. 프롬프트 마지막 줄이 이리로 보낸다. */
-export const PASTE_URL = "https://llmbti.vercel.app/paste";
+export const PASTE_URL = `${SITE_ORIGIN}/paste`;
+
+/**
+ * 채팅 AI가 코드 실행 도구로 돌리는 링크 생성 코드. 결과 코드 JSON 을 core chatLink.ts 배열 모양으로 접어
+ * deflate-raw + base64url 로 `/c#j=` 링크를 만든다. 파이썬 표준 라이브러리만 쓴다.
+ */
+export function linkCode(origin: string): string {
+  return `import json, zlib, base64
+r = json.loads(r'''여기에 결과 코드 JSON 을 그대로''')
+s, p, h = r["scores"], r["pair"], r["handover"]
+a = [1, r["type"], [s["EI"], s["SN"], s["TF"], s["JP"]], r["method"], r.get("confidence", ""),
+     r["nickname"], r["roast"], r["evidence"], r["status"], p["type"], p["reason"],
+     [h["style"], h["likes"], h["dislikes"], h["soothe"]]]
+z = zlib.compressobj(9, zlib.DEFLATED, -15)
+d = z.compress(json.dumps(a, ensure_ascii=False, separators=(",", ":")).encode()) + z.flush()
+print("${origin}/c#j=" + base64.urlsafe_b64encode(d).decode().rstrip("="))`;
+}
 
 /** 프롬프트에 보여 주는 결과 코드 모양. chatResult.ts 가 이 키들을 읽는다. */
 export const RESULT_CODE_EXAMPLE = `{
@@ -120,7 +139,11 @@ export const RESULT_CODE_EXAMPLE = `{
   }
 }`;
 
-export const CHAT_PROMPT = `너는 llmbti 판정관이야. llmbti는 사람이 AI와 대화하는 습관을 MBTI 4글자로 보여주는 놀이야.
+/** 채팅 프롬프트. origin 은 링크와 붙여넣기 주소에 쓴다. */
+export function buildChatPrompt(origin: string = SITE_ORIGIN): string {
+  const base = origin.replace(/\/+$/, "");
+  const pasteUrl = `${base}/paste`;
+  return `너는 llmbti 판정관이야. llmbti는 사람이 AI와 대화하는 습관을 MBTI 4글자로 보여주는 놀이야.
 실제 성격 검사가 아니라 AI 사용 습관만 본다.
 
 [가장 중요한 규칙]
@@ -179,7 +202,14 @@ export const CHAT_PROMPT = `너는 llmbti 판정관이야. llmbti는 사람이 A
 \`\`\`json
 ${RESULT_CODE_EXAMPLE}
 \`\`\`
-- 마지막 줄: "결과 코드를 복사해서 ${PASTE_URL} 에 붙여넣으면 캐릭터와 공유 카드가 나온다. 답변 전체를 복사해도 된다."
+- 결과 링크: 코드 실행 도구(파이썬)를 쓸 수 있으면 아래 코드의 따옴표 안에 위 결과 코드 JSON 을 그대로 넣고 실행해.
+  출력된 링크를 한 글자도 바꾸거나 줄이지 말고 [내 결과 페이지 열기](링크) 모양으로 붙여.
+  코드 실행을 못 하면 이 항목은 건너뛰어. 링크를 손으로 만들거나 지어내지 마. 손으로 만든 링크는 안 열린다.
+\`\`\`python
+${linkCode(base)}
+\`\`\`
+- 마지막 줄: 링크를 붙였으면 "링크가 안 열리면 결과 코드를 복사해서 ${pasteUrl} 에 붙여넣으면 된다."
+  링크가 없으면 "결과 코드를 복사해서 ${pasteUrl} 에 붙여넣으면 캐릭터와 공유 카드가 나온다. 답변 전체를 복사해도 된다."
 
 [말투 규칙]
 담백한 구어체 한국어. 괄호와 특수문자는 최소로.
@@ -193,3 +223,6 @@ ${RESULT_CODE_EXAMPLE}
 채점은 문항당 33점. 축마다 세 문항을 합치고, 앞 글자(E, S, T, J)는 +33, 뒤 글자(I, N, F, P)는 -33.
 ${questionLines}
 `;
+}
+
+export const CHAT_PROMPT = buildChatPrompt();

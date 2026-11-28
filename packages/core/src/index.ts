@@ -24,3 +24,9 @@ export {
 } from "./codec";
 export { WIRE_VERSION, encodeCompact, decodeCompact, toWire, fromWire } from "./wire";
 export { DICT_WIRE_V1_SHA256 } from "./dict";
+export {
+  CHAT_LINK_VERSION,
+  CHAT_LINK_HASH_KEY,
+  decodeChatLink,
+  encodeChatLink,
+} from "./chatLink";
