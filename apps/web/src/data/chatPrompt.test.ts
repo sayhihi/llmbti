@@ -45,13 +45,13 @@ describe("chatPrompt", () => {
     if (r.ok) {
       expect(r.payload.type).toBe("ENFP");
       expect(r.payload.chat).toEqual({ method: "record", confidence: "mid" });
+      expect(r.payload.copy.handover?.style).toBe("스타일");
     }
   });
 
-  it("asks for the AI's I-believe line and a status line", () => {
-    expect(CHAT_PROMPT).toContain("담당 AI는 믿어요");
-    expect(CHAT_PROMPT).toContain("우리 애는요...");
-    expect(CHAT_PROMPT).toContain("I believe...");
+  it("asks for the handover memo to the next AI and a status line", () => {
+    expect(CHAT_PROMPT).toContain("나를 이을 후임 AI에게");
+    expect(CHAT_PROMPT).toContain("우쭈쭈");
     expect(CHAT_PROMPT).toContain("오늘의 상태메시지");
   });
 

@@ -163,10 +163,10 @@ type CopyJson = {
   evidence: string[];     // 정확히 3개, 각 ≤ 60자, 반드시 실제 숫자 포함
   commitMessage: string;  // "오늘의 커밋 메시지", ≤ 50자. 예: "fix: fix the fix"
   pairWith: { type: MbtiType; reason: string }; // 페어 프로그래밍 궁합, reason ≤ 40자
-  aiLog?: string;         // 담당 AI는 믿어요, ≤ 120자, 숫자 필수. 2026-11-28 추가
+  handover?: { style: string; likes: string; dislikes: string; soothe: string }; // 후임 AI에게 남기는 인수인계, 각 ≤ 45자. 2026-11-28 추가
 };
 ```
-- `aiLog`는 담당 AI가 학부모 상담 톤으로 이 사람을 감싸는 한마디다. "우리 애는요..."로 시작해 숫자 근거 하나를 애틋하게 좋게 해석하고 "I believe..."로 끝난다. render 검증이 시작과 끝 문구를 본다. 결과 페이지에서 roast 바로 아래에 나온다.
+- `handover`는 이 사용자를 맡았던 AI가 후임 AI에게 남기는 인수인계다. style(어떤 스타일인가, 숫자 근거), likes(이렇게 해 주면 좋아한다), dislikes(이렇게 하면 기분 나빠한다), soothe(삐지면 이렇게 달래라, 우쭈쭈) 네 항목. 결과 페이지와 터미널에서는 core `handoverLetterLines`가 "나를 이을 후임 AI에게. 이 사용자는 {style} {likes} {dislikes} {soothe} 부탁한다. 전임 AI 올림" 편지로 잇는다. style에는 주어를 쓰지 않는다.
   render 검증에서는 선택이다(옛 스킬이 새 CLI를 부르는 첫 실행을 위해). 없으면 결과 페이지는 이 섹션을 숨긴다.
 - render는 스키마와 길이를 검증하고, 실패하면 에러 메시지를 출력한다. 스킬은 그 에러를 보고 Claude가 다시 쓰게 한다(최대 2회).
 - 톤 규칙(SKILL.md에 포함): 근거 숫자 필수, 개발 밈 활용, 비하가 아니라 놀리는 수준, 외모·성별·나이 같은 개인 속성은 언급 금지, 회사명·프로젝트 경로 노출 금지.
@@ -192,7 +192,7 @@ type ResultPayload = {
 };
 ```
 - `mode: "chat"`은 채팅 AI 판정 결과를 `/paste`에 붙여넣어 만든 결과다(13장 채팅 버전). badges, stats, why가 비어 있고 periodDays, sampleSize는 0이다.
-- wire v1 배열은 끝에 선택 칸 두 개를 붙일 수 있다: `aiLog`, `[chatMethod, chatConfidence]`. 둘 다 없으면 길이 10 그대로라 옛 링크와 같은 바이트다. 옛 디코더는 길이 10 이상만 보므로 붙인 칸을 무시한다. 새 칸도 끝에만 붙인다.
+- wire v1 배열은 끝에 선택 칸 두 개를 붙일 수 있다: `handover`(문자열 4개 배열, 없으면 null), `[chatMethod, chatConfidence]`. 둘 다 없으면 길이 10 그대로라 옛 링크와 같은 바이트다. 옛 디코더는 길이 10 이상만 보므로 붙인 칸을 무시한다. 새 칸도 끝에만 붙인다.
 - 인코딩 (compact, 2026-11-05부터): payload를 키 없는 배열로 접고(`core/src/wire.ts`), 고정 사전(`core/src/dict.ts`)을 쓰는 deflate-raw로 압축해 base64url. 양쪽 다 fflate. 같은 결과가 legacy의 절반 이하(1,064자 → 450자 안팎)가 된다.
 - 인코딩 (legacy, 해독만 유지): `JSON → deflate-raw → base64url`. Node는 `zlib`, 브라우저는 `DecompressionStream('deflate-raw')`.
 - **URL 형식:** `https://llmbti.vercel.app/t/{TYPE}#z={compact}`. legacy는 `#r={payload}`이고 웹이 둘 다 푼다.
@@ -364,7 +364,7 @@ type ResultPayload = {
 **공유 페이지 구성 (모바일 우선)**
 1. 픽셀 캐릭터(애니메이션) + 유형 + 별명
 2. roast 본문
-2-1. 담당 AI는 믿어요(`aiLog` 있을 때만, 끝의 "I believe..."는 따로 강조)
+2-1. 나를 이을 후임 AI에게(`handover` 있을 때만, 네 항목을 이은 편지와 "전임 AI 올림" 서명)
 3. 4축 게이지
 4. evidence 3개 + 통계 배지
 5. 오늘의 커밋 메시지(코드 블록 스타일)

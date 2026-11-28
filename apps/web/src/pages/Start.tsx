@@ -147,7 +147,7 @@ function ChatGuide() {
         <div className="step-body">
           <h2 className="step-title">결과 붙여넣기</h2>
           <p className="dim">
-            채팅으로 유형과 별명, 한 줄 평, 담당 AI의 한마디가 먼저 나온다. 답변 끝의 결과 코드를
+            채팅으로 유형과 별명, 한 줄 평, 후임 AI에게 남기는 인수인계가 먼저 나온다. 답변 끝의 결과 코드를
             복사해서 붙여넣기 페이지에 넣으면 캐릭터와 공유 카드가 담긴 내 결과 페이지가 나온다.
           </p>
           <Link to="/paste" className="btn btn-primary btn-wide">

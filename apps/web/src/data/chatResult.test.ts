@@ -15,7 +15,12 @@ const CODE = `{
   "evidence": ["답변 도중 자주 끼어든다", "고마워를 거의 매번 붙인다", "처음부터 다시를 자주 한다"],
   "status": "오늘도 방향 수정 중",
   "pair": { "type": "ISTJ", "reason": "순서는 저쪽이 정해 줌" },
-  "aiLog": "우리 애는요... 방향을 4번 바꿨지만 그만큼 진심인 거예요. I believe..."
+  "handover": {
+    "style": "방향을 4번 바꾸는 스타일이다.",
+    "likes": "첫 답은 초안이라고 먼저 말해 주면 안심한다.",
+    "dislikes": "완료했습니다로 끝내면 의견이 바로 온다.",
+    "soothe": "역시 보는 눈이 있으시네요 한마디. 우쭈쭈."
+  }
 }`;
 
 /** ChatGPT 답변 전체를 복사한 모양: 결과 설명 + 코드 펜스 + 마지막 안내 */
@@ -72,7 +77,7 @@ describe("parseChatResult", () => {
     expect(p.chat).toEqual({ method: "record", confidence: "mid" });
     expect(p.copy.commitMessage).toBe("오늘도 방향 수정 중");
     expect(p.copy.pairWith).toEqual({ type: "ISTJ", reason: "순서는 저쪽이 정해 줌" });
-    expect(p.copy.aiLog).toContain("I believe...");
+    expect(p.copy.handover?.soothe).toContain("우쭈쭈");
     expect(p.badges).toEqual([]);
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });
@@ -106,13 +111,21 @@ describe("parseChatResult", () => {
       type: "ESFJ",
       nickname: "가".repeat(40),
       evidence: ["하나", "둘", "셋", "넷"],
-      aiLog: "나".repeat(200),
+      handover: { 스타일: "나".repeat(200), soothe: "우쭈쭈" },
     });
     const r = parseChatResult(long);
     if (!r.ok) throw new Error("parse failed");
     expect([...r.payload.copy.nickname]).toHaveLength(20);
     expect(r.payload.copy.evidence).toEqual(["하나", "둘", "셋"]);
-    expect([...r.payload.copy.aiLog!]).toHaveLength(120);
+    expect([...r.payload.copy.handover!.style]).toHaveLength(45);
+    expect(r.payload.copy.handover).toMatchObject({ likes: "", dislikes: "", soothe: "우쭈쭈" });
+  });
+
+  it("handover 가 비었거나 없으면 싣지 않는다", () => {
+    const empty = parseChatResult(`{"llmbti":1,"type":"ENFP","handover":{"style":" "}}`);
+    expect(empty.ok && "handover" in empty.payload.copy).toBe(false);
+    const none = parseChatResult(`{"llmbti":1,"type":"ENFP"}`);
+    expect(none.ok && "handover" in none.payload.copy).toBe(false);
   });
 
   it("페어 유형이 없으면 네 글자를 뒤집은 유형", () => {

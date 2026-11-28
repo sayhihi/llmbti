@@ -5,7 +5,14 @@
  * 길이는 글자 수(코드 포인트) 기준이고 공백과 문장부호도 센다.
  */
 
-import { COPY_LIMITS, MBTI_TYPES, isMbtiType, type CopyJson } from "@llmbti/core";
+import {
+  COPY_LIMITS,
+  HANDOVER_KEYS,
+  MBTI_TYPES,
+  isMbtiType,
+  type CopyJson,
+  type Handover,
+} from "@llmbti/core";
 
 export type CopyValidation = { ok: true; copy: CopyJson } | { ok: false; problems: string[] };
 
@@ -22,10 +29,6 @@ export const FORBIDDEN_CHARS: ReadonlyArray<{ char: string; name: string }> = [
 /** 이모지 (Extended_Pictographic). 변형 선택자나 ZWJ 조합도 첫 글자가 여기 걸린다. */
 const EMOJI_RE = /\p{Extended_Pictographic}/u;
 const EMOJI_ALL_RE = /\p{Extended_Pictographic}/gu;
-
-/** aiLog 형식: "우리 애는요..."로 시작, "I believe..."로 끝 (skill/TONE.md) */
-export const AI_LOG_START_RE = /^\s*우리 애는요/;
-export const AI_LOG_END_RE = /I\s*believe\s*[.…]*\s*$/i;
 
 export const ROAST_SENTENCES: readonly [number, number] = [2, 3];
 
@@ -112,13 +115,17 @@ export function validateCopy(value: unknown): CopyValidation {
 
   str("commitMessage", value.commitMessage, COPY_LIMITS.commitMessage, "commitMessage");
 
-  // aiLog 는 선택이다. 스킬은 --sync 다음 실행부터 갱신되므로, 옛 스킬이 새 CLI 를 부르는 첫 실행에는 없을 수 있다.
-  if (value.aiLog !== undefined) {
-    const aiLog = str("aiLog", value.aiLog, COPY_LIMITS.aiLog, "aiLog");
-    if (aiLog !== undefined && aiLog.trim() !== "") {
-      if (!hasDigit(aiLog)) problems.push("aiLog: 숫자가 하나는 있어야 한다.");
-      if (!AI_LOG_START_RE.test(aiLog)) problems.push(`aiLog: "우리 애는요..."로 시작해야 한다.`);
-      if (!AI_LOG_END_RE.test(aiLog)) problems.push(`aiLog: "I believe..."로 끝나야 한다.`);
+  // handover 는 선택이다. 스킬은 --sync 다음 실행부터 갱신되므로, 옛 스킬이 새 CLI 를 부르는 첫 실행에는 없을 수 있다.
+  if (value.handover !== undefined) {
+    const h = value.handover;
+    if (!isRecord(h)) {
+      problems.push(`handover: { ${HANDOVER_KEYS.join(", ")} } 객체여야 한다.`);
+    } else {
+      for (const k of HANDOVER_KEYS) {
+        str(`handover.${k}`, h[k], COPY_LIMITS.handoverEach, `handover.${k}`);
+      }
+      const all = HANDOVER_KEYS.map((k) => (typeof h[k] === "string" ? h[k] : "")).join(" ");
+      if (!hasDigit(all)) problems.push("handover: 네 항목 중 하나에는 숫자가 있어야 한다.");
     }
   }
 
@@ -149,7 +156,7 @@ export function validateCopy(value: unknown): CopyValidation {
 /** 검증 대상 문자열 필드 [이름, 값]. 타입이 안 맞는 값은 건너뛴다. */
 function stringFields(v: Record<string, unknown>): Array<[string, string]> {
   const out: Array<[string, string]> = [];
-  for (const key of ["nickname", "roast", "commitMessage", "aiLog"] as const) {
+  for (const key of ["nickname", "roast", "commitMessage"] as const) {
     if (typeof v[key] === "string") out.push([key, v[key]]);
   }
   if (Array.isArray(v.evidence)) {
@@ -159,6 +166,12 @@ function stringFields(v: Record<string, unknown>): Array<[string, string]> {
   }
   if (isRecord(v.pairWith) && typeof v.pairWith.reason === "string") {
     out.push(["pairWith.reason", v.pairWith.reason]);
+  }
+  if (isRecord(v.handover)) {
+    for (const k of HANDOVER_KEYS) {
+      const t = v.handover[k];
+      if (typeof t === "string") out.push([`handover.${k}`, t]);
+    }
   }
   return out;
 }
@@ -178,6 +191,9 @@ export function mapCopyStrings(copy: CopyJson, fn: (s: string) => string): CopyJ
     commitMessage: fn(copy.commitMessage),
     pairWith: { type: copy.pairWith.type, reason: fn(copy.pairWith.reason) },
   };
-  if (typeof copy.aiLog === "string" && copy.aiLog.trim() !== "") out.aiLog = fn(copy.aiLog);
+  if (copy.handover) {
+    const h = copy.handover;
+    out.handover = Object.fromEntries(HANDOVER_KEYS.map((k) => [k, fn(h[k])])) as Handover;
+  }
   return out;
 }

@@ -10,13 +10,13 @@
  *   [badge...], [badgeStat...],
  *   [nickname, roast, [e1, e2, e3], commitMessage, pairTypeIdx, pairReason],
  *   [[[sigIdx, value], ...] x 4축],
- *   aiLog?, [chatMethod, chatConfidence]? ]
+ *   handover?, [chatMethod, chatConfidence]? ]
  *
  * - typeIdx: MBTI_TYPES 번호. badge: BADGE_KEYS 번호, 모르는 키면 문자열 그대로. sigIdx: SIGNAL_KEYS 번호.
  *   세 목록 모두 끝에만 추가하고 순서를 바꾸지 않는다.
  * - modeFlag: 0 claude, 1 lite(없앤 모드, 해독만), 2 chat
  * - 끝의 두 칸은 2026-11-28 에 붙인 선택 항목이다. 없으면 배열 길이가 10 그대로라 옛 링크와 똑같이 인코딩된다.
- *   aiLog 가 없고 chat 만 있으면 aiLog 자리에 "" 를 둔다.
+ *   handover 는 [style, likes, dislikes, soothe] 문자열 4개. 없고 chat 만 있으면 그 자리에 null 을 둔다.
  *   chatMethod: 0 record, 1 survey. chatConfidence: 0 high, 1 mid, 2 low, 없으면 null.
  *   옛 디코더는 길이가 10 이상인지만 보므로 뒤에 붙인 칸은 무시한다. 새 칸도 끝에만 붙인다.
  * - badgeStat: 배지 순서대로 BADGE_STAT_KEYS 의 값. 없으면 null. promptCount, shellCount 는 sampleSize 로 복원한다.
@@ -34,13 +34,22 @@ import {
   BADGE_STAT_KEYS,
   CHAT_CONFIDENCES,
   CHAT_METHODS,
+  HANDOVER_KEYS,
   MBTI_TYPES,
   PAYLOAD_VERSION,
   RESULT_MODES,
   SIGNAL_KEYS,
   isMbtiType,
 } from "./types";
-import type { Axis, BadgeKey, ChatInfo, CopyJson, ResultPayload, SignalKey } from "./types";
+import type {
+  Axis,
+  BadgeKey,
+  ChatInfo,
+  CopyJson,
+  Handover,
+  ResultPayload,
+  SignalKey,
+} from "./types";
 
 export const WIRE_VERSION = 1 as const;
 
@@ -57,7 +66,7 @@ type Wire = [
   badgeStats: (number | null)[],
   copy: [string, string, [string, string, string], string, number, string],
   why: [WireWhy, WireWhy, WireWhy, WireWhy],
-  aiLog?: string,
+  handover?: [string, string, string, string] | null,
   chat?: WireChat,
 ];
 
@@ -94,8 +103,9 @@ export function toWire(p: ResultPayload): Wire {
     ],
     why,
   ];
-  const aiLog = p.copy.aiLog ?? "";
-  if (aiLog !== "" || p.chat) wire.push(aiLog);
+  const h = p.copy.handover;
+  const handover = h ? (HANDOVER_KEYS.map((k) => h[k] ?? "") as [string, string, string, string]) : null;
+  if (handover || p.chat) wire.push(handover);
   if (p.chat) {
     const conf = p.chat.confidence ? CHAT_CONFIDENCES.indexOf(p.chat.confidence) : -1;
     wire.push([CHAT_METHODS.indexOf(p.chat.method), conf >= 0 ? conf : null]);
@@ -117,7 +127,7 @@ export function fromWire(w: unknown): ResultPayload | null {
     badgeStats,
     copy,
     why,
-    aiLog,
+    handover,
     chat,
   ] = w as unknown[];
 
@@ -173,8 +183,18 @@ export function fromWire(w: unknown): ResultPayload | null {
     commitMessage,
     pairWith: { type: pairType, reason: pairReason },
   };
-  if (aiLog !== undefined && typeof aiLog !== "string") return null;
-  if (typeof aiLog === "string" && aiLog !== "") copyJson.aiLog = aiLog;
+  if (handover !== undefined && handover !== null) {
+    if (
+      !Array.isArray(handover) ||
+      handover.length !== HANDOVER_KEYS.length ||
+      !handover.every((x) => typeof x === "string")
+    ) {
+      return null;
+    }
+    copyJson.handover = Object.fromEntries(
+      HANDOVER_KEYS.map((k, i) => [k, handover[i] as string]),
+    ) as Handover;
+  }
 
   let chatInfo: ChatInfo | undefined;
   if (chat !== undefined) {

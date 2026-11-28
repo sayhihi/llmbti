@@ -81,25 +81,30 @@ describe("validateCopy", () => {
     ]);
   });
 
-  it("aiLog 는 없어도 통과하고, 있으면 길이, 숫자, 시작과 끝 문구를 본다", () => {
-    const ok = "우리 애는요... --force 를 11번 했지만 빨리 보여 주고 싶었던 거예요. I believe...";
+  it("handover 는 없어도 통과하고, 있으면 네 항목, 길이, 숫자를 본다", () => {
+    const ok = {
+      style: "새벽 3시에 force push를 11번 하는 스타일이다.",
+      likes: "말리지 말고 일단 같이 밀어 주면 좋아한다.",
+      dislikes: "테스트부터 돌리자고 하면 대답이 짧아진다.",
+      soothe: "터지면 prd가 약했던 거라고 해 줘라. 우쭈쭈.",
+    };
     expect(problemsOf({})).toEqual([]);
-    expect(problemsOf({ aiLog: ok })).toEqual([]);
-    expect(problemsOf({ aiLog: "우리 애는요" + "가".repeat(110) + "1 I believe..." })).toEqual([
-      expect.stringContaining("aiLog: 120자"),
+    expect(problemsOf({ handover: ok })).toEqual([]);
+    expect(problemsOf({ handover: { ...ok, likes: "가".repeat(46) } })).toEqual([
+      expect.stringContaining("handover.likes: 45자"),
     ]);
-    expect(problemsOf({ aiLog: "우리 애는요... 착해요. I believe..." })).toEqual([
-      expect.stringContaining("aiLog: 숫자"),
+    expect(problemsOf({ handover: { ...ok, style: "급한 스타일이다." } })).toEqual([
+      expect.stringContaining("handover: 네 항목 중 하나에는 숫자"),
     ]);
-    expect(problemsOf({ aiLog: "우리 애는요... 3번 했어요." })).toEqual([
-      expect.stringContaining("I believe"),
+    const { soothe: _soothe, ...noSoothe } = ok;
+    expect(problemsOf({ handover: noSoothe })).toEqual([
+      expect.stringContaining("handover.soothe: 문자열"),
     ]);
-    expect(problemsOf({ aiLog: "오늘 3번 했어요. I believe..." })).toEqual([
-      expect.stringContaining("우리 애는요"),
+    expect(problemsOf({ handover: "문자열" })).toEqual([
+      expect.stringContaining("handover: { style, likes, dislikes, soothe }"),
     ]);
-    expect(problemsOf({ aiLog: 3 })).toEqual([expect.stringContaining("aiLog: 문자열")]);
-    expect(problemsOf({ aiLog: "우리 애는요... 3번 — 착해요. I believe..." })).toEqual([
-      expect.stringContaining("aiLog: 줄표"),
+    expect(problemsOf({ handover: { ...ok, soothe: "달래 줘라 — 우쭈쭈" } })).toEqual([
+      expect.stringContaining("handover.soothe: 줄표"),
     ]);
   });
 
@@ -195,14 +200,18 @@ describe("mapCopyStrings", () => {
     expect(mapped.evidence[1]).toBe(good.evidence[1]!.toUpperCase());
     expect(mapped.pairWith).toEqual({ type: "INFJ", reason: good.pairWith.reason.toUpperCase() });
     expect(mapped.lang).toBe("ko");
-    expect("aiLog" in mapped).toBe(false);
+    expect("handover" in mapped).toBe(false);
   });
 
-  it("aiLog 가 있으면 같이 바꾼다", () => {
-    const r = validateCopy({ ...good, aiLog: "우리 애는요... 3번. I believe..." });
+  it("handover 가 있으면 네 항목 모두 바꾼다", () => {
+    const handover = { style: "a 1", likes: "b", dislikes: "c", soothe: "d" };
+    const r = validateCopy({ ...good, handover });
     if (!r.ok) throw new Error("fixture invalid");
-    expect(mapCopyStrings(r.copy, (s) => s.toUpperCase()).aiLog).toBe(
-      "우리 애는요... 3번. I BELIEVE...",
-    );
+    expect(mapCopyStrings(r.copy, (s) => s.toUpperCase()).handover).toEqual({
+      style: "A 1",
+      likes: "B",
+      dislikes: "C",
+      soothe: "D",
+    });
   });
 });

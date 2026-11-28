@@ -100,24 +100,28 @@ describe("wire 배열", () => {
   });
 });
 
-describe("뒤에 붙인 선택 칸 (aiLog, chat)", () => {
-  const aiLog =
-    "우리 애는요... 다시를 112번 했지만 그건 더 좋은 답을 찾고 싶어서였어요. 언젠가 첫 요청에서 끝내는 날이 올 거예요. I believe...";
+describe("뒤에 붙인 선택 칸 (handover, chat)", () => {
+  const handover = {
+    style: "다시를 112번 하는 스타일이다. 틀려서가 아니라 더 좋은 게 보여서다.",
+    likes: "첫 답을 초안이라고 먼저 말해 주면 안심한다.",
+    dislikes: "완료했습니다로 끝내면 의견 세 개가 바로 온다.",
+    soothe: "삐지면 역시 보는 눈이 있으시네요 한마디. 우쭈쭈 해 줘라.",
+  };
 
   it("둘 다 없으면 배열 길이는 10 그대로다 (옛 링크와 같은 바이트)", () => {
     expect(toWire(sample)).toHaveLength(10);
   });
 
-  it("aiLog 만 있으면 11칸, 왕복하면 같다", () => {
-    const p: ResultPayload = { ...sample, copy: { ...sample.copy, aiLog } };
+  it("handover 만 있으면 11칸에 순서대로 4개, 왕복하면 같다", () => {
+    const p: ResultPayload = { ...sample, copy: { ...sample.copy, handover } };
     const w = toWire(p);
     expect(w).toHaveLength(11);
-    expect(w[10]).toBe(aiLog);
+    expect(w[10]).toEqual([handover.style, handover.likes, handover.dislikes, handover.soothe]);
     expect(fromWire(w)).toEqual(p);
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });
 
-  it("chat 모드는 modeFlag 2, chat 만 있으면 aiLog 자리는 빈 문자열", () => {
+  it("chat 모드는 modeFlag 2, chat 만 있으면 handover 자리는 null", () => {
     const p: ResultPayload = {
       ...sample,
       mode: "chat",
@@ -129,33 +133,35 @@ describe("뒤에 붙인 선택 칸 (aiLog, chat)", () => {
     delete p.why;
     const w = toWire(p);
     expect(w[3]).toBe(2);
-    expect(w[10]).toBe("");
+    expect(w[10]).toBeNull();
     expect(w[11]).toEqual([1, null]);
     expect(fromWire(w)).toEqual(p);
   });
 
-  it("chat 신뢰도와 aiLog 를 같이 실어도 왕복한다", () => {
+  it("chat 신뢰도와 handover 를 같이 실어도 왕복한다", () => {
     const p: ResultPayload = {
       ...sample,
       mode: "chat",
-      copy: { ...sample.copy, aiLog },
+      copy: { ...sample.copy, handover },
       chat: { method: "record", confidence: "low" },
     };
     expect(toWire(p)[11]).toEqual([0, 2]);
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });
 
-  it("aiLog 를 실어도 링크는 700자 아래", () => {
-    const p: ResultPayload = { ...sample, copy: { ...sample.copy, aiLog } };
+  it("handover 를 실어도 링크는 700자 아래", () => {
+    const p: ResultPayload = { ...sample, copy: { ...sample.copy, handover } };
     expect(encodeCompact(p).length).toBeLessThan(700);
   });
 
   it("선택 칸 모양이 어긋나면 null", () => {
     const w = toWire(sample);
-    expect(fromWire([...w, 3])).toBeNull(); // aiLog 가 문자열이 아님
-    expect(fromWire([...w, "", [5, null]])).toBeNull(); // 없는 판정 방식
-    expect(fromWire([...w, "", [0, 7]])).toBeNull(); // 없는 신뢰도
-    expect(fromWire([...w, "", "x"])).toBeNull();
+    expect(fromWire([...w, "옛 문자열"])).toBeNull(); // 배열이 아님
+    expect(fromWire([...w, ["a", "b", "c"]])).toBeNull(); // 3개
+    expect(fromWire([...w, ["a", "b", "c", 4]])).toBeNull(); // 문자열이 아님
+    expect(fromWire([...w, null, [5, null]])).toBeNull(); // 없는 판정 방식
+    expect(fromWire([...w, null, [0, 7]])).toBeNull(); // 없는 신뢰도
+    expect(fromWire([...w, null, "x"])).toBeNull();
   });
 });
 

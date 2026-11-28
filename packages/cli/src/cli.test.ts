@@ -61,7 +61,12 @@ const fixtureCopy = {
   evidence: ["--force push 11번", "새벽 2시에서 5시 사이 활동 34%", "커밋 메시지 중 fix 48%"],
   commitMessage: "fix: prod again",
   pairWith: { type: "INFJ", reason: "쏘고 나면 문서는 저쪽이 써 줌" },
-  aiLog: "우리 애는요... --force 를 11번 했지만 빨리 보여 주고 싶었던 거예요. I believe...",
+  handover: {
+    style: "새벽 3시에 force push를 11번 하는 스타일이다.",
+    likes: "말리지 말고 일단 같이 밀어 주면 좋아한다.",
+    dislikes: "테스트부터 돌리자고 하면 대답이 짧아진다.",
+    soothe: "터지면 prd가 약했던 거라고 해 줘라. 우쭈쭈.",
+  },
 };
 let fixtureReady: Promise<void> | null = null;
 /** render 인자. analysis 와 copy 파일은 처음 한 번만 만든다. */
@@ -162,13 +167,16 @@ describe("render 출력", () => {
     expect(lastLine(env.out).startsWith("http://x.test/t/ENFP#z=")).toBe(true);
   });
 
-  it("담당 AI 한마디를 커밋 메시지 아래에 찍고 URL 에도 싣는다", async () => {
+  it("인수인계 편지를 커밋 메시지 아래에 찍고 URL 에도 싣는다", async () => {
     const r = await run(await renderArgv("--no-open"));
-    expect(r.out).toContain("[담당 AI는 믿어요]");
-    expect(r.out.indexOf("$ git commit")).toBeLessThan(r.out.indexOf("[담당 AI는 믿어요]"));
+    expect(r.out).toContain("나를 이을 후임 AI에게.");
+    expect(r.out).toContain("이 사용자는 새벽 3시에 force push를 11번 하는 스타일이다.");
+    expect(r.out).toContain("부탁한다.");
+    expect(r.out).toContain("전임 AI 올림");
+    expect(r.out.indexOf("$ git commit")).toBeLessThan(r.out.indexOf("나를 이을 후임 AI에게."));
     const url = lastLine(r.out);
     const payload = await decodeResultFromHash(url.slice(url.indexOf("#")));
-    expect(payload!.copy.aiLog).toBe(fixtureCopy.aiLog);
+    expect(payload!.copy.handover).toEqual(fixtureCopy.handover);
   });
 
   it("브라우저 열기에 실패하면 안내만 하고 0", async () => {

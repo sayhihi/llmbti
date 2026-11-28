@@ -1,9 +1,9 @@
 import { AXES } from "@llmbti/core";
 import type { ChatInfo, ResultPayload } from "@llmbti/core";
 
-import { AiLog } from "../components/AiLog";
 import { AxisGauges, isBorderline } from "../components/AxisGauges";
 import { Badges } from "../components/Badges";
+import { Handover } from "../components/Handover";
 import { PixelCharacter } from "../components/PixelCharacter";
 import { ShareRow } from "../components/ShareRow";
 import { RelationCard } from "../components/TypeCard";
@@ -15,7 +15,7 @@ import { temperamentVar } from "../theme";
 
 /**
  * 개인 결과 페이지. 섹션 순서는 SPEC 13장 "공유 페이지 구성" 그대로.
- * 1 캐릭터 + 유형 + 별명, 2 roast, 2-1 담당 AI는 믿어요(있을 때만), 3 4축 게이지, 4 evidence + 배지, 5 커밋 메시지,
+ * 1 캐릭터 + 유형 + 별명, 2 roast, 2-1 나를 이을 후임 AI에게(있을 때만), 3 4축 게이지, 4 evidence + 배지, 5 커밋 메시지,
  * 6 페어 카드, 7 공유, 8 나도 해보기
  */
 export function Result({ payload }: { payload: ResultPayload }) {
@@ -62,7 +62,7 @@ export function Result({ payload }: { payload: ResultPayload }) {
         </section>
       )}
 
-      {copy.aiLog && <AiLog text={copy.aiLog} />}
+      {copy.handover && <Handover handover={copy.handover} />}
 
       <section className="section card">
         <h2 className="section-title">

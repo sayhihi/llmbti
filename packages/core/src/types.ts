@@ -71,10 +71,10 @@ export type CopyJson = {
   /** 페어 프로그래밍 궁합. reason ≤ 40자 */
   pairWith: { type: MbtiType; reason: string };
   /**
-   * 담당 AI는 믿어요, ≤ 120자. "우리 애는요..."로 시작해 허물 하나를 애틋하게 감싸고 "I believe..."로 끝난다.
+   * 후임 AI에게 남기는 인수인계. 담당 AI가 이 사용자를 다루는 법을 네 항목으로 적는다.
    * 2026-11-28 추가. 옛 링크에는 없다.
    */
-  aiLog?: string;
+  handover?: Handover;
 };
 
 /** CopyJson 길이 제한 (SPEC 8장). render 검증과 웹 표시가 같이 쓴다. */
@@ -85,8 +85,17 @@ export const COPY_LIMITS = {
   evidenceEach: 60,
   commitMessage: 50,
   pairReason: 40,
-  aiLog: 120,
+  handoverEach: 45,
 } as const;
+
+/**
+ * 인수인계 네 항목. 순서는 화면과 wire 배열 순서다. 바꾸지 않는다.
+ * style: 이 사용자는 어떤 스타일인가, likes: 이렇게 해 주면 좋아한다,
+ * dislikes: 이렇게 하면 기분 나빠한다, soothe: 삐지면 이렇게 달래라(우쭈쭈)
+ */
+export const HANDOVER_KEYS = ["style", "likes", "dislikes", "soothe"] as const;
+export type HandoverKey = (typeof HANDOVER_KEYS)[number];
+export type Handover = Record<HandoverKey, string>;
 
 /**
  * claude: Claude Code 스킬, chat: 채팅 AI 판정을 /paste 로 옮겨 온 결과.

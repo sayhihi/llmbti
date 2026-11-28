@@ -1,4 +1,10 @@
 export * from "./types";
+export {
+  HANDOVER_TITLE,
+  HANDOVER_CLOSING,
+  HANDOVER_SIGN,
+  handoverLetterLines,
+} from "./handover";
 export * from "./pixel";
 export { TYPE_META, getTypeMeta, type TypeMeta } from "./typeMeta";
 export {

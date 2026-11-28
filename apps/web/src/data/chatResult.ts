@@ -11,11 +11,19 @@
  * - 유형 글자와 점수 부호가 어긋나면 유형을 믿고 부호를 맞춘다. 사용자가 채팅에서 본 게 그 유형이다.
  */
 
-import { AXES, COPY_LIMITS, MBTI_TYPES, PAYLOAD_VERSION, isMbtiType } from "@llmbti/core";
+import {
+  AXES,
+  COPY_LIMITS,
+  HANDOVER_KEYS,
+  MBTI_TYPES,
+  PAYLOAD_VERSION,
+  isMbtiType,
+} from "@llmbti/core";
 import type {
   Axis,
   ChatConfidence,
   ChatMethod,
+  Handover,
   MbtiType,
   ResultPayload,
   Scores,
@@ -219,7 +227,7 @@ function toPayload(obj: Json): ResultPayload | null {
 
   const method = readMethod(obj.method);
   const confidence = method === "record" ? readConfidence(obj.confidence) : undefined;
-  const aiLog = cleanText(obj.aiLog, COPY_LIMITS.aiLog);
+  const handover = readHandover(obj.handover);
 
   const payload: ResultPayload = {
     v: PAYLOAD_VERSION,
@@ -240,8 +248,26 @@ function toPayload(obj: Json): ResultPayload | null {
     sampleSize: { prompts: 0, shell: 0 },
     chat: confidence ? { method, confidence } : { method },
   };
-  if (aiLog !== "") payload.copy.aiLog = aiLog;
+  if (handover) payload.copy.handover = handover;
   return payload;
+}
+
+/** 네 항목을 정리한다. 항목이 하나도 없으면 undefined. 한국어 키("스타일" 등)로 와도 받는다. */
+function readHandover(value: unknown): Handover | undefined {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return undefined;
+  const rec = value as Json;
+  const alias: Record<string, string[]> = {
+    style: ["스타일"],
+    likes: ["좋아하는 것", "좋아함"],
+    dislikes: ["질색하는 것", "싫어하는 것", "싫어함"],
+    soothe: ["달래는 법"],
+  };
+  const out = {} as Handover;
+  for (const k of HANDOVER_KEYS) {
+    const raw = rec[k] ?? alias[k]!.map((a) => rec[a]).find((v) => v !== undefined);
+    out[k] = cleanText(raw, COPY_LIMITS.handoverEach);
+  }
+  return HANDOVER_KEYS.some((k) => out[k] !== "") ? out : undefined;
 }
 
 /** 페어 유형이 없으면 4글자를 다 뒤집은 유형. 결과 페이지가 본인이나 상극이면 정적 궁합으로 바꾼다. */
