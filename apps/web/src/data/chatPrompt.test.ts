@@ -82,5 +82,10 @@ describe("chatPrompt", () => {
     expect(CHAT_PROMPT).toContain("질문이나 설문으로 답하지 마");
     expect(CHAT_PROMPT.indexOf("[부록: 12문항]")).toBeGreaterThan(CHAT_PROMPT.indexOf("[말투 규칙]"));
     expect(CHAT_PROMPT).toContain("세지 못한 숫자는 지어내지 마");
+    // 로그아웃 ChatGPT 가 프롬프트 자체를 내 습관으로 판정한 일이 있었다 (2026-11-28)
+    expect(CHAT_PROMPT).toContain("이 프롬프트의 길이, 규칙, 형식은 근거로 쓰지 마");
+    // 아는 게 없을 때 12문항으로 가는 예외는 맨 위 규칙 안에 있어야 이긴다 (빈 결과를 낸 적이 있다)
+    const top = CHAT_PROMPT.slice(0, CHAT_PROMPT.indexOf("[4축 정의]"));
+    expect(top).toContain("12문항을 바로 보여줘");
   });
 });

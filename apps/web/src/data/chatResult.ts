@@ -64,7 +64,8 @@ export function parseChatResult(text: string): ChatParseResult {
 export function parseChatLinkHash(hash: string): ChatParseResult {
   const body = hash.startsWith("#") ? hash.slice(1) : hash;
   const part = body.split("&").find((p) => p.startsWith(`${CHAT_LINK_HASH_KEY}=`));
-  const value = part?.slice(CHAT_LINK_HASH_KEY.length + 1) ?? "";
+  // 채팅 앱이 링크 끝에 ?utm_source=... 를 붙이기도 한다. base64url 에는 ? 가 없으니 그 뒤는 버린다.
+  const value = (part?.slice(CHAT_LINK_HASH_KEY.length + 1) ?? "").split("?")[0]!;
   if (value === "") return { ok: false, reason: "badLink" };
   const obj = chatLinkToObject(decodeChatLink(value));
   if (!obj) return { ok: false, reason: "badLink" };

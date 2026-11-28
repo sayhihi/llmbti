@@ -192,6 +192,11 @@ describe("채팅 링크 (/c#j=)", () => {
     expect(decodeCompact(encodeCompact(p))).toEqual(p);
   });
 
+  it("채팅 앱이 붙인 ?utm_source 는 무시한다", () => {
+    const r = parseChatLinkHash(`#j=${PYTHON_LINK}?utm_source=chatgpt.com`);
+    expect(r.ok && r.payload.type).toBe("ESTJ");
+  });
+
   it("잘리거나 바뀐 링크, 빈 링크는 badLink", () => {
     expect(parseChatLinkHash(`#j=${PYTHON_LINK.slice(0, 300)}`)).toEqual({
       ok: false,
